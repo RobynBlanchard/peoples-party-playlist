@@ -4,6 +4,7 @@ import path from 'path';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import Layout from './components/Layout';
+import axios from 'axios';
 
 import { StaticRouter } from 'react-router-dom'; // to mimic react router setup on server
 
@@ -13,6 +14,8 @@ app.use(express.static(path.resolve(__dirname, '../dist'))); //serve static file
 
 // a route to handle all non-static incoming requests, and respond with html
 app.get('/*', (req, res) => {
+  // debugger;
+
   const context = {}; // context is used for tracking potential redirects while rendering the React DOM
   const jsx = (
     <StaticRouter context={context} location={req.url}>
@@ -25,7 +28,9 @@ app.get('/*', (req, res) => {
   res.end(htmlTemplate(reactDom));
 });
 
-app.listen(2048);
+app.listen(3000);
+
+console.log(`Server listening at port 3000`);
 
 function htmlTemplate(reactDom) {
   return `

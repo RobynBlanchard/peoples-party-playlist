@@ -1,7 +1,7 @@
-import { Link, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Link, Switch, Route } from 'react-router-dom';
 import React from 'react';
 import Home from './Home';
-import About from './About';
+import LogIn from './LogIn';
 
 class Layout extends React.Component {
   render() {
@@ -9,11 +9,11 @@ class Layout extends React.Component {
       <div>
         <div>
           <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
+          <Link to="/login">Log in</Link>
         </div>
         <Switch>
           <Route path="/" exact component={Home} />
-          <Route path="/about" exact component={About} />
+          <Route path="/login" exact component={LogIn} />
         </Switch>
       </div>
     );
