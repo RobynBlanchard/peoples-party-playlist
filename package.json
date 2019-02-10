@@ -1,0 +1,32 @@
+{
+  "name": "ultimate-party-playlist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "NODE_ENV=production webpack --progress",
+    "dev": "webpack --watch --progress & nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.3.13",
+    "babel-register": "^6.26.0",
+    "express": "^4.16.4",
+    "nodemon": "^1.17.2",
+    "path": "^0.12.7",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "react-helmet": "^5.2.0",
+    "react-router-dom": "^4.3.1",
+    "webpack": "^4.20.2",
+    "webpack-bundle-analyzer": "^2.9.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.0.0"
+  }
+}
