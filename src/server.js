@@ -4,6 +4,7 @@ import path from 'path';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
+import { ServerStyleSheet } from 'styled-components';
 
 import App from './components/App';
 import { logIn, loginCallback } from './LogIn';
@@ -20,31 +21,33 @@ app.get('/*', (req, res) => {
     return loginCallback(req, res);
   }
 
+  const sheet = new ServerStyleSheet();
   const context = {};
   const jsx = (
     <StaticRouter context={context} location={req.url}>
       <App />
     </StaticRouter>
   );
-  const reactDom = renderToString(jsx);
-
-  res.end(htmlTemplate(reactDom));
+  const reactDom = renderToString(sheet.collectStyles(jsx));
+  const styles = sheet.getStyleTags();
+  res.end(htmlTemplate(reactDom, styles));
 });
 
 app.listen(3000);
 
 console.log(`Server listening at port 3000`);
 
-function htmlTemplate(reactDom) {
+function htmlTemplate(reactDom, styles) {
   return `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="utf-8">
             <title>People's Party Playlist</title>
+            ${styles}
         </head>
 
-        <body>
+        <body style="margin:0">
             <div id="app">${reactDom}</div>
             <script src="./app.bundle.js"></script>
         </body>
