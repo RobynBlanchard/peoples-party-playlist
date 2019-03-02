@@ -5,6 +5,10 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import { ServerStyleSheet } from 'styled-components';
+import { Provider } from "react-redux";
+import createStore, { initializeSession } from "./store";
+// import { createStore } from 'redux';
+
 
 import App from './components/App';
 import { logIn, loginCallback } from './LogIn';
@@ -23,21 +27,28 @@ app.get('/*', (req, res) => {
 
   const sheet = new ServerStyleSheet();
   const context = {};
+  const store = createStore();
+  store.dispatch( initializeSession( ) );
+
   const jsx = (
-    <StaticRouter context={context} location={req.url}>
-      <App />
-    </StaticRouter>
+    <Provider store={ store }>
+      <StaticRouter context={context} location={req.url}>
+        <App />
+      </StaticRouter>
+    </Provider>
   );
   const reactDom = renderToString(sheet.collectStyles(jsx));
+  const reduxState = store.getState();
+
   const styles = sheet.getStyleTags();
-  res.end(htmlTemplate(reactDom, styles));
+  res.end(htmlTemplate(reactDom, styles, reduxState));
 });
 
 app.listen(3000);
 
 console.log(`Server listening at port 3000`);
 
-function htmlTemplate(reactDom, styles) {
+function htmlTemplate(reactDom, styles, reduxState) {
   return `
         <!DOCTYPE html>
         <html>
@@ -49,6 +60,9 @@ function htmlTemplate(reactDom, styles) {
 
         <body style="margin:0">
             <div id="app">${reactDom}</div>
+            <script>
+              window.REDUX_DATA = ${ JSON.stringify( reduxState ) }
+            </script>
             <script src="./app.bundle.js"></script>
         </body>
         </html>
