@@ -48,7 +48,6 @@ const Nav = () => {
       <List>
         <ListItem><Link to="/">Playlists</Link></ListItem>
         <ListItem><Link to="/">Search</Link></ListItem>
-        {/* <ListItem><Link to="/">Search</Link></ListItem> */}
         <ListItem style={{float:'right'}}><a href="/login">Login with Spotify</a></ListItem>
       </List>
     </NavContainer>
