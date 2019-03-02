@@ -6,8 +6,8 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import { ServerStyleSheet } from 'styled-components';
 import { Provider } from "react-redux";
-// import createStore, { initializeSession } from "./store";
-import { createStore } from 'redux';
+import createStore, { initializeSession } from "./store";
+// import { createStore } from 'redux';
 
 
 import App from './components/App';
