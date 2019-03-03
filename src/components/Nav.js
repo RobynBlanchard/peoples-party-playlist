@@ -1,11 +1,13 @@
-import React from 'react'
+import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+
+import LogIn from './LogIn';
 
 const NavContainer = styled.div`
   width: 100%;
   height: 50px;
-`
+`;
 
 const List = styled.ul`
   list-style-type: none;
@@ -17,7 +19,7 @@ const List = styled.ul`
 
 const ListItem = styled.li`
   float: left;
-  border-right:1px solid #bbb;
+  border-right: 1px solid #bbb;
 
   & > a {
     display: block;
@@ -34,24 +36,24 @@ const ListItem = styled.li`
   & > a:active {
     color: grey;
   }
-
-  &:last-child {
-    border-right: none;
-    background-color: #1DB954;
-    border-radius: 25px;
-  }
 `;
 
 const Nav = () => {
   return (
     <NavContainer>
       <List>
-        <ListItem><Link to="/">Playlists</Link></ListItem>
-        <ListItem><Link to="/">Search</Link></ListItem>
-        <ListItem style={{float:'right'}}><a href="/login">Login with Spotify</a></ListItem>
+        <ListItem>
+          <Link to="/">Playlists</Link>
+        </ListItem>
+        <ListItem>
+          <Link to="/">Search</Link>
+        </ListItem>
+        <ListItem style={{ float: 'right' }}>
+          <LogIn />
+        </ListItem>
       </List>
     </NavContainer>
-  )
-}
+  );
+};
 
 export default Nav;

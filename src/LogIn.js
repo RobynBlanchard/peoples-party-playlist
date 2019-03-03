@@ -38,14 +38,16 @@ export const logIn = (req, res) => {
 };
 
 export const loginCallback = (req, res) => {
+  console.log(req)
   const { code, state } = req.query;
   const storedState = req.cookies[stateKey];
 
   if (!state || state !== storedState) {
-    res.redirect('/#' +
-      querystring.stringify({
-        error: 'state_mismatch'
-      }));
+    // res.redirect('/#' +
+    //   querystring.stringify({
+    //     error: 'state_mismatch'
+    //   }));
+    res.redirect('/LogInFailure');
   } else {
     res.clearCookie(stateKey);
     const authOptions = {
@@ -67,13 +69,17 @@ export const loginCallback = (req, res) => {
         res.cookie('spotifyAccessToken', access_token);
         res.cookie('spotifyRefreshToken', refresh_token);
 
-        res.redirect('/');
+        res.redirect('/LogInSuccess');
+
       } else {
-        res.redirect('/#' +
-          querystring.stringify({
-            error: 'invalid_token'
-          }));
+        res.redirect('/LogInFailure');
+        // res.redirect('/#' +
+        //   querystring.stringify({
+        //     error: 'invalid_token'
+        //   }));
       }
     });
   }
 };
+
+// referrer - keep same page after log in

@@ -19,16 +19,20 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
 app.use(cookieParser());
 
 app.get('/*', (req, res) => {
+  let preLoadedState = { loggedIn: false, spotifyAccessToken: null }
   if (req.url === '/login') {
     logIn(req, res);
   } else if (req.url.split('?')[0] === '/callback') {
     return loginCallback(req, res);
+  } else if (req.url.split('?')[0] === '/LogInSuccess') {
+    const token = req.cookies.spotifyAccessToken;
+    preLoadedState = { loggedIn: true,  spotifyAccessToken: token }
   }
 
   const sheet = new ServerStyleSheet();
   const context = {};
-  const store = createStore();
-  store.dispatch( initializeSession( ) );
+
+  const store = createStore(preLoadedState);
 
   const jsx = (
     <Provider store={ store }>
