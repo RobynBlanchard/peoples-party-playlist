@@ -1,18 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import LogInUI from './LogInUI';
+import styled from 'styled-components';
+
+const Button = styled.a`
+  border-right: none;
+  background-color: #1db954;
+  border-radius: 25px;
+
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+`;
+
+const LinkContainer = styled.div`
+  height: 100%;
+`;
 
 class LogIn extends React.Component {
   renderAuthButton() {
     if (this.props.isSignedIn === null) {
       return null;
     } else if (this.props.isSignedIn) {
-      // return <a href="/#">Sign out</a>
-      return <LogInUI href="/#" text="Sign out" />
-    } else {
-      return <LogInUI href="/login" text="Login with Spotify" />
-      // return <a href="/login">Login with Spotify</a>
+      return (
+        <LinkContainer>
+          <Button href="/#">Sign out</Button>
+        </LinkContainer>
+      );
     }
+    return (
+      <LinkContainer>
+        <Button href="/login">Login with Spotify</Button>
+      </LinkContainer>
+    );
   }
 
   render() {
@@ -20,9 +41,9 @@ class LogIn extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return { isSignedIn: state.loggedIn }
-}
+const mapStateToProps = state => {
+  return { isSignedIn: state.loggedIn };
+};
 
 export default connect(
   mapStateToProps,

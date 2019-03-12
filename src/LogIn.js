@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-import querystring from 'query-string';
 import request from 'request';
 
 const ClientID = process.env.clientID;
