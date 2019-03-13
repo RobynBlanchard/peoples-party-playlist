@@ -3,13 +3,13 @@ import express from 'express';
 import path from 'path';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { StaticRouter, matchPath } from 'react-router-dom';
+import { StaticRouter } from 'react-router-dom';
 import { ServerStyleSheet } from 'styled-components';
 import { Provider } from 'react-redux';
 
-import createStore, { initializeSession } from './store';
+import createStore, { signIn, signOut } from './store';
 import App from './components/App';
-import { logIn, loginCallback } from './LogIn';
+import { logIn, loginCallback, logOut, changeUser } from './Auth';
 import routes from './routes';
 
 const app = express();
@@ -18,37 +18,52 @@ app.use(express.static(path.resolve(__dirname, '../dist')));
 app.use(cookieParser());
 
 app.get('/*', (req, res) => {
-  // let preLoadedState = { loggedIn: false, spotifyAccessToken: null }
-  // if (req.url === '/login') {
-  //   logIn(req, res);
-  // } else if (req.url.split('?')[0] === '/callback') {
-  //   return loginCallback(req, res);
-  // } else if (req.url.split('?')[0] === '/LogInSuccess') {
-  //   const token = req.cookies.spotifyAccessToken;
-  //   // preLoadedState = { loggedIn: true,  spotifyAccessToken: token }
-  // }
+  const context = {};
+  const store = createStore();
+
+  if (req.url === '/login') {
+    logIn(req, res);
+  } else if (req.url.split('?')[0] === '/callback') {
+
+    return loginCallback(req, res);
+  } else if (req.url.split('?')[0] === '/LogInSuccess') {
+  } else if (req.url === '/log-out') {
+    store.dispatch(signOut());
+    logOut(req, res)
+  } else if (req.url === '/change-user') {
+    logIn(req, res)
+  }
+
+  // move into loginsuccess?
+  const token = req.cookies.spotifyAccessToken;
+  if (token) {
+    store.dispatch(signIn({token: token}));
+  }
 
   const sheet = new ServerStyleSheet();
 
-  const context = {};
-  const store = createStore();
-  // const store = createStore(preLoadedState);
+  const dataRequirements = routes
+  .map(route => route.component)
+  .filter(comp => comp.serverFetch)
+  .map(comp => store.dispatch(comp.serverFetch()));
 
-  store.dispatch(initializeSession());
+  Promise.all(dataRequirements).then(() => {
+    console.log('store state', store.getState())
+    console.log('Inside promise')
+    const jsx = (
+      <Provider store={store}>
+        <StaticRouter context={context} location={req.url}>
+          <App />
+        </StaticRouter>
+      </Provider>
+    );
+    const reactDom = renderToString(sheet.collectStyles(jsx));
+    const reduxState = store.getState();
+    const styles = sheet.getStyleTags();
 
-  const jsx = (
-    <Provider store={store}>
-      <StaticRouter context={context} location={req.url}>
-        <App />
-      </StaticRouter>
-    </Provider>
-  );
-  const reactDom = renderToString(sheet.collectStyles(jsx));
-  const reduxState = store.getState();
-  const styles = sheet.getStyleTags();
-
-  res.writeHead(200, { 'Content-Type': 'text/html' });
-  res.end(htmlTemplate(reactDom, styles, reduxState));
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(htmlTemplate(reactDom, styles, reduxState));
+  })
 });
 
 app.listen(3000);

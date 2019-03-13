@@ -8,11 +8,9 @@ import ErrorBoundary from './ErrorBoundary';
 import App from './components/App';
 
 const store = createStore(window.REDUX_DATA);
-console.log(window.REDUX_DATA);
 delete window.REDUX_DATA;
 
 const app = document.getElementById('app');
-console.log(app);
 
 const jsx = (
   <Provider store={store}>
@@ -24,5 +22,4 @@ const jsx = (
   </Provider>
 );
 
-console.log(jsx);
 ReactDOM.hydrate(jsx, app);

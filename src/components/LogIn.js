@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
+
+import { fetchUser } from '../actions/';
 
 const Button = styled.a`
   border-right: none;
@@ -19,13 +22,22 @@ const LinkContainer = styled.div`
 `;
 
 class LogIn extends React.Component {
+  componentDidMount() {
+    const { userId, fetchUser } = this.props;
+
+    if (!userId) fetchUser();
+  }
+
   renderAuthButton() {
-    if (this.props.isSignedIn === null) {
-      return null;
-    } else if (this.props.isSignedIn) {
+    if (this.props.signedIn) {
       return (
         <LinkContainer>
-          <Button href="/#">Sign out</Button>
+          {/* <Button href="/log-out">
+            Log out
+          </Button> */}
+          <Button href="/change-user">
+            {this.props.userId} : Change User
+          </Button>
         </LinkContainer>
       );
     }
@@ -41,11 +53,17 @@ class LogIn extends React.Component {
   }
 }
 
+LogIn.serverFetch = fetchUser;
+
 const mapStateToProps = state => {
-  return { isSignedIn: state.loggedIn };
+  return {
+    signedIn: state.loggedIn.signedIn,
+    token: state.loggedIn.token,
+    userId: state.loggedIn.userId
+  };
 };
 
 export default connect(
   mapStateToProps,
-  null
+  { fetchUser }
 )(LogIn);
