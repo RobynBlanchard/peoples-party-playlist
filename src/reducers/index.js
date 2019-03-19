@@ -1,6 +1,8 @@
-// import { combineReducers } from 'redux';
-// import authReducer from './authReducer';
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import authReducer from './authReducer';
 
-// export default combineReducers({
-//   auth: authReducer,
-// });
+const reducer = combineReducers( {
+  auth: authReducer,
+} );
+
+export default reducer;

@@ -1,15 +1,16 @@
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import path from 'path';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import { ServerStyleSheet } from 'styled-components';
 import { Provider } from 'react-redux';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import path from 'path';
 
-import createStore, { signIn, signOut } from './store';
+import createStore from './store';
+import { signIn, signOut } from './actions';
+import { logIn, loginCallback, logOut } from './Auth';
 import App from './components/App';
-import { logIn, loginCallback, logOut, changeUser } from './Auth';
 import routes from './routes';
 
 const app = express();
@@ -22,34 +23,31 @@ app.get('/*', (req, res) => {
   const store = createStore();
 
   if (req.url === '/login') {
-    logIn(req, res);
+    return logIn(req, res);
   } else if (req.url.split('?')[0] === '/callback') {
-
     return loginCallback(req, res);
-  } else if (req.url.split('?')[0] === '/LogInSuccess') {
   } else if (req.url === '/log-out') {
     store.dispatch(signOut());
-    logOut(req, res)
+    return logOut(req, res);
   } else if (req.url === '/change-user') {
-    logIn(req, res)
+    return logIn(req, res);
   }
 
-  // move into loginsuccess?
   const token = req.cookies.spotifyAccessToken;
   if (token) {
-    store.dispatch(signIn({token: token}));
+    store.dispatch(signIn({ token: token }));
   }
 
   const sheet = new ServerStyleSheet();
 
   const dataRequirements = routes
-  .map(route => route.component)
-  .filter(comp => comp.serverFetch)
-  .map(comp => store.dispatch(comp.serverFetch()));
+    .map(route => route.component)
+    .filter(comp => comp.serverFetch)
+    .map(comp => store.dispatch(comp.serverFetch()));
 
   Promise.all(dataRequirements).then(() => {
-    console.log('store state', store.getState())
-    console.log('Inside promise')
+    console.log('store state', store.getState());
+    console.log('Inside promise');
     const jsx = (
       <Provider store={store}>
         <StaticRouter context={context} location={req.url}>
@@ -63,7 +61,7 @@ app.get('/*', (req, res) => {
 
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(htmlTemplate(reactDom, styles, reduxState));
-  })
+  });
 });
 
 app.listen(3000);

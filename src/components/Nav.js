@@ -15,6 +15,7 @@ const List = styled.ul`
   padding: 0;
   overflow: hidden;
   background-color: #333;
+  height: 100%;
 `;
 
 const ListItem = styled.li`

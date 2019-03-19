@@ -1,24 +1,56 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import styled from 'styled-components';
 
 import { fetchUser } from '../actions/';
 
-const Button = styled.a`
+const LogInButton = styled.a`
   border-right: none;
   background-color: #1db954;
   border-radius: 25px;
 
+  /* display: block; */
+  color: white;
+  text-align: center;
+  padding: 10px 10px;
+  vertical-align: middle;
+  text-decoration: none;
+`;
+
+const DropDownLink = styled.a`
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+`;
+
+const DropDownContent = styled.div`
+  display: none;
+  position: absolute;
+  min-width: 100px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  margin-top: 15px;
+`;
+
+const LinkContainer = styled.div`
+  height: 100%;
+  border-right: none;
   display: block;
   color: white;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-`;
+  min-width: 100px;
+  border-left: #333;
 
-const LinkContainer = styled.div`
-  height: 100%;
+  &:hover {
+    ${DropDownContent} {
+      display: block;
+      /* margin-left:-16px; */
+    }
+  }
 `;
 
 class LogIn extends React.Component {
@@ -29,21 +61,21 @@ class LogIn extends React.Component {
   }
 
   renderAuthButton() {
+    const { userId } = this.props;
     if (this.props.signedIn) {
       return (
         <LinkContainer>
-          {/* <Button href="/log-out">
-            Log out
-          </Button> */}
-          <Button href="/change-user">
-            {this.props.userId} : Change User
-          </Button>
+            {userId === '' ? 'user' : userId}
+            <DropDownContent>
+              <DropDownLink href="/change-user">Change User</DropDownLink>
+              <DropDownLink href="/log-out">Log out</DropDownLink>
+            </DropDownContent>
         </LinkContainer>
       );
     }
     return (
       <LinkContainer>
-        <Button href="/login">Login with Spotify</Button>
+        <LogInButton href="/login">Login with Spotify</LogInButton>
       </LinkContainer>
     );
   }
@@ -57,9 +89,9 @@ LogIn.serverFetch = fetchUser;
 
 const mapStateToProps = state => {
   return {
-    signedIn: state.loggedIn.signedIn,
-    token: state.loggedIn.token,
-    userId: state.loggedIn.userId
+    signedIn: state.auth.signedIn,
+    token: state.auth.token,
+    userId: state.auth.userId
   };
 };
 
