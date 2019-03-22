@@ -23,21 +23,46 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {}
-          },
-          {
-            loader: 'image-webpack-loader',
-            options: {}
-          },
-          {
-            loader: "url-loader",
-            options: {}
-          }
+        loaders: [
+            'url?limit=8192',
+            'img'
         ]
-      }
+    },
+      // {
+      //   test: /\.(png|svg|jpg|gif)$/,
+      //   use: ['file-loader']
+      // }
+      // {
+      //   test: /\.(png|jpg|svg)$/,
+      //   use: [
+      //     {
+      //       loader: 'file-loader',
+      //       options: {
+      //         emitFile: false,
+      //         name: '[name].[ext]',
+      //         outputPath: 'img/',
+      //       },
+      //     },
+      //   ],
+      // },
+      // {
+      //   test: /\.(jpe?g|png|gif|svg)$/,
+      //   use: [
+      //     {
+      //       loader: 'file-loader',
+      //       options: {
+      //       }
+      //     },
+      //     {
+      //       loader: 'image-webpack-loader',
+      //       options: {}
+      //     },
+      //     {
+      //       loader: "url-loader",
+      //       options: {}
+      //     }
+      //   ]
+      // }
     ]
   },
   // plugins: [
@@ -48,5 +73,6 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js'
+    // publicPath: './'
   }
 };

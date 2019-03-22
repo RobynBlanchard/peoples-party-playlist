@@ -21,6 +21,7 @@ const List = styled.ul`
 const ListItem = styled.li`
   float: left;
   border-right: 1px solid #bbb;
+  height: 100%;
 
   & > a {
     display: block;
