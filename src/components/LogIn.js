@@ -1,20 +1,23 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import styled from 'styled-components';
+import React from "react";
+import { connect } from "react-redux";
+import styled from "styled-components";
 
-import { fetchUser } from '../actions/';
+import { fetchUser } from "../actions/";
+import { colours } from '../styles.js';
 
 const LogInButton = styled.a`
-  border-right: none;
-  background-color: #1db954;
-  border-radius: 25px;
-
-  /* display: block; */
+  height: 100%;
+  display: block;
   color: white;
   text-align: center;
-  padding: 10px 10px;
   vertical-align: middle;
   text-decoration: none;
+
+  & > img {
+    height: 20px;
+    width: 20px;
+    float: right;
+  }
 `;
 
 const DropDownLink = styled.a`
@@ -42,10 +45,11 @@ const LinkContainer = styled.div`
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
-  min-width: 100px;
-  border-left: #333;
+  width: 75px;
+  border-left: 1px solid #bbb;
 
   &:hover {
+    background-color: ${colours.spotifyBlack};
     ${DropDownContent} {
       display: block;
       /* margin-left:-16px; */
@@ -65,17 +69,18 @@ class LogIn extends React.Component {
     if (this.props.signedIn) {
       return (
         <LinkContainer>
-            {userId === '' ? 'user' : userId}
-            <DropDownContent>
-              <DropDownLink href="/change-user">Change User</DropDownLink>
-              <DropDownLink href="/log-out">Log out</DropDownLink>
-            </DropDownContent>
+          {userId === "" ? "user" : userId}
+          <DropDownContent>
+            <DropDownLink href="/change-user">Change User</DropDownLink>
+            <DropDownLink href="/log-out">Log out</DropDownLink>
+          </DropDownContent>
         </LinkContainer>
       );
     }
     return (
       <LinkContainer>
-        <LogInButton href="/login">Login with Spotify</LogInButton>
+        <LogInButton href="/login">Login<img src="http://localhost:3000/images/Spotify_Icon_RGB_Green.png" /></LogInButton>
+        
       </LinkContainer>
     );
   }

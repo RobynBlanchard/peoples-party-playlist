@@ -7,6 +7,12 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import path from 'path';
 
+const webpack = require('webpack');
+const middleware = require('webpack-dev-middleware');
+const compiler = webpack(require('../webpack.config'));
+
+
+
 import createStore from './store';
 import { signIn, signOut } from './actions';
 import { logIn, loginCallback, logOut } from './Auth';
@@ -14,6 +20,12 @@ import App from './components/App';
 import routes from './routes';
 
 const app = express();
+
+// if in dev:
+// app.use(middleware(compiler, {
+//   // webpack-dev-middleware options
+//   writeToDisk: true,
+// }));
 
 app.use(express.static(path.resolve(__dirname, '../dist')));
 app.use(cookieParser());

@@ -1,3 +1,6 @@
-export const green = '#1DB954';
-export const black = '#191414'
-export const white = '#FFFFFF';
+export const colours = {
+  spotifyGreen: "#1DB954",
+  spotifyBlack: "#191414",
+  spotifyWhite: "#FFFFFF",
+  grey: "#333"
+};

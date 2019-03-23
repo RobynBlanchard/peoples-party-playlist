@@ -1,52 +1,35 @@
-const path = require('path');
-// var dotenv = require('dotenv').config({path: __dirname + '/.env'});
-// var webpack = require('webpack');
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
 
-const dev = process.env.NODE_ENV !== 'production';
+const dev = process.env.NODE_ENV !== "production";
 
 module.exports = {
-  mode: dev ? 'development' : 'production',
-  context: path.join(__dirname, 'src'),
-  // devtool: dev ? "none" : "source-map",
+  mode: dev ? "development" : "production",
+  context: path.join(__dirname, "src"),
   entry: {
-    app: './client.js'
+    app: "./client.js"
   },
   resolve: {
-    modules: [path.resolve('./src'), 'node_modules']
+    modules: [path.resolve("./src"), "node_modules"]
   },
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel-loader'
+        loader: "babel-loader"
       },
       {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {}
-          },
-          {
-            loader: 'image-webpack-loader',
-            options: {}
-          },
-          {
-            loader: "url-loader",
-            options: {}
-          }
-        ]
+        test: /\.(jpg|png|gif)$/,
+        use: {
+          loader: "file-loader"
+        }
       }
     ]
   },
-  // plugins: [
-  //     new webpack.DefinePlugin({
-  //         "process.env": dotenv.parsed // TODO: Fix
-  //     }),
-  // ],
+  plugins: [new CopyPlugin([{ from: "static/img", to: "images" }])],
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js'
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].bundle.js"
   }
 };
