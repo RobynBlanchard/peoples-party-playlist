@@ -4,3 +4,4 @@ import reducer from './reducers';
 
 
 export default ( initialState ) => applyMiddleware(thunkMiddleWare)(createStore)( reducer, initialState );
+// use own middleware - eg reatc-redux-tuts/testing

@@ -1,10 +1,21 @@
-// import Home from './components/Home';
-import LogIn from './components/LogIn';
+import Playlists from './components/Playlists';
+import Playlist from './components/Playlist';
+import AuthButton from './components/AuthButton/AuthButton';
 
 export default [
   {
-    // path: '/',
-    component: LogIn,
+    path: '/',
+    component: AuthButton,
+    // exact: true
+  },
+  {
+    path: '/playlists',
+    component: Playlists,
+    // exact: true
+  },
+  {
+    path: '/playlist',
+    component: Playlist,
     // exact: true
   }
 ];

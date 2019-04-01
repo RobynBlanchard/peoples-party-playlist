@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { StaticRouter } from 'react-router-dom';
+import { StaticRouter, matchPath } from 'react-router-dom';
 import { ServerStyleSheet } from 'styled-components';
 import { Provider } from 'react-redux';
 import cookieParser from 'cookie-parser';
@@ -53,13 +53,12 @@ app.get('/*', (req, res) => {
   const sheet = new ServerStyleSheet();
 
   const dataRequirements = routes
+    .filter(route => matchPath(req.path, route))
     .map(route => route.component)
     .filter(comp => comp.serverFetch)
     .map(comp => store.dispatch(comp.serverFetch()));
 
   Promise.all(dataRequirements).then(() => {
-    console.log('store state', store.getState());
-    console.log('Inside promise');
     const jsx = (
       <Provider store={store}>
         <StaticRouter context={context} location={req.url}>

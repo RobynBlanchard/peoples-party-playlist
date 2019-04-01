@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
-import LogIn from "./LogIn";
-import { colours } from "../styles.js";
+import AuthButton from './AuthButton/AuthButton';
+import { colours } from '../styles.js';
 
 const NavContainer = styled.div`
   width: 100%;
@@ -17,6 +17,11 @@ const List = styled.ul`
   overflow: hidden;
   background-color: ${colours.grey};
   height: 100%;
+
+  & ${ListItem}:nth-child(3) {
+    border-left: 1px solid #bbb;
+    float: right;
+  }
 `;
 
 const ListItem = styled.li`
@@ -28,7 +33,7 @@ const ListItem = styled.li`
     display: block;
     color: ${colours.spotifyWhite};
     text-align: center;
-    padding: 14px 16px;
+    padding: 16px 16px;
     text-decoration: none;
   }
 
@@ -46,13 +51,13 @@ const Nav = () => {
     <NavContainer>
       <List>
         <ListItem>
-          <Link to="/">Playlists</Link>
+          <Link to="/playlists">Playlists</Link>
         </ListItem>
         <ListItem>
           <Link to="/">Search</Link>
         </ListItem>
-        <ListItem style={{ float: "right" }}>
-          <LogIn />
+        <ListItem>
+          <AuthButton />
         </ListItem>
       </List>
     </NavContainer>
