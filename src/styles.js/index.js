@@ -4,3 +4,7 @@ export const colours = {
   spotifyWhite: "#FFFFFF",
   grey: "#333"
 };
+
+export const constants = {
+  mainContentContainerWidth: '1280px'
+}

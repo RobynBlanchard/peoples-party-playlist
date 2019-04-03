@@ -47,6 +47,7 @@ const LinkContainer = styled.div`
 
   &:hover {
     background-color: ${colours.spotifyBlack};
+    border-bottom: solid ${colours.spotifyBlack} 1px ;
     ${DropDownContent} {
       display: block;
     }

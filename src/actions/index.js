@@ -37,29 +37,14 @@ export const fetchUser = () => (dispatch, getState) => {
     return apiInstance(token)
       .get('me')
       .then(data => {
-        console.log('==========------------==========');
-        console.log(
-          '==========-user-----------==========,',
-          data.data.display_name
-        );
-        // document.cookie = `user=${data.data.display_name}`;
         dispatch(dispatchUser(data.data.display_name));
       })
       .catch(err => {
-        console.log('==========--1234567---------==========');
-
         console.log(err);
-        // dispatch(dispatchUser(''));
         return err;
       });
   } else {
-    console.log('==========--9080989990-==========');
-
     console.log('fetchUser action failed, no token');
-    console.log('hererererere');
-    // return dispatch(dispatchUser(''));
-    // throw 'err'
-    // return 'err'
   }
 };
 
@@ -89,7 +74,6 @@ export const getUserAndPlayLists = () => (dispatch, getState) => {
 
   return dispatch(fetchUser()).then(() => {
     const fetchedUser = getState().auth.userId;
-    console.log('-----', fetchedUser);
     return dispatch(fetchPlaylists(fetchedUser));
   });
 };

@@ -80,7 +80,10 @@ export const loginCallback = (req, res) => {
         res.cookie('spotifyRefreshToken', refresh_token);
         res.redirect('/');
       } else {
+        // add as query param instead
+        // react router referral
         res.redirect('/LogInFailure');
+
       }
     });
   }
