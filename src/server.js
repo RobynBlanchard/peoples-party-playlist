@@ -26,8 +26,7 @@ const app = express();
 //   // webpack-dev-middleware options
 //   writeToDisk: true,
 // }));
-
-app.use(express.static(path.resolve(__dirname, '../dist')));
+app.use(express.static('public'));
 app.use(cookieParser());
 
 app.get('/*', (req, res) => {
@@ -96,7 +95,9 @@ function htmlTemplate(reactDom, styles, reduxState) {
             <script>
               window.REDUX_DATA = ${JSON.stringify(reduxState)}
             </script>
-            <script type="text/jsx" src="./app.bundle.js"></script>
+            <script type="text/javascript" src="/main.bundle.js"></script>
+
+
         </body>
         </html>
     `;

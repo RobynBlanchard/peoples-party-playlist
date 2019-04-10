@@ -1,6 +1,6 @@
 import Playlists from './components/Playlists';
 import Playlist from './components/Playlist';
-import AuthButton from './components/AuthButton/AuthButton';
+import AuthButton from './components/Nav/AuthButton';
 
 export default [
   {

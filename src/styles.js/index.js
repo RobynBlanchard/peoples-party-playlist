@@ -8,3 +8,8 @@ export const colours = {
 export const constants = {
   mainContentContainerWidth: '1280px'
 }
+
+export const fonts = {
+  title: 'Righteous, cursive;',
+  font1: 'Lucida Sans Unicode, Lucida Grande, sans-serif;',
+}

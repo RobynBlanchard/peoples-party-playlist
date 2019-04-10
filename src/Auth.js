@@ -15,6 +15,7 @@ const authURL = state => {
     'user-modify-playback-state',
     'user-read-private',
     'playlist-modify-public',
+    'playlist-modify-private',
     'streaming',
     'user-read-email'
   ];

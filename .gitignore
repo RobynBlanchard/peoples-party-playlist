@@ -4,3 +4,5 @@ dist/
 src/.DS_Store
 .DS_Store
 src/static/.DS_Store
+build
+public
