@@ -2,6 +2,8 @@ import {
   FETCH_PLAYLISTS,
   FETCH_PLAYLIST,
   MOVE_UP_PlAYLIST,
+  MOVE_DOWN_PlAYLIST,
+  REMOVE_FROM_PLAYLIST,
   INCREASE_VOTE,
   DECREASE_VOTE
 } from '../actions/types';
@@ -21,6 +23,7 @@ const playlistsReducer = (state = defaultState, action) => {
       };
 
     case FETCH_PLAYLIST:
+      // const playListId = action.payload.id
       const playlistWithResetVotes = action.payload.tracks.items.map(el => {
         const artists = el.track.artists.map(el => el.name);
         return {
@@ -31,6 +34,7 @@ const playlistsReducer = (state = defaultState, action) => {
           id: el.track.id
         };
       });
+      // const playListIdToTracks = { id: playListId, tracks: playlistWithResetVotes}
       return {
         ...state,
         playlist: action.payload,
@@ -47,6 +51,29 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         playlist: action.payload,
         playlistInfoWithVotes: curPlaylist
+      };
+    case MOVE_DOWN_PlAYLIST:
+      let curPlaylist2 = state.playlistInfoWithVotes;
+      // debugger;
+      curPlaylist2.splice(
+        action.payload.insert_before,
+        0,
+        curPlaylist2.splice(action.payload.range_start, 1)[0]
+        );
+      // debugger;
+      return {
+        ...state,
+        playlist: action.payload,
+        playlistInfoWithVotes: curPlaylist2
+      };
+    case REMOVE_FROM_PLAYLIST:
+      debugger;
+      let currentPlaylist = state.playlistInfoWithVotes;
+      currentPlaylist.splice(action.playload, 1);
+      return {
+        ...state,
+        playlist: action.payload,
+        playlistInfoWithVotes: currentPlaylist
       };
     case INCREASE_VOTE:
       const updatedPlaylist = state.playlistInfoWithVotes.map(el => {

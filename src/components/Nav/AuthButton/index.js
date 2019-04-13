@@ -20,20 +20,21 @@ const LogInButton = styled.a`
 `;
 
 const DropDownLink = styled.a`
-  color: black;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
   text-align: left;
+  color: white;
+
 `;
 
 const DropDownContent = styled.div`
   display: none;
   position: absolute;
   min-width: 100px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   margin-top: 15px;
+  background-color: ${colours.spotifyBlack};
 `;
 
 const LinkContainer = styled.div`

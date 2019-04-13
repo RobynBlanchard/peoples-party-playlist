@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import {
   fetchPlaylist,
-  decreaseVote,
+  decreaseVoteAndCheckForReOrder,
   increaseVoteAndCheckForReOrder,
   play,
   pause
@@ -25,6 +25,9 @@ class Playlist extends React.Component {
   }
 
   renderTracks() {
+    if (!Object.keys(this.props.playlist).length) {
+      return null;
+    }
     let position = -1;
     return this.props.playlist.map(el => {
       position += 1;
@@ -36,8 +39,9 @@ class Playlist extends React.Component {
           song={name}
           votes={votes}
           id={id}
+          uri={uri}
           upVoteAction={this.props.increaseVoteAndCheckForReOrder}
-          downVoteAction={this.props.decreaseVote}
+          downVoteAction={this.props.decreaseVoteAndCheckForReOrder}
           position={position}
           key={uri}
         />
@@ -74,7 +78,7 @@ export default connect(
   mapStateToProps,
   {
     fetchPlaylist,
-    decreaseVote,
+    decreaseVoteAndCheckForReOrder,
     increaseVoteAndCheckForReOrder,
     play,
     pause,

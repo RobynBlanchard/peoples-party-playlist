@@ -7,7 +7,8 @@ export const play = () => (dispatch, getState) => {
   if (token) {
     return apiInstance(token)
       .put('me/player/play', {
-        context_uri: 'spotify:playlist:1OZWEFHDuPYYuvjCVhryXV'
+        context_uri: 'spotify:playlist:1OZWEFHDuPYYuvjCVhryXV',
+        offset: {"position": 0}
       })
       .then(data => {
         dispatch({

@@ -1,5 +1,11 @@
 import apiInstance from '../api';
-import { INCREASE_VOTE, DECREASE_VOTE, MOVE_UP_PlAYLIST } from './types';
+import {
+  INCREASE_VOTE,
+  DECREASE_VOTE,
+  MOVE_UP_PlAYLIST,
+  MOVE_DOWN_PlAYLIST,
+  REMOVE_FROM_PLAYLIST
+} from './types';
 
 export const increaseVote = id => ({
   type: INCREASE_VOTE,
@@ -14,12 +20,26 @@ export const moveUp = (range_start, insert_before) => ({
   }
 });
 
+export const moveDown = (range_start, insert_before) => ({
+  type: MOVE_DOWN_PlAYLIST,
+  payload: {
+    range_start,
+    insert_before
+  }
+});
+
 export const decreaseVote = id => ({
   type: DECREASE_VOTE,
   payload: id
 });
 
-const moveTrackUpPlaylist = (range_start, insert_before, id) => (
+export const removeFromPlaylist = position => ({
+  type: REMOVE_FROM_PLAYLIST,
+  payload: position
+});
+
+// rename as used for moving up and down
+const reOrderPlaylist = (range_start, insert_before, id, action) => (
   dispatch,
   getState
 ) => {
@@ -32,20 +52,24 @@ const moveTrackUpPlaylist = (range_start, insert_before, id) => (
         insert_before
       })
       .then(data => {
-        dispatch(moveUp(range_start, insert_before));
-        dispatch(increaseVote(id));
+        if (action === 'up') {
+          dispatch(moveUp(range_start, insert_before));
+          dispatch(increaseVote(id));
+        } else {
+          dispatch(moveDown(range_start, insert_before));
+          dispatch(decreaseVote(id));
+        }
       })
       .catch(err => {
         console.log('no user id', err);
       });
   } else {
-    console.log('moveTrackUpPlaylist failed, no token');
+    console.log(`move track ${action} the playlist failed, no token`);
   }
 };
 
 const updatedTrackPosition = (
   position,
-  currentPlaylist,
   allTracksAboveUpVotedTrack,
   upVotedTrackNumVotes
 ) => {
@@ -69,10 +93,87 @@ export const increaseVoteAndCheckForReOrder = (id, position) => (
 
   const positionToMoveTo = updatedTrackPosition(
     position,
-    currentPlaylist,
     allTracksAboveUpVotedTrack,
     upVotedTrackNumVotes
   );
 
-  return dispatch(moveTrackUpPlaylist(position, positionToMoveTo, id));
+  return dispatch(reOrderPlaylist(position, positionToMoveTo, id, 'up'));
+};
+
+const updatedTrackPositionForDownVote = (
+  position,
+  allTracksBelowDownVotedTrack,
+  downVotedTrackNumVotes
+) => {
+  for (let i in allTracksBelowDownVotedTrack) {
+    const currentTrackVotes = allTracksBelowDownVotedTrack[i].votes;
+
+    // downvoted track has more votes than next one
+    if (currentTrackVotes <= downVotedTrackNumVotes) {
+      return parseInt(i, 10) + position;
+    }
+
+    // end of playlist
+    if (parseInt(i, 10) === allTracksBelowDownVotedTrack.length - 1) {
+      return parseInt(i, 10) + position + 1;
+    }
+  }
+  // track downvoted was already the last one on the playlist
+  return position;
+};
+
+export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
+  dispatch,
+  getState
+) => {
+  debugger;
+  const currentPlaylist = getState().playlists.playlistInfoWithVotes;
+  const allTracksBelowDownVotedTrack = currentPlaylist.slice(
+    position + 1,
+    currentPlaylist.length
+  );
+  const downVotedTrackNumVotes = currentPlaylist[position].votes - 1;
+
+  // could move check for -5 to component
+  if (downVotedTrackNumVotes === -5) {
+    dispatch(removeTrack(uri, id, position));
+  }
+
+  const positionToMoveTo = updatedTrackPositionForDownVote(
+    position,
+    allTracksBelowDownVotedTrack,
+    downVotedTrackNumVotes
+  );
+
+  return dispatch(reOrderPlaylist(position, positionToMoveTo, id, 'down'));
+};
+
+const removeTrack = (uri, id, position) => (dispatch, getState) => {
+  const token = getState().auth.token;
+
+  if (token) {
+    return (
+      apiInstance(token)
+        // TODO pass in playlist uri
+        .delete(`playlists/1OZWEFHDuPYYuvjCVhryXV/tracks`, {
+          data: {
+            tracks: [{ uri }]
+          }
+        })
+        .then(data => {
+          debugger;
+          dispatch(removeFromPlaylist(position));
+          dispatch(decreaseVote(id));
+          // TODO force state update/page refresh
+          debugger;
+        })
+        .catch(err => {
+          debugger;
+          console.log('no user id', err);
+        })
+    );
+  } else {
+    debugger;
+    console.log(`remove track failed`);
+  }
 };

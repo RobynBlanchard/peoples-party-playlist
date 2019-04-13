@@ -18,6 +18,26 @@ const keyFrameMoveInLeft = keyframes`
   }
 `;
 
+const trackingInExpand = keyframes`
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
+const keyFrameMoveUp = keyframes`
+   50% {
+    transform: translateY(-50px);
+    color: #1db954;
+  }
+`;
+
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -25,40 +45,26 @@ const Wrapper = styled.div`
   flex-direction: column;
   height: 500px;
   width: 100%;
-  /* background-color: ${colours.spotifyBlack}; */
   opacity: 10%;
   font-family: ${fonts.title};
   font-size: 44px;
-  /* background-image: linear-gradient(
-      to right bottom,
-      rgba(0, 0, 0, 0.18),
-      rgba(0, 0, 0, 0.84)
-    ), url('images/vinyl.jpg') */
   background-image: url('images/vinyl.jpg');
-  /* background-image: url('images/tall-jukebox.jpg');
-  background-size: 0 100%; */
   /* clip-path:  polygon(100% 0, 50% 50%, 100% 100%); */
-
-`;
-
-const Img = styled.img`
-  /* background-image: url('images/tall-jukebox.jpg'); */
-  /* height: 700px; */
-  width: 100%;
-  clip-path: polygon(100% 0, 50% 50%, 100% 100%);
 `;
 
 const Title = styled.div`
-  animation: ${keyFrameMoveInLeft} 2s ease-in-out 0s;
   display: flex;
   flex-direction: row;
+  /* animation: ${trackingInExpand} 1s linear; */
+  text-shadow: 2px 2px 2px #5d7a67;
 `;
 
 const Woo = styled.h2`
   padding: 0 24px;
+  animation: ${keyFrameMoveUp} 2s ease-in-out 0s;
   &:hover {
-    transform: scaleY(1.5);
-    color: #1db954;
+    /* animation: ${keyFrameMoveUp} 2s ease-in-out 0s; */
+    /* color: #1db954; */
   }
 `;
 
@@ -68,8 +74,6 @@ const SectionOne = () => {
       <Title>
         <h2>People's Party Playlist</h2>
         <Woo>\o/</Woo>
-        {/* <Img src="images/tall-jukebox.jpg" /> */}
-        {/* <Img src="images/vinyl.jpg" /> */}
       </Title>
     </Wrapper>
   );

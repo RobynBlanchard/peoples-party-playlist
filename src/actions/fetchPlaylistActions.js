@@ -75,6 +75,8 @@ export const fetchPlaylist = () => (dispatch, getState) => {
       // .get(`playlists/3bIK2LomQ4bn3pnSLQa3hb`)
       .get(`playlists/1OZWEFHDuPYYuvjCVhryXV`)
       .then(data => {
+        console.log('===', data.data)
+
         dispatch(dispatchPlaylist(data.data));
       })
       .catch(err => {

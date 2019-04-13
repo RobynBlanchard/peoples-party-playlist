@@ -8,6 +8,8 @@ export const FETCH_PLAYLIST = 'FETCH_PLAYLIST';
 export const INCREASE_VOTE = 'INCREASE_VOTE';
 export const DECREASE_VOTE = 'DECREASE_VOTE';
 export const MOVE_UP_PlAYLIST = 'MOVE_UP_PlAYLIST';
+export const MOVE_DOWN_PlAYLIST = 'MOVE_DOWN_PlAYLIST';
+export const REMOVE_FROM_PLAYLIST = 'REMOVE_FROM_PLAYLIST';
 
 export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';

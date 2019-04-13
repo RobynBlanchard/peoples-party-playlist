@@ -64,7 +64,7 @@ const Icon = styled.img`
 `;
 
 
-const Track = ({ artist, song, votes, id, downVoteAction, upVoteAction, position }) => {
+const Track = ({ artist, song, votes, id, uri, downVoteAction, upVoteAction, position }) => {
   return (
     <li>
       <Container>
@@ -72,7 +72,8 @@ const Track = ({ artist, song, votes, id, downVoteAction, upVoteAction, position
           <p>{artist + ' - ' + song}</p>
         </TrackDetails>
         <VotesContainer>
-        <Button onClick={() => downVoteAction(id)}>
+          {/* todo remove id and use uri instead */}
+        <Button onClick={() => downVoteAction(id, position, uri)}>
           <Icon src="http://localhost:3000/images/minus.svg" />
           </Button>
           <VotesText>{votes}</VotesText>
