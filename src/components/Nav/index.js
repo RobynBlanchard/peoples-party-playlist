@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import AuthButton from './AuthButton';
-import { colours, constants } from '../../styles.js';
+import { colours, constants, fonts } from '../../styles.js';
 
 const NavContainer = styled.div`
   margin: 0px;
@@ -12,11 +12,19 @@ const NavContainer = styled.div`
   border-bottom: 1px solid #bbb;
   text-align: center;
   background-color: ${colours.grey};
+
+  /*  */
+  position: fixed;
+  background: transparent;
 `;
 
 export const NavContentContainer = styled.div`
   width: ${constants.mainContentContainerWidth};
   display: inline-block;
+
+  font-family: ${fonts.font1};
+  /* font-size: 44px; */
+  color: white;
 `;
 
 const List = styled.ul`

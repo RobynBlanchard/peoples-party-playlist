@@ -30,7 +30,8 @@ const ContentContainer = styled.div`
 class App extends React.Component {
   render() {
     return (
-      <AppContainer>
+      // <AppContainer>
+      <div>
         <Nav />
         {/* <Route path={['/playlist', '/playlists']} component={MusicPlayer} /> */}
         <Switch>
@@ -40,7 +41,8 @@ class App extends React.Component {
           <Route path="/playlists" exact component={Playlists} />
           </ContentContainer>
         </Switch>
-      </AppContainer>
+        </div>
+      // </AppContainer>
     );
   }
 }

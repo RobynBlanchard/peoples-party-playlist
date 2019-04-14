@@ -65,6 +65,7 @@ class Playlist extends React.Component {
     );
   }
 }
+
 Playlist.serverFetch = fetchPlaylist;
 
 const mapStateToProps = state => {

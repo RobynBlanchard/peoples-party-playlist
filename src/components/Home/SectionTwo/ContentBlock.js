@@ -29,7 +29,7 @@ const Front = styled.div`
 const Back = styled.div`
   height: 100%;
   /* background-image: linear-gradient(to right bottom, #000000, #03230b); */
-  background-color: #03230b;
+  background-color: #000000;
   backface-visibility: hidden;
   display: block;
   transform: rotateY(180deg);

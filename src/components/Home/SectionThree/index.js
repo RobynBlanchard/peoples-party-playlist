@@ -25,7 +25,7 @@ const Wrapper = styled.div`
   height: 500px;
   width: 100%;
   font-size: 24px;
-  background-color: ${colours.spotifyBlack};
+  /* background-color: ${colours.spotifyBlack}; */
 `;
 
 const SectionThree = () => {

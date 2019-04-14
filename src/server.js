@@ -90,7 +90,7 @@ function htmlTemplate(reactDom, styles, reduxState) {
             <link rel="shortcut icon" href="http://localhost:3000/images/favicon.ico">
         </head>
 
-        <body style="background-color: #191414; margin:0;">
+        <body style="margin:0;">
             <div id="app">${reactDom}</div>
             <script>
               window.REDUX_DATA = ${JSON.stringify(reduxState)}

@@ -8,9 +8,14 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  height: 500px;
+  /* height: 500px; */
   width: 100%;
-  background-color: ${colours.grey};
+  /* background-color: ${colours.grey}; */
+  /* background-color: rgba(0, 0, 0, 0.9); */
+  /* opacity: 0.1; */
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
 `;
 
 const ContentContainer = styled.div`

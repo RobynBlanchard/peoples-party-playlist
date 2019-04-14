@@ -23,7 +23,6 @@ const playlistsReducer = (state = defaultState, action) => {
       };
 
     case FETCH_PLAYLIST:
-      // const playListId = action.payload.id
       const playlistWithResetVotes = action.payload.tracks.items.map(el => {
         const artists = el.track.artists.map(el => el.name);
         return {
@@ -34,7 +33,6 @@ const playlistsReducer = (state = defaultState, action) => {
           id: el.track.id
         };
       });
-      // const playListIdToTracks = { id: playListId, tracks: playlistWithResetVotes}
       return {
         ...state,
         playlist: action.payload,
