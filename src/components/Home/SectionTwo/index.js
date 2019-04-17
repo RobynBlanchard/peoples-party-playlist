@@ -14,8 +14,10 @@ const Wrapper = styled.div`
   /* background-color: rgba(0, 0, 0, 0.9); */
   /* opacity: 0.1; */
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(51, 51, 51, 0.29);
 
+  /* rgba(51, 51, 51, 0.29) */
 `;
 
 const ContentContainer = styled.div`

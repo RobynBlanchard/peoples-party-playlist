@@ -87,6 +87,7 @@ function htmlTemplate(reactDom, styles, reduxState) {
             <title>People's Party Playlist</title>
             ${styles}
             <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
             <link rel="shortcut icon" href="http://localhost:3000/images/favicon.ico">
         </head>
 

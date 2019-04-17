@@ -11,6 +11,7 @@ import {
 } from '../../actions';
 import Track from './Track';
 import Heading from './Heading';
+import Nav from  '../Nav';
 
 const Container = styled.div`
   display: flex;
@@ -52,6 +53,7 @@ class Playlist extends React.Component {
   render() {
     return (
       <Container>
+        {/* <Nav colour={'grey'} /> */}
         <Heading
           text={'Playlist'}
           playing={this.props.playing}

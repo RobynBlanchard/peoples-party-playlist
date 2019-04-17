@@ -17,6 +17,12 @@ const AppContainer = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
+  /* background-color: ${colours.spotifyBlack}; */
+  /* background: linear-gradient(#e66465, #9198e5); */
+  /* background: linear-gradient(#540909,#153e47); */
+  background: linear-gradient(#540909, #022147);
+
+  /* width: 100vh; */
 `;
 
 const ContentContainer = styled.div`
@@ -26,23 +32,22 @@ const ContentContainer = styled.div`
   min-height: 480px;
 `;
 
-
 class App extends React.Component {
   render() {
     return (
-      // <AppContainer>
       <div>
         <Nav />
         {/* <Route path={['/playlist', '/playlists']} component={MusicPlayer} /> */}
         <Switch>
           <Route path="/" exact component={Home} />
-          <ContentContainer className={"content-container"}>
-          <Route path="/playlist" exact component={Playlist} />
-          <Route path="/playlists" exact component={Playlists} />
-          </ContentContainer>
+          <AppContainer>
+            <ContentContainer className={'content-container'}>
+              <Route path="/playlist" exact component={Playlist} />
+              <Route path="/playlists" exact component={Playlists} />
+            </ContentContainer>
+          </AppContainer>
         </Switch>
-        </div>
-      // </AppContainer>
+      </div>
     );
   }
 }

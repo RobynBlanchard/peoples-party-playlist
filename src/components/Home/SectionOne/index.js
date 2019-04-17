@@ -47,7 +47,7 @@ const Wrapper = styled.div`
   width: 100%;
   opacity: 10%;
   font-family: ${fonts.title};
-  font-size: 44px;
+  /* font-size: 44px; */
   background-image: url('images/vinyl.jpg');
   /* clip-path:  polygon(100% 0, 50% 50%, 100% 100%); */
 `;
