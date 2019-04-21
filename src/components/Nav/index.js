@@ -28,13 +28,12 @@ const List = styled.ul`
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow: hidden;
   height: 100%;
   border-left: 1px solid #bbb;
 
   & ${ListItem}:nth-child(2) {
     border-left: 1px solid #bbb;
-    float: right;
+    /* float: right; */
   }
 `;
 
@@ -42,6 +41,7 @@ const ListItem = styled.li`
   float: left;
   height: 100%;
   border-right: 1px solid #bbb;
+  position: relative;
 
   & > a {
     display: block;
@@ -62,6 +62,7 @@ const ListItem = styled.li`
   }
 `;
 
+
 const Nav = ({ colour, logo }) => {
   console.log('passed prop', colour, logo);
   return (
@@ -71,9 +72,10 @@ const Nav = ({ colour, logo }) => {
           <ListItem>
             <Link to="/playlist">Test Playlist</Link>
           </ListItem>
-          <ListItem>
-            <AuthButton />
-          </ListItem>
+          {/* <ListItem> */}
+          <div style={{'float': 'right'}}><AuthButton /></div>
+
+          {/* </ListItem> */}
         </List>
       </NavContentContainer>
     </NavContainer>

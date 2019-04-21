@@ -20,13 +20,13 @@ const Container = styled.div`
 
 class Playlist extends React.Component {
   componentDidMount() {
-    if (this.props.playlist === undefined) {
+    if (this.props.playlist.length === 0) {
       this.props.fetchPlaylist();
     }
   }
 
   renderTracks() {
-    if (!Object.keys(this.props.playlist).length) {
+    if (this.props.playlist.length === 0) {
       return null;
     }
     let position = -1;
@@ -53,7 +53,6 @@ class Playlist extends React.Component {
   render() {
     return (
       <Container>
-        {/* <Nav colour={'grey'} /> */}
         <Heading
           text={'Playlist'}
           playing={this.props.playing}
@@ -72,7 +71,7 @@ Playlist.serverFetch = fetchPlaylist;
 
 const mapStateToProps = state => {
   return {
-    playlist: state.playlists.playlistInfoWithVotes,
+    playlist: state.playlists.playlist,
     playing: state.playback.playing
   };
 };

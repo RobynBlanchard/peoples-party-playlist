@@ -68,7 +68,9 @@ export const getUserAndPlayLists = () => (dispatch, getState) => {
 };
 
 export const fetchPlaylist = () => (dispatch, getState) => {
+  console.log('fetch playlist action')
   const token = getState().auth.token;
+  console.log('token:', token);
 
   if (token) {
     return apiInstance(token)
