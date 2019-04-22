@@ -72,10 +72,10 @@ const Nav = ({ colour, logo }) => {
           <ListItem>
             <Link to="/playlist">Test Playlist</Link>
           </ListItem>
-          {/* <ListItem> */}
-          <div style={{'float': 'right'}}><AuthButton /></div>
+          <ListItem style={{'float': 'right'}}>
+          <AuthButton />
 
-          {/* </ListItem> */}
+          </ListItem>
         </List>
       </NavContentContainer>
     </NavContainer>
