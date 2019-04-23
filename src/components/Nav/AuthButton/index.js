@@ -19,10 +19,10 @@ const LogInButton = styled.a`
   }
 `;
 
-
 const LinkContainer = styled.div`
   padding: 14px 16px;
   border-right: none;
+  border-left: 1px solid #bbb;
   display: block;
   color: white;
   text-align: center;
@@ -37,25 +37,23 @@ const LinkContainer = styled.div`
   &:hover {
     background-color: #3e3b40;
     border-bottom: solid ${colours.spotifyBlack} 1px;
-  } 
+  }
 `;
 
 const DropBtn = styled.button`
   color: white;
-  padding: 15px;
+  padding: 16px;
   font-size: 16px;
-  border-right: 1px solid #bbb;
   background-color: ${colours.spotifyBlack};
-  // border-left: none;
-  border-right: none;
-  pointer: cursor;
+  border: none;
+  cursor: pointer;
 
   &:hover {
     background-color: #3e3b40;
     border-bottom: solid ${colours.spotifyBlack} 1px;
-  } 
-
+  }
 `;
+
 const DropDownContent = styled.div`
   display: none;
   position: absolute;
@@ -64,14 +62,13 @@ const DropDownContent = styled.div`
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   text-align: left;
-  border-left: none;
-
+  border-left: none ;
 `;
 
 const Dropdown = styled.div`
   position: relative;
   display: inline-block;
-
+  border-left: 1px solid #bbb;
 
   &:hover {
     background-color: #3e3b40;
@@ -83,7 +80,7 @@ const Dropdown = styled.div`
 `;
 
 const Anchor = styled.a`
-  color: black;
+  color: white;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -96,10 +93,10 @@ class AuthButton extends React.Component {
   renderAccountButton(userId) {
     return (
       <Dropdown>
-        <DropBtn>Dropdown</DropBtn>
+        <DropBtn>{userId === '' ? 'Account' : userId}</DropBtn>
         <DropDownContent>
-          <Anchor href="#">Change user</Anchor>
-          <Anchor href="#">Log out</Anchor>
+          <Anchor href="/change-user">Change user</Anchor>
+          <Anchor href="/log-out">Log out</Anchor>
         </DropDownContent>
       </Dropdown>
     );
@@ -113,14 +110,6 @@ class AuthButton extends React.Component {
           <img src="http://localhost:3000/images/Spotify_Icon_RGB_Green.png" />
         </LogInButton>
       </LinkContainer>
-
-      // <Dropdown>
-      //   <DropBtn>Dropdown</DropBtn>
-      //   <DropDownContent>
-      //     <Anchor href="#">Change user</Anchor>
-      //     <Anchor href="#">Log out</Anchor>
-      //   </DropDownContent>
-      // </Dropdown>
     );
   }
 

@@ -22,6 +22,7 @@ const NavContentContainer = styled.div`
   height: 100%;
   font-size: 16px;
   color: white;
+
 `;
 
 const List = styled.ul`
@@ -31,14 +32,12 @@ const List = styled.ul`
   height: 100%;
   border-left: 1px solid #bbb;
 
-  & ${ListItem}:nth-child(2) {
-    border-left: 1px solid #bbb;
-    /* float: right; */
-  }
+  display: flex;
+  justify-content: space-between;
 `;
 
 const ListItem = styled.li`
-  float: left;
+  /* float: left; */
   height: 100%;
   border-right: 1px solid #bbb;
   position: relative;
@@ -72,7 +71,7 @@ const Nav = ({ colour, logo }) => {
           <ListItem>
             <Link to="/playlist">Test Playlist</Link>
           </ListItem>
-          <ListItem style={{'float': 'right'}}>
+          <ListItem >
           <AuthButton />
 
           </ListItem>
