@@ -10,15 +10,11 @@ const Title = styled.div`
   text-transform: uppercase;
   font-size: 44px;
 `;
+
 const Head = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`;
-
-const Copy = styled.p`
-  font-family: ${fonts.font1};
-  font-size: 16px;
 `;
 
 const keyFrameMoveUp = keyframes`
@@ -33,6 +29,20 @@ const Woo = styled.h2`
   animation: ${keyFrameMoveUp} 2s ease-in-out infinite;
 `;
 
+const HeadingTwo = styled.p`
+  text-transform: uppercase;
+  display: inline-block;
+  background-image: linear-gradient(to right, #7ed56f, #28b485);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 2px;
+  transition: all .2s;
+  font-family: ${fonts.font1};
+  font-size: 20px;
+  font-weight: 700px;
+`
+
 const SectionOne = () => {
   return (
     <Head>
@@ -40,7 +50,7 @@ const SectionOne = () => {
         <h2>People's Party Playlist</h2>
         <Woo>\o/</Woo>
       </Title>
-      <Copy>The ultimate online jukebox experience</Copy>
+      <HeadingTwo>The ultimate online jukebox experience</HeadingTwo>
     </Head>
   );
 };

@@ -8,16 +8,9 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  /* height: 500px; */
   width: 100%;
-  /* background-color: ${colours.grey}; */
-  /* background-color: rgba(0, 0, 0, 0.9); */
-  /* opacity: 0.1; */
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
   background-color: rgba(51, 51, 51, 0.29);
-
-  /* rgba(51, 51, 51, 0.29) */
 `;
 
 const ContentContainer = styled.div`
@@ -50,7 +43,13 @@ const SectionTwo = () => {
     <Wrapper>
       <ContentContainer>
         {content.map(block => {
-          return <ContentBlock image={block.image} text={block.text} key={block.text} />;
+          return (
+            <ContentBlock
+              image={block.image}
+              text={block.text}
+              key={block.text}
+            />
+          );
         })}
       </ContentContainer>
     </Wrapper>

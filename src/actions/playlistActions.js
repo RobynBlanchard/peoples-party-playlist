@@ -12,6 +12,11 @@ export const increaseVote = id => ({
   payload: id
 });
 
+export const decreaseVote = id => ({
+  type: DECREASE_VOTE,
+  payload: id
+});
+
 export const moveUp = (range_start, insert_before) => ({
   type: MOVE_UP_PlAYLIST,
   payload: {
@@ -26,11 +31,6 @@ export const moveDown = (range_start, insert_before) => ({
     range_start,
     insert_before
   }
-});
-
-export const decreaseVote = id => ({
-  type: DECREASE_VOTE,
-  payload: id
 });
 
 export const removeFromPlaylist = position => ({
@@ -161,11 +161,8 @@ const removeTrack = (uri, id, position) => (dispatch, getState) => {
           }
         })
         .then(data => {
-          debugger;
           dispatch(removeFromPlaylist(position));
           return dispatch(decreaseVote(id));
-          // TODO force state update/page refresh
-          debugger;
         })
         .catch(err => {
           debugger;

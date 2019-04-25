@@ -22,7 +22,6 @@ const NavContentContainer = styled.div`
   height: 100%;
   font-size: 16px;
   color: white;
-
 `;
 
 const List = styled.ul`
@@ -52,15 +51,13 @@ const ListItem = styled.li`
 
   & > a:hover {
     background-color: #3e3b40;
-    border-bottom: solid ${colours.spotifyBlack} 1px ;
+    border-bottom: solid ${colours.spotifyBlack} 1px;
   }
 
   & > a:active {
     color: grey;
-
   }
 `;
-
 
 const Nav = ({ colour, logo }) => {
   console.log('passed prop', colour, logo);
@@ -71,9 +68,8 @@ const Nav = ({ colour, logo }) => {
           <ListItem>
             <Link to="/playlist">Test Playlist</Link>
           </ListItem>
-          <ListItem >
-          <AuthButton />
-
+          <ListItem>
+            <AuthButton />
           </ListItem>
         </List>
       </NavContentContainer>
