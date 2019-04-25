@@ -19,26 +19,10 @@ const LogInButton = styled.a`
   }
 `;
 
-const DropDownLink = styled.a`
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-  color: white;
-
-`;
-
-const DropDownContent = styled.div`
-  display: none;
-  position: absolute;
-  min-width: 100px;
-  z-index: 1;
-  margin-top: 15px;
-  background-color: ${colours.spotifyBlack};
-`;
-
 const LinkContainer = styled.div`
+  padding: 14px 16px;
   border-right: none;
+  border-left: 1px solid #bbb;
   display: block;
   color: white;
   text-align: center;
@@ -46,25 +30,75 @@ const LinkContainer = styled.div`
   text-decoration: none;
   width: 75px;
 
+  list-style: none;
+  display: inline-block;
+  position: relative;
+
   &:hover {
-    background-color: ${colours.spotifyBlack};
-    border-bottom: solid ${colours.spotifyBlack} 1px ;
+    background-color: #3e3b40;
+    border-bottom: solid ${colours.spotifyBlack} 1px;
+  }
+`;
+
+const DropBtn = styled.button`
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  background-color: ${colours.spotifyBlack};
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #3e3b40;
+    border-bottom: solid ${colours.spotifyBlack} 1px;
+  }
+`;
+
+const DropDownContent = styled.div`
+  display: none;
+  position: absolute;
+  background-color: #3e3b40;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  text-align: left;
+  border-left: none ;
+`;
+
+const Dropdown = styled.div`
+  position: relative;
+  display: inline-block;
+  border-left: 1px solid #bbb;
+
+  &:hover {
+    background-color: #3e3b40;
+    border-bottom: solid ${colours.spotifyBlack} 1px;
     ${DropDownContent} {
-      display: block;
+      display:block;
     }
   }
 `;
 
+const Anchor = styled.a`
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+
+  &:hover {
+    background-color: #ddd;
+  }
+`;
 class AuthButton extends React.Component {
   renderAccountButton(userId) {
     return (
-      <LinkContainer>
-        {userId === '' ? 'Account' : userId}
+      <Dropdown>
+        <DropBtn>{userId === '' ? 'Account' : userId}</DropBtn>
         <DropDownContent>
-          <DropDownLink href="/change-user">Change User</DropDownLink>
-          <DropDownLink href="/log-out">Log out</DropDownLink>
+          <Anchor href="/change-user">Change user</Anchor>
+          <Anchor href="/log-out">Log out</Anchor>
         </DropDownContent>
-      </LinkContainer>
+      </Dropdown>
     );
   }
 

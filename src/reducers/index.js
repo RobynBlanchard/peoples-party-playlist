@@ -7,6 +7,7 @@ const reducer = combineReducers( {
   auth: authReducer,
   playlists: playlistsReducer,
   playback: playbackReducer,
+
 } );
 
 export default reducer;

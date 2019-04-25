@@ -11,6 +11,7 @@ import {
 } from '../../actions';
 import Track from './Track';
 import Heading from './Heading';
+import Nav from  '../Nav';
 
 const Container = styled.div`
   display: flex;
@@ -19,13 +20,13 @@ const Container = styled.div`
 
 class Playlist extends React.Component {
   componentDidMount() {
-    if (this.props.playlist === undefined) {
+    if (this.props.playlist.length === 0) {
       this.props.fetchPlaylist();
     }
   }
 
   renderTracks() {
-    if (!Object.keys(this.props.playlist).length) {
+    if (this.props.playlist.length === 0) {
       return null;
     }
     let position = -1;
@@ -65,11 +66,12 @@ class Playlist extends React.Component {
     );
   }
 }
+
 Playlist.serverFetch = fetchPlaylist;
 
 const mapStateToProps = state => {
   return {
-    playlist: state.playlists.playlistInfoWithVotes,
+    playlist: state.playlists.playlist,
     playing: state.playback.playing
   };
 };

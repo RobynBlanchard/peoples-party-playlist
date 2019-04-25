@@ -10,8 +10,7 @@ import {
 
 const defaultState = {
   playlists: [],
-  playlist: null,
-  playlistInfoWithVotes: {}
+  playlist: [],
 };
 
 const playlistsReducer = (state = defaultState, action) => {
@@ -23,7 +22,6 @@ const playlistsReducer = (state = defaultState, action) => {
       };
 
     case FETCH_PLAYLIST:
-      // const playListId = action.payload.id
       const playlistWithResetVotes = action.payload.tracks.items.map(el => {
         const artists = el.track.artists.map(el => el.name);
         return {
@@ -34,14 +32,13 @@ const playlistsReducer = (state = defaultState, action) => {
           id: el.track.id
         };
       });
-      // const playListIdToTracks = { id: playListId, tracks: playlistWithResetVotes}
       return {
         ...state,
         playlist: action.payload,
-        playlistInfoWithVotes: playlistWithResetVotes
+        playlist: playlistWithResetVotes
       };
     case MOVE_UP_PlAYLIST:
-      let curPlaylist = state.playlistInfoWithVotes;
+      let curPlaylist = state.playlist;
       curPlaylist.splice(
         action.payload.insert_before,
         0,
@@ -50,33 +47,33 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state,
         playlist: action.payload,
-        playlistInfoWithVotes: curPlaylist
+        playlist: curPlaylist
       };
     case MOVE_DOWN_PlAYLIST:
-      let curPlaylist2 = state.playlistInfoWithVotes;
-      // debugger;
+      let curPlaylist2 = state.playlist;
       curPlaylist2.splice(
         action.payload.insert_before,
         0,
         curPlaylist2.splice(action.payload.range_start, 1)[0]
         );
-      // debugger;
       return {
         ...state,
         playlist: action.payload,
-        playlistInfoWithVotes: curPlaylist2
+        playlist: curPlaylist2
       };
     case REMOVE_FROM_PLAYLIST:
       debugger;
-      let currentPlaylist = state.playlistInfoWithVotes;
-      currentPlaylist.splice(action.playload, 1);
-      return {
+      let currentPlaylist = state.playlist;
+      currentPlaylist.splice(action.payload, 1);
+      const newStatee = {
         ...state,
         playlist: action.payload,
-        playlistInfoWithVotes: currentPlaylist
-      };
+        playlist: currentPlaylist
+      }
+      debugger;
+      return newStatee;
     case INCREASE_VOTE:
-      const updatedPlaylist = state.playlistInfoWithVotes.map(el => {
+      const updatedPlaylist = state.playlist.map(el => {
         if (el.id.valueOf() === action.payload.valueOf()) {
           return { ...el, votes: el.votes + 1 };
         }
@@ -85,10 +82,10 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state,
         playlist: action.payload,
-        playlistInfoWithVotes: updatedPlaylist
+        playlist: updatedPlaylist
       };
     case DECREASE_VOTE:
-      const playlistWithVoteDescreased = state.playlistInfoWithVotes.map(el => {
+      const playlistWithVoteDescreased = state.playlist.map(el => {
         if (el.id.valueOf() === action.payload.valueOf()) {
           return { ...el, votes: el.votes - 1 };
         }
@@ -97,7 +94,7 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state,
         playlist: action.payload,
-        playlistInfoWithVotes: playlistWithVoteDescreased
+        playlist: playlistWithVoteDescreased
       };
     default:
       return state;

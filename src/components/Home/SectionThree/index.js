@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colours } from '../../../styles.js';
 
 const Icon = styled.img`
   height: 60px;
@@ -25,7 +24,6 @@ const Wrapper = styled.div`
   height: 500px;
   width: 100%;
   font-size: 24px;
-  background-color: ${colours.spotifyBlack};
 `;
 
 const SectionThree = () => {

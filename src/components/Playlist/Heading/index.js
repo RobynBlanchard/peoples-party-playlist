@@ -13,8 +13,8 @@ const Button = styled.button`
   border: none;
   padding: 0;
   font: inherit;
-  cursor: pointer;
   outline: inherit;
+  cursor: pointer;
 `;
 
 const Icon = styled.img`

@@ -12,6 +12,11 @@ export const increaseVote = id => ({
   payload: id
 });
 
+export const decreaseVote = id => ({
+  type: DECREASE_VOTE,
+  payload: id
+});
+
 export const moveUp = (range_start, insert_before) => ({
   type: MOVE_UP_PlAYLIST,
   payload: {
@@ -26,11 +31,6 @@ export const moveDown = (range_start, insert_before) => ({
     range_start,
     insert_before
   }
-});
-
-export const decreaseVote = id => ({
-  type: DECREASE_VOTE,
-  payload: id
 });
 
 export const removeFromPlaylist = position => ({
@@ -87,7 +87,7 @@ export const increaseVoteAndCheckForReOrder = (id, position) => (
   dispatch,
   getState
 ) => {
-  const currentPlaylist = getState().playlists.playlistInfoWithVotes;
+  const currentPlaylist = getState().playlists.playlist;
   const allTracksAboveUpVotedTrack = currentPlaylist.slice(0, position);
   const upVotedTrackNumVotes = currentPlaylist[position].votes + 1;
 
@@ -127,7 +127,7 @@ export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
   getState
 ) => {
   debugger;
-  const currentPlaylist = getState().playlists.playlistInfoWithVotes;
+  const currentPlaylist = getState().playlists.playlist;
   const allTracksBelowDownVotedTrack = currentPlaylist.slice(
     position + 1,
     currentPlaylist.length
@@ -136,7 +136,7 @@ export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
 
   // could move check for -5 to component
   if (downVotedTrackNumVotes === -5) {
-    dispatch(removeTrack(uri, id, position));
+    return dispatch(removeTrack(uri, id, position));
   }
 
   const positionToMoveTo = updatedTrackPositionForDownVote(
@@ -161,11 +161,8 @@ const removeTrack = (uri, id, position) => (dispatch, getState) => {
           }
         })
         .then(data => {
-          debugger;
           dispatch(removeFromPlaylist(position));
-          dispatch(decreaseVote(id));
-          // TODO force state update/page refresh
-          debugger;
+          return dispatch(decreaseVote(id));
         })
         .catch(err => {
           debugger;

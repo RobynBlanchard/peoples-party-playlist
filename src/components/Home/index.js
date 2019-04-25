@@ -4,23 +4,53 @@ import SectionOne from './SectionOne';
 import SectionTwo from './SectionTwo';
 import SectionThree from './SectionThree';
 
-const Container = styled.div`
+import { fonts } from '../../styles.js';
+
+const Wrap = styled.div`
+  height: 100%;
+  font-family: ${fonts.font1};
+  font-size: 44px;
+  color: white;
+`;
+
+const Parallax = styled.div`
+  background-image: url('images/vinyl.jpg');
+  height: 85vh;
+
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  width: 100%;
-  background-size: 100%;
 `;
 
-const Home = () => {
-  return (
-    <Container>
-      <SectionOne />
-      <SectionTwo />
-      <SectionThree />
-    </Container>
-  );
-};
+const Static = styled.div`
+  height: 80vh;
+  font-size: 36px;
+  width: 100%;
+`;
+
+class Home extends React.Component {
+  render() {
+    return (
+      <Wrap>
+        <Parallax>
+          <SectionOne />
+        </Parallax>
+        <Parallax>
+          <Static>
+            <SectionTwo />
+          </Static>
+        </Parallax>
+        <Parallax>
+          <SectionThree />
+        </Parallax>
+      </Wrap>
+    );
+  }
+}
 
 export default Home;
