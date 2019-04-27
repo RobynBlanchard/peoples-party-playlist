@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { fetchUser } from '../../../actions';
-import { colours } from '../../../styles.js';
+import { colours, fonts } from '../../../styles.js';
 
 const LogInButton = styled.a`
   height: 100%;
@@ -69,6 +69,8 @@ const Dropdown = styled.div`
   position: relative;
   display: inline-block;
   border-left: 1px solid #bbb;
+  font-family: ${fonts.font1};
+
 
   &:hover {
     background-color: #3e3b40;

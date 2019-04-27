@@ -71,13 +71,14 @@ const reOrderPlaylist = (range_start, insert_before, id, action) => (
 const updatedTrackPosition = (
   position,
   allTracksAboveUpVotedTrack,
-  upVotedTrackNumVotes
+  upVotedTrackNumVotes,
+  topMoveablePosition
 ) => {
   for (let i in allTracksAboveUpVotedTrack) {
     const currentTrackVotes = allTracksAboveUpVotedTrack[i].votes;
 
     if (currentTrackVotes < upVotedTrackNumVotes) {
-      return parseInt(i, 10);
+      return parseInt(i, 10) + topMoveablePosition;
     }
   }
   return position;
@@ -88,13 +89,16 @@ export const increaseVoteAndCheckForReOrder = (id, position) => (
   getState
 ) => {
   const currentPlaylist = getState().playlists.playlist;
-  const allTracksAboveUpVotedTrack = currentPlaylist.slice(0, position);
+  console.log('playing:', getState().playback.playing)
+  const topMoveablePosition = getState().playback.playing ? 1 : 0
+  const allTracksAboveUpVotedTrack = currentPlaylist.slice(topMoveablePosition, position);
   const upVotedTrackNumVotes = currentPlaylist[position].votes + 1;
 
   const positionToMoveTo = updatedTrackPosition(
     position,
     allTracksAboveUpVotedTrack,
-    upVotedTrackNumVotes
+    upVotedTrackNumVotes,
+    topMoveablePosition
   );
 
   return dispatch(reOrderPlaylist(position, positionToMoveTo, id, 'up'));

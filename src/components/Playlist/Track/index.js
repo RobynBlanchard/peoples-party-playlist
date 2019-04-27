@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { increaseVote } from '../../../actions';
 
 const Button = styled.button`
@@ -13,12 +13,12 @@ const Button = styled.button`
 
   /* &:hover {
     transform: translateY(-0.15rem); */
-    /* box-shadow: 0 1rem 2rem rgba(0,0,0,.2); */
+  /* box-shadow: 0 1rem 2rem rgba(0,0,0,.2); */
   /* } */
 
   /* &:active {
     transform: translateY(0.1rem); */
-    /* box-shadow: 0 .5rem 1rem rgba(0,0,0,.2); */
+  /* box-shadow: 0 .5rem 1rem rgba(0,0,0,.2); */
   /* } */
 `;
 
@@ -55,6 +55,17 @@ const Container = styled.div`
     /* animation: ease 2s linear ; */
 
   }
+
+    ${({ lockedTrack }) =>
+      lockedTrack &&
+      css`
+        border: 1px solid grey;
+        /* background-color: #878686; */
+        background-color: #87868614;
+        border-radius: 24px;
+        box-shadow: white;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
+      `}}
 `;
 
 const VotesContainer = styled.div`
@@ -84,6 +95,7 @@ const Icon = styled.img`
 `;
 
 const Track = ({
+  locked,
   artist,
   song,
   votes,
@@ -93,22 +105,30 @@ const Track = ({
   upVoteAction,
   position
 }) => {
+  console.log('locked', locked);
+
   return (
     <li>
-      <Container>
+      <Container lockedTrack={locked}>
         <TrackDetails>
           <p>{artist + ' - ' + song}</p>
         </TrackDetails>
-        <VotesContainer>
-          {/* todo remove id and use uri instead */}
-          <Button onClick={() => downVoteAction(id, position, uri)}>
-            <Icon src="http://localhost:3000/images/minus.svg" />
-          </Button>
-          <VotesText>{votes}</VotesText>
-          <Button onClick={() => upVoteAction(id, position)}>
-            <Icon src="http://localhost:3000/images/plus.svg" />
-          </Button>
-        </VotesContainer>
+        {!locked ? (
+          <VotesContainer>
+            {/* todo remove id and use uri instead */}
+            <Button onClick={() => downVoteAction(id, position, uri)}>
+              <Icon src="http://localhost:3000/images/minus.svg" />
+            </Button>
+            <VotesText>{votes}</VotesText>
+            <Button onClick={() => upVoteAction(id, position)}>
+              <Icon src="http://localhost:3000/images/plus.svg" />
+            </Button>
+          </VotesContainer>
+        ) : (
+          <VotesContainer>
+            <Icon src="http://localhost:3000/images/volume.svg" />
+          </VotesContainer>
+        )}
       </Container>
     </li>
   );

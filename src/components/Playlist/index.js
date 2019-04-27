@@ -33,9 +33,10 @@ class Playlist extends React.Component {
     return this.props.playlist.map(el => {
       position += 1;
       const { artist, name, votes, uri, id } = el;
-
+      const locked = (position === 0 && this.props.playing);
       return (
         <Track
+          locked={locked}
           artist={artist}
           song={name}
           votes={votes}
