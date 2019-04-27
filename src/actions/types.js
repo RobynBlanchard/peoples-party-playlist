@@ -11,5 +11,7 @@ export const MOVE_UP_PlAYLIST = 'MOVE_UP_PlAYLIST';
 export const MOVE_DOWN_PlAYLIST = 'MOVE_DOWN_PlAYLIST';
 export const REMOVE_FROM_PLAYLIST = 'REMOVE_FROM_PLAYLIST';
 
+export const FETCH_SEARCH_RESULTS = 'FETCH_SEARCH_RESULTS';
+
 export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';

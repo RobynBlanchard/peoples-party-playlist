@@ -5,6 +5,7 @@ import Playlists from './Playlists';
 import Playlist from './Playlist';
 import Home from './Home';
 import Nav from './Nav';
+import Search from './Search';
 // import MusicPlayer from './MusicPlayer';
 import { colours, constants, fonts } from '../styles.js';
 
@@ -44,6 +45,7 @@ class App extends React.Component {
             <ContentContainer className={'content-container'}>
               <Route path="/playlist" exact component={Playlist} />
               <Route path="/playlists" exact component={Playlists} />
+              <Route path="/search" exact component={Search} />
             </ContentContainer>
           </AppContainer>
         </Switch>

@@ -31,12 +31,12 @@ const List = styled.ul`
   height: 100%;
   border-left: 1px solid #bbb;
 
-  display: flex;
-  justify-content: space-between;
+  // display: flex;
+  // justify-content: space-between;
 `;
 
 const ListItem = styled.li`
-  /* float: left; */
+  float: left;
   height: 100%;
   border-right: 1px solid #bbb;
   position: relative;
@@ -65,10 +65,16 @@ const Nav = ({ colour, logo }) => {
     <NavContainer>
       <NavContentContainer>
         <List>
+        <ListItem>
+            <Link to="/">Home</Link>
+          </ListItem>
           <ListItem>
             <Link to="/playlist">Test Playlist</Link>
           </ListItem>
           <ListItem>
+            <Link to="/search">Search</Link>
+          </ListItem>
+          <ListItem style={{float: 'right'}}>
             <AuthButton />
           </ListItem>
         </List>
