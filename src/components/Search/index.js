@@ -12,8 +12,9 @@ const Wrapper = styled.div`
 `;
 
 const SearchBar = styled.input`
-    width: 100%;
-    min-width: 800px;
+    // width: 100%;
+    // min-width: 800px;
+    width 50vw;
     height: 24px;
     border: 1px solid grey;
     background-color: #87868614;
@@ -28,6 +29,9 @@ const SearchBar = styled.input`
       background-color: #ffffff45;
     }
 
+    background: url("http://localhost:3000/images/search.svg") top left no-repeat;
+    // height: 12px;
+    padding-left: 48px;
     
 `
 const Container = styled.div`
@@ -67,6 +71,7 @@ class Search extends React.Component {
 
   searchTermChange = e => {
     console.log(e.target.value);
+    this.props.fetchSearchResults(e.target.value)
     this.setState({searchTerm: e.target.value});
   }
 
@@ -100,6 +105,7 @@ class Search extends React.Component {
       <Wrapper>
                   <TopContent>
                   <form onSubmit={this.onFormSubmit} >
+                  {/* <Icon src="http://localhost:3000/images/search.svg" /> */}
         <SearchBar type="text" value={this.state.searchTerm} onChange={this.searchTermChange}/>
             </form>
             </TopContent>

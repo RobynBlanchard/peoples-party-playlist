@@ -17,7 +17,8 @@ const NavContainer = styled.div`
 `;
 
 const NavContentContainer = styled.div`
-  width: ${constants.mainContentContainerWidth};
+  // width: ${constants.mainContentContainerWidth};
+  width 80vw;
   display: inline-block;
   height: 100%;
   font-size: 16px;
