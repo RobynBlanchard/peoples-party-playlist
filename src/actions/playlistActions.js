@@ -89,8 +89,7 @@ export const increaseVoteAndCheckForReOrder = (id, position) => (
   getState
 ) => {
   const currentPlaylist = getState().playlists.playlist;
-  console.log('playing:', getState().playback.playing)
-  const topMoveablePosition = getState().playback.playing ? 1 : 0
+  const topMoveablePosition = getState().session.sessionStarted ? 1 : 0
   const allTracksAboveUpVotedTrack = currentPlaylist.slice(topMoveablePosition, position);
   const upVotedTrackNumVotes = currentPlaylist[position].votes + 1;
 
@@ -176,5 +175,27 @@ const removeTrack = (uri, id, position) => (dispatch, getState) => {
   } else {
     debugger;
     console.log(`remove track failed`);
+  }
+};
+
+export const addToPlaylist = (uri) => (dispatch, getState) => {
+  const token = getState().auth.token;
+
+  if (token) {
+    return (
+      apiInstance(token)
+        .post(`playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}`)
+        .then(data => {
+          console.log('data');
+          // dispatch(dispatchAddToPlaylst(position));
+          // return dispatch(decreaseVote(id));
+        })
+        .catch(err => {
+          console.log('no user id', err);
+        })
+    );
+  } else {
+    debugger;
+    console.log(`add to playlist failed`);
   }
 };

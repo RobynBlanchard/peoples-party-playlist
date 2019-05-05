@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
+import { media } from '../../styles.js';
 
 import {
   fetchPlaylist,
@@ -9,14 +10,25 @@ import {
   play,
   pause
 } from '../../actions';
-import Track from './Track';
 import Heading from './Heading';
-import Nav from  '../Nav';
+import TracksContainer from './TracksContainer';
+import Track from '../Track';
+
+import TrackGrid from '../Track';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  align-items: center;
+
 `;
+
+const Wrapper = styled.div`
+  width: 70%;
+  ${media.desktop`width: 95%;`}
+
+`
 
 class Playlist extends React.Component {
   componentDidMount() {
@@ -25,35 +37,11 @@ class Playlist extends React.Component {
     }
   }
 
-  renderTracks() {
-    if (this.props.playlist.length === 0) {
-      return null;
-    }
-    let position = -1;
-    return this.props.playlist.map(el => {
-      position += 1;
-      const { artist, name, votes, uri, id } = el;
-      const locked = (position === 0 && this.props.playing);
-      return (
-        <Track
-          locked={locked}
-          artist={artist}
-          song={name}
-          votes={votes}
-          id={id}
-          uri={uri}
-          upVoteAction={this.props.increaseVoteAndCheckForReOrder}
-          downVoteAction={this.props.decreaseVoteAndCheckForReOrder}
-          position={position}
-          key={uri}
-        />
-      );
-    });
-  }
-
   render() {
     return (
       <Container>
+        <Wrapper>
+
         <Heading
           text={'Playlist'}
           playing={this.props.playing}
@@ -61,8 +49,16 @@ class Playlist extends React.Component {
           pauseAction={this.props.pause}
         />
         <div>
-          <ol>{this.renderTracks()}</ol>
+          <TracksContainer
+            playlist={this.props.playlist}
+            playing={this.props.playing}
+          />
+          <Track song={'American Idiot'} artist={'Green day'} votes={'5'} />
+          <Track song={'In my Arms - Original Mix'} artist={'Mano Le Tough'} votes={'5'} />
+          <Track song={'It must be love'} artist={'Madness'} votes={'5'} />
+
         </div>
+        </Wrapper>
       </Container>
     );
   }
@@ -84,6 +80,6 @@ export default connect(
     decreaseVoteAndCheckForReOrder,
     increaseVoteAndCheckForReOrder,
     play,
-    pause,
+    pause
   }
 )(Playlist);

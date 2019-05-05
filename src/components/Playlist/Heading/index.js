@@ -5,6 +5,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   display: flex;
   align-items: row;
+  /* width: 100% */
 `;
 
 const Button = styled.button`
@@ -33,7 +34,7 @@ const Heading = ({ text, playing, playAction, pauseAction }) => {
       <Button onClick={() => handleClick()}>
         <Icon src={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`} />
       </Button>
-      <h2>Playlist</h2>{' '}
+      <h2>{text}</h2>{' '}
     </Container>
   );
 };

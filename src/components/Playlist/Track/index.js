@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { increaseVote } from '../../../actions';
 
 const Button = styled.button`
   background: none;
@@ -10,26 +9,8 @@ const Button = styled.button`
   font: inherit;
   cursor: pointer;
   outline: inherit;
-
-  /* &:hover {
-    transform: translateY(-0.15rem); */
-  /* box-shadow: 0 1rem 2rem rgba(0,0,0,.2); */
-  /* } */
-
-  /* &:active {
-    transform: translateY(0.1rem); */
-  /* box-shadow: 0 .5rem 1rem rgba(0,0,0,.2); */
-  /* } */
 `;
 
-const keyFrame = keyframes`
-  0% {
-    color: green;
-  }
-  100% {
-    background: none;
-  }
-`;
 const Container = styled.div`
   border-bottom: solid 1px #333333;
   width: 920px;
@@ -40,32 +21,21 @@ const Container = styled.div`
   justify-content: space-between;
 
   &:focus-within {
-    /* NOTE - does not work if same element
-       clicked on twice unless you click
-       off button within track then on the
-       button again */
-    /* animation: ${keyFrame} 2s ease-in-out 0s; */
-    /* transform: translateY(-.3rem); */
-
-    /* TODO: */
     box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
     border-radius: 100px;
     background: rgba(177, 228, 86, 0.16);
     color: pink;
-    /* animation: ease 2s linear ; */
-
   }
 
-    ${({ lockedTrack }) =>
-      lockedTrack &&
-      css`
-        border: 1px solid grey;
-        /* background-color: #878686; */
-        background-color: #87868614;
-        border-radius: 24px;
-        box-shadow: white;
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
-      `}}
+  ${({ lockedTrack }) =>
+    lockedTrack &&
+    css`
+      border: 1px solid grey;
+      background-color: #87868614;
+      border-radius: 24px;
+      box-shadow: white;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
+    `}}
 `;
 
 const VotesContainer = styled.div`
@@ -94,44 +64,68 @@ const Icon = styled.img`
   width: 20px;
 `;
 
-const Track = ({
-  locked,
-  artist,
-  song,
-  votes,
-  id,
-  uri,
-  downVoteAction,
-  upVoteAction,
-  position
-}) => {
-  console.log('locked', locked);
+const List = styled.li`
+  list-style: none;
+`
 
-  return (
-    <li>
-      <Container lockedTrack={locked}>
-        <TrackDetails>
-          <p>{artist + ' - ' + song}</p>
-        </TrackDetails>
-        {!locked ? (
-          <VotesContainer>
-            {/* todo remove id and use uri instead */}
-            <Button onClick={() => downVoteAction(id, position, uri)}>
-              <Icon src="http://localhost:3000/images/minus.svg" />
-            </Button>
-            <VotesText>{votes}</VotesText>
-            <Button onClick={() => upVoteAction(id, position)}>
-              <Icon src="http://localhost:3000/images/plus.svg" />
-            </Button>
-          </VotesContainer>
-        ) : (
-          <VotesContainer>
-            <Icon src="http://localhost:3000/images/volume.svg" />
-          </VotesContainer>
-        )}
-      </Container>
-    </li>
-  );
-};
+class Track extends React.Component {
+  renderLockedTrackDetails() {
+    const { playbackState } = this.props;
+
+    const icon = playbackState === 'playingAndlocked' ? 'volume' : 'pause';
+
+    return (
+      <VotesContainer>
+        <Icon src={`http://localhost:3000/images/${icon}.svg`} />
+      </VotesContainer>
+    );
+  }
+
+  renderDetailedTrackDetails() {
+    const { downVoteAction, upVoteAction, trackDetails, position } = this.props;
+
+    return (
+      <VotesContainer>
+        <Button
+          onClick={() =>
+            downVoteAction(
+              trackDetails.id,
+              trackDetails.position,
+              trackDetails.uri
+            )
+          }
+        >
+          <Icon src="http://localhost:3000/images/minus.svg" />
+        </Button>
+        <VotesText>{trackDetails.votes}</VotesText>
+        <Button
+          onClick={() => upVoteAction(trackDetails.id, position)}
+        >
+          <Icon src="http://localhost:3000/images/plus.svg" />
+        </Button>
+      </VotesContainer>
+    );
+  }
+
+  render() {
+    const { playbackState, trackDetails } = this.props;
+
+    return (
+      <List>
+        <Container
+          lockedTrack={
+            playbackState === 'playingAndlocked' ||
+            playbackState === 'pausedAndLocked'
+          }
+        >
+          <TrackDetails>
+            <p>{trackDetails.artist + ' - ' + trackDetails.name}</p>
+          </TrackDetails>
+          {playbackState ? this.renderLockedTrackDetails() : this.renderDetailedTrackDetails()}
+        </Container>
+      </List>
+    );
+  }
+}
 
 export default Track;

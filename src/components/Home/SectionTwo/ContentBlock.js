@@ -1,5 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+
+const sneakAPeek = keyframes`
+  /* 10% {
+    transition: rotateY(180deg);
+  } */
+
+  50% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+`
 
 const ContentBlockWrapper = styled.div`
   width: 200px;
@@ -9,6 +22,10 @@ const ContentBlockWrapper = styled.div`
 
   transform-style: preserve-3d;
   transition: all 1s linear;
+
+  animation: ${props => (props.card === true) && sneakAPeek }  3.5s ease-in-out;
+
+  border-radius: 8px;
 
   &:hover {
     transform: rotateY(180deg);
@@ -24,12 +41,15 @@ const Front = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
+
+  border-radius: 8px;
+
 `;
 
 const Back = styled.div`
   height: 100%;
-  /* background-image: linear-gradient(to right bottom, #000000, #03230b); */
-  background-color: #000000;
+  background-image: linear-gradient(to right bottom, #32333478, #000000);
+  /* background-color: #000000; */
   backface-visibility: hidden;
   display: block;
   transform: rotateY(180deg);
@@ -39,6 +59,9 @@ const Back = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
+
+  border-radius: 8px;
+
 `;
 const Icon = styled.img`
   height: 80px;
@@ -46,9 +69,11 @@ const Icon = styled.img`
   padding: 20px 20px;
 `;
 
-const ContentBlock = ({ image, text }) => {
+const ContentBlock = ({ image, text, displayState, position }) => {
+  const doRotate = position === 1;
+  console.log('---', doRotate);
   return (
-    <ContentBlockWrapper>
+    <ContentBlockWrapper card={doRotate && displayState}>
       <Front>
         <Icon src={`/images${image}`} />
       </Front>

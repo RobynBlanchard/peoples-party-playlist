@@ -9,7 +9,6 @@ const dispatchSearchResults = results => ({
 });
 
 export const fetchSearchResults = searchTerm => (dispatch, getState) => {
-  console.log('herererere')
   const token = getState().auth.token;
 
   // const query = '?q=' + searchTerm + '&type=album,track,artist,playlist';
@@ -19,7 +18,6 @@ export const fetchSearchResults = searchTerm => (dispatch, getState) => {
     return apiInstance(token)
       .get(`search${query}`)
       .then(data => {
-        console.log('data', data.data.tracks);
         dispatch(dispatchSearchResults(data.data.tracks));
       })
       .catch(err => {

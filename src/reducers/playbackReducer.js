@@ -1,7 +1,7 @@
 import { PLAY, PAUSE } from '../actions/types';
 
 const defaultState = {
-  playing: false
+  playing: false,
 };
 
 const playBackReducer = (state = defaultState, action) => {

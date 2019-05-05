@@ -61,7 +61,6 @@ const ListItem = styled.li`
 `;
 
 const Nav = ({ colour, logo }) => {
-  console.log('passed prop', colour, logo);
   return (
     <NavContainer>
       <NavContentContainer>

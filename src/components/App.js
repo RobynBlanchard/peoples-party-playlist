@@ -13,30 +13,31 @@ const AppContainer = styled.div`
   margin-right: auto;
   margin-left: auto;
   font-family: ${fonts.font1};
-  min-height: 480px;
   color: ${colours.spotifyWhite};
-  display: flex;
+  /* display: flex;
   align-items: center;
-  flex-direction: column;
-  /* background-color: ${colours.spotifyBlack}; */
-  /* background: linear-gradient(#e66465, #9198e5); */
-  /* background: linear-gradient(#540909,#153e47); */
+  flex-direction: column; */
   background: linear-gradient(#540909, #022147);
-
-  /* width: 100vh; */
+  width: 100%;
 `;
 
 const ContentContainer = styled.div`
-  width: ${constants.mainContentContainerWidth};
-  display: flex;
-  justify-content: center;
-  min-height: 480px;
+  /* width: ${constants.mainContentContainerWidth}; */
+  /* display: flex; */
+  /* justify-content: center; */
+  /* min-height: 600px; */
+  /* width: 100%; */
+  /* align-items: center; */
 `;
+
+const Main = styled.div`
+  /* font-size: 62.5%; */
+`
 
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <Main>
         <Nav />
         {/* <Route path={['/playlist', '/playlists']} component={MusicPlayer} /> */}
         <Switch>
@@ -49,7 +50,7 @@ class App extends React.Component {
             </ContentContainer>
           </AppContainer>
         </Switch>
-      </div>
+      </Main>
     );
   }
 }

@@ -1,5 +1,12 @@
-import { PLAY, PAUSE } from './types';
+import { PLAY, PAUSE, START_SESSION } from './types';
 import apiInstance from '../api';
+
+export const startSession = () => {
+  return {
+    type: START_SESSION,
+    payload: true
+  }
+};
 
 export const play = () => (dispatch, getState) => {
   const token = getState().auth.token;
@@ -14,6 +21,16 @@ export const play = () => (dispatch, getState) => {
         dispatch({
           type: 'PLAY'
         });
+        if (!getState().session.sessionStarted) {
+          dispatch({
+            type: START_SESSION,
+            payload: true,
+          });
+        }
+        // import { START_SESSION } from './types';
+
+
+
       })
       .catch(err => {
         console.log('play/resume playback failed', err);

@@ -15,3 +15,5 @@ export const FETCH_SEARCH_RESULTS = 'FETCH_SEARCH_RESULTS';
 
 export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
+
+export const START_SESSION = 'START_SESSION';
