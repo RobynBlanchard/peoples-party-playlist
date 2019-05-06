@@ -1,11 +1,11 @@
 import React from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
 import AuthButton from './AuthButton';
-import { colours, constants, fonts } from '../../styles.js';
+import { colours } from '../../styles.js';
 
-const NavContainer = styled.div`
+const Container = styled.div`
   margin: 0px;
   width: 100%;
   height: 50px;
@@ -13,12 +13,10 @@ const NavContainer = styled.div`
   text-align: center;
   background-color: ${colours.spotifyBlack};
   font-family: 'Lucida Sans Unicode', Lucida Grande, sans-serif;
-  /* position: fixed; */
 `;
 
-const NavContentContainer = styled.div`
-  // width: ${constants.mainContentContainerWidth};
-  width 80vw;
+const ContentWrapper = styled.div`
+  width: 80vw;
   display: inline-block;
   height: 100%;
   font-size: 16px;
@@ -31,9 +29,6 @@ const List = styled.ul`
   padding: 0;
   height: 100%;
   border-left: 1px solid #bbb;
-
-  // display: flex;
-  // justify-content: space-between;
 `;
 
 const ListItem = styled.li`
@@ -62,10 +57,10 @@ const ListItem = styled.li`
 
 const Nav = ({ colour, logo }) => {
   return (
-    <NavContainer>
-      <NavContentContainer>
+    <Container>
+      <ContentWrapper>
         <List>
-        <ListItem>
+          <ListItem>
             <Link to="/">Home</Link>
           </ListItem>
           <ListItem>
@@ -74,12 +69,12 @@ const Nav = ({ colour, logo }) => {
           <ListItem>
             <Link to="/search">Search</Link>
           </ListItem>
-          <ListItem style={{float: 'right'}}>
+          <ListItem style={{ float: 'right' }}>
             <AuthButton />
           </ListItem>
         </List>
-      </NavContentContainer>
-    </NavContainer>
+      </ContentWrapper>
+    </Container>
   );
 };
 

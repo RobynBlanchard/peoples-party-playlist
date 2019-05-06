@@ -27,9 +27,6 @@ export const play = () => (dispatch, getState) => {
             payload: true,
           });
         }
-        // import { START_SESSION } from './types';
-
-
 
       })
       .catch(err => {

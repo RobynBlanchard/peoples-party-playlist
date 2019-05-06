@@ -62,7 +62,6 @@ const playlistsReducer = (state = defaultState, action) => {
         playlist: curPlaylist2
       };
     case REMOVE_FROM_PLAYLIST:
-      debugger;
       let currentPlaylist = state.playlist;
       currentPlaylist.splice(action.payload, 1);
       const newStatee = {
@@ -70,7 +69,6 @@ const playlistsReducer = (state = defaultState, action) => {
         playlist: action.payload,
         playlist: currentPlaylist
       }
-      debugger;
       return newStatee;
     case INCREASE_VOTE:
       const updatedPlaylist = state.playlist.map(el => {

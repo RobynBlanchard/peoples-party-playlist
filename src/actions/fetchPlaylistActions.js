@@ -68,17 +68,13 @@ export const getUserAndPlayLists = () => (dispatch, getState) => {
 };
 
 export const fetchPlaylist = () => (dispatch, getState) => {
-  console.log('fetch playlist action')
   const token = getState().auth.token;
-  console.log('token:', token);
 
   if (token) {
     return apiInstance(token)
       // .get(`playlists/3bIK2LomQ4bn3pnSLQa3hb`)
       .get(`playlists/1OZWEFHDuPYYuvjCVhryXV`)
       .then(data => {
-        console.log('===', data.data)
-
         dispatch(dispatchPlaylist(data.data));
       })
       .catch(err => {

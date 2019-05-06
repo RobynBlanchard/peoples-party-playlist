@@ -49,7 +49,6 @@ const Front = styled.div`
 const Back = styled.div`
   height: 100%;
   background-image: linear-gradient(to right bottom, #32333478, #000000);
-  /* background-color: #000000; */
   backface-visibility: hidden;
   display: block;
   transform: rotateY(180deg);
@@ -69,11 +68,9 @@ const Icon = styled.img`
   padding: 20px 20px;
 `;
 
-const ContentBlock = ({ image, text, displayState, position }) => {
-  const doRotate = position === 1;
-  console.log('---', doRotate);
+const ContentBlock = ({ image, text, displayState, peekCard }) => {
   return (
-    <ContentBlockWrapper card={doRotate && displayState}>
+    <ContentBlockWrapper card={peekCard && displayState}>
       <Front>
         <Icon src={`/images${image}`} />
       </Front>

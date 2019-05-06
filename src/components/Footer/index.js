@@ -18,7 +18,7 @@ width: 50px;
 const MusicPlayer = () => {
   return (
     <FooterPlayer>
-      <Icon src="http://localhost:3000/images/play.svg" />{' '}
+      <Icon src="images/play.svg" />{' '}
     </FooterPlayer>
   );
 };

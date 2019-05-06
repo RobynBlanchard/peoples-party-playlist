@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colours, constants } from '../../../styles.js';
 import ContentBlock from './ContentBlock';
 
-const Wrapper = styled.div`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,47 +12,42 @@ const Wrapper = styled.div`
   background-color: rgba(51, 51, 51, 0.29);
 `;
 
-const ContentContainer = styled.div`
+const BlocksWrapper = styled.div`
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
-  width: ${constants.mainContentContainerWidth};
-  /* height: 200px; */
-  height: 100%;
   align-items: center;
+  width: 90%;
+  height: 100%;
 `;
 
 class SectionTwo extends React.Component {
-  // state = {
-  //   cardOpen: false
-  // }
-
-
   constructor(props) {
-    super(props)
-    this.myRef = React.createRef()   // Create a ref object
+    super(props);
+    this.myRef = React.createRef();
     this.state = {
       cardOpen: false
-    }
+    };
   }
 
   listenScrollEvent = e => {
-    if (window.scrollY > this.myRef.current.offsetTop - 200 ) {
-      this.setState({cardOpen: true})
+    if (window.scrollY > this.myRef.current.offsetTop - 200) {
+      this.setState({ cardOpen: true });
     } else {
-      this.setState({cardOpen: false})
+      this.setState({ cardOpen: false });
     }
-  }
+  };
 
   componentDidMount() {
-    window.addEventListener('scroll', this.listenScrollEvent)
+    window.addEventListener('scroll', this.listenScrollEvent);
   }
+
   render() {
     const content = [
       {
         image: '/disc.svg',
         text: 'Create your own playlist',
-        position: 1,
+        peekCard: true
       },
       {
         image: '/thumbs_up.svg',
@@ -69,24 +63,23 @@ class SectionTwo extends React.Component {
       }
     ];
     return (
-      <Wrapper  ref={this.myRef}>
-        <ContentContainer>
+      <Container ref={this.myRef}>
+        <BlocksWrapper>
           {content.map(block => {
             return (
               <ContentBlock
                 image={block.image}
                 text={block.text}
                 displayState={this.state.cardOpen}
-                position={block.position}
+                peekCard={block.peekCard}
                 key={block.text}
               />
             );
           })}
-        </ContentContainer>
-      </Wrapper>
+        </BlocksWrapper>
+      </Container>
     );
   }
-
-};
+}
 
 export default SectionTwo;

@@ -1,11 +1,9 @@
-// TODO pass l=playlist uriu as prop to play button
 import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
   align-items: row;
-  /* width: 100% */
 `;
 
 const Button = styled.button`
@@ -24,15 +22,11 @@ const Icon = styled.img`
   padding: 16px;
 `;
 
-const Heading = ({ text, playing, playAction, pauseAction }) => {
-  const handleClick = () => {
-    playing ? pauseAction() : playAction();
-  };
-
+const Heading = ({ text, img, handleClick }) => {
   return (
     <Container>
       <Button onClick={() => handleClick()}>
-        <Icon src={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`} />
+        <Icon src={img} />
       </Button>
       <h2>{text}</h2>{' '}
     </Container>

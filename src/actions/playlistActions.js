@@ -129,7 +129,7 @@ export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
   dispatch,
   getState
 ) => {
-  debugger;
+
   const currentPlaylist = getState().playlists.playlist;
   const allTracksBelowDownVotedTrack = currentPlaylist.slice(
     position + 1,
@@ -168,12 +168,12 @@ const removeTrack = (uri, id, position) => (dispatch, getState) => {
           return dispatch(decreaseVote(id));
         })
         .catch(err => {
-          debugger;
+
           console.log('no user id', err);
         })
     );
   } else {
-    debugger;
+
     console.log(`remove track failed`);
   }
 };
@@ -195,7 +195,7 @@ export const addToPlaylist = (uri) => (dispatch, getState) => {
         })
     );
   } else {
-    debugger;
+
     console.log(`add to playlist failed`);
   }
 };

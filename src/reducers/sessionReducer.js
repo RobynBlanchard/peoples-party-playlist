@@ -15,11 +15,8 @@ const defaultState = {
 };
 
 const sessionReducer = (state = defaultState, action) => {
-  console.log('reducer')
-  console.log(action)
   switch (action.type) {
     case START_SESSION:
-      console.log('herererere-----')
       return {
         sessionStarted: true
       };

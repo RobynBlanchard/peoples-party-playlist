@@ -1,7 +1,8 @@
-import styled, { keyframes, css } from 'styled-components';
+import styled, { css } from 'styled-components';
 import { media } from '../../styles.js';
 
-export const Container = styled.div`
+export const Container = styled.li`
+  list-style: none;
   border-bottom: solid 1px #333333;
   display: flex;
   justify-content: space-between;
@@ -17,6 +18,16 @@ export const Container = styled.div`
     background: rgba(177, 228, 86, 0.16);
     color: pink;
   }
+
+  ${({ lockedTrack }) =>
+    lockedTrack &&
+    css`
+      border: 1px solid grey;
+      background-color: #87868614;
+      border-radius: 24px;
+      box-shadow: white;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
+    `}}
 `;
 
 export const DesktopDetails = styled.div`
@@ -25,15 +36,17 @@ export const DesktopDetails = styled.div`
   display: block;
   display: flex;
   justify-content: space-between;
+  padding-top: 5px;
+
 
   ${media.tablet`display: none;`}
 `;
-export const Song = styled.p`
+export const SongDesktop = styled.p`
   width: 40%;
   padding: 0 10px;
 `;
 
-export const Artist = styled.p`
+export const ArtistDesktop = styled.p`
   width: 30%;
 `;
 
@@ -51,40 +64,4 @@ export const SongMobile = styled.p`
 export const ArtistMobile = styled.p`
   color: grey;
   font-size: 20px;
-`;
-
-export const VotesContent = styled.div`
-  ${media.tablet`width: 10%;padding: 0 32px;`}
-
-  width: 100px;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const VotesText = styled.p`
-  padding: 10px;
-  width: 20px;
-  text-align: center;
-
-  ${media.tablet`font-size: 20px;`}
-`;
-
-export const Button = styled.button`
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-`;
-
-export const Icon = styled.img`
-  height: 20px;
-  width: 20px;
-
-  ${media.tablet`height: 32px;width: 32px;`}
 `;

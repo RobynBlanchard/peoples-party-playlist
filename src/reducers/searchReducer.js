@@ -9,11 +9,10 @@ const defaultState = {
 const searchReducer = (state = defaultState, action) => {
   switch (action.type) {
     case FETCH_SEARCH_RESULTS:
-    console.log('actio npaload', action.payload)
       return {
         results: action.payload.items
       };
-    
+
     default:
       return state;
   }
