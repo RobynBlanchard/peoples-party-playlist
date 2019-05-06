@@ -13,11 +13,12 @@ const authURL = state => {
   const scopes = [
     'user-read-private',
     'user-modify-playback-state',
-    'user-read-private',
     'playlist-modify-public',
     'playlist-modify-private',
     'streaming',
-    'user-read-email'
+    'user-read-email',
+    'user-read-currently-playing',
+    'user-read-playback-state'
   ];
 
   return (

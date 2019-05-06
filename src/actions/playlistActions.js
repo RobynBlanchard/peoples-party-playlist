@@ -151,7 +151,7 @@ export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
   return dispatch(reOrderPlaylist(position, positionToMoveTo, id, 'down'));
 };
 
-const removeTrack = (uri, id, position) => (dispatch, getState) => {
+export const removeTrack = (uri, id, position) => (dispatch, getState) => {
   const token = getState().auth.token;
 
   if (token) {
@@ -164,8 +164,10 @@ const removeTrack = (uri, id, position) => (dispatch, getState) => {
           }
         })
         .then(data => {
-          dispatch(removeFromPlaylist(position));
-          return dispatch(decreaseVote(id));
+          dispatch(removeFromPlaylist(position || 0));
+          if (id) {
+            return dispatch(decreaseVote(id));
+          }
         })
         .catch(err => {
 
@@ -199,3 +201,7 @@ export const addToPlaylist = (uri) => (dispatch, getState) => {
     console.log(`add to playlist failed`);
   }
 };
+
+
+// if the track playing is not the track in position 0 then remove the track at position 0
+

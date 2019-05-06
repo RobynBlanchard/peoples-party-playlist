@@ -55,3 +55,61 @@ export const pause = () => (dispatch, getState) => {
     console.log('pause playback failed, no token');
   }
 };
+
+export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
+  const token = getState().auth.token;
+  if (token) {
+    return apiInstance(token)
+      .get('me/player/currently-playing')
+      .then(data => {
+        const topSong = getState().playlists.playlist[0].uri;
+        const currentSong = data.data.item.uri;
+
+        if (topSong !== currentSong) {
+          return dispatch(removeTrack(topSong))
+        }
+      })
+      .catch(err => {
+        console.log('get currently playing failed', err);
+      });
+  } else {
+    console.log('get currently playing failed, no token');
+  }
+
+}
+
+export const removeFromPlaylist = position => ({
+  type: 'REMOVE_FROM_PLAYLIST',
+  payload: position
+});
+
+// duplicated in playlist actions!!!
+const removeTrack = (uri) => (dispatch, getState) => {
+  const token = getState().auth.token;
+
+  if (token) {
+    return (
+      apiInstance(token)
+        .delete(`playlists/1OZWEFHDuPYYuvjCVhryXV/tracks`, {
+          data: {
+            tracks: [{ uri }]
+          }
+        })
+        .then(data => {
+          dispatch(removeFromPlaylist(0));
+          return dispatch({
+            type: 'CURRENTLY_PLAYING',
+            payload: {
+              uri: uri
+            }
+          });
+        })
+        .catch(err => {
+          console.log('no user id', err);
+        })
+    );
+  } else {
+
+    console.log(`remove track failed`);
+  }
+};

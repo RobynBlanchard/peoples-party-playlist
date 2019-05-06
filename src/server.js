@@ -92,13 +92,11 @@ function htmlTemplate(reactDom, styles, reduxState) {
         </head>
 
         <body style="margin:0;">
-            <div id="app">${reactDom}</div>
-            <script>
-              window.REDUX_DATA = ${JSON.stringify(reduxState)}
-            </script>
-            <script type="text/javascript" src="/main.bundle.js"></script>
-
-
+          <div id="app">${reactDom}</div>
+          <script>
+            window.REDUX_DATA = ${JSON.stringify(reduxState)}
+          </script>
+          <script type="text/javascript" src="/main.bundle.js"></script>
         </body>
         </html>
     `;

@@ -34,7 +34,7 @@ const playlistsReducer = (state = defaultState, action) => {
       });
       return {
         ...state,
-        playlist: action.payload,
+        // playlist: action.payload,
         playlist: playlistWithResetVotes
       };
     case MOVE_UP_PlAYLIST:
@@ -46,7 +46,7 @@ const playlistsReducer = (state = defaultState, action) => {
         );
       return {
         ...state,
-        playlist: action.payload,
+        // playlist: action.payload,
         playlist: curPlaylist
       };
     case MOVE_DOWN_PlAYLIST:
@@ -58,7 +58,7 @@ const playlistsReducer = (state = defaultState, action) => {
         );
       return {
         ...state,
-        playlist: action.payload,
+        // playlist: action.payload,
         playlist: curPlaylist2
       };
     case REMOVE_FROM_PLAYLIST:
@@ -66,7 +66,7 @@ const playlistsReducer = (state = defaultState, action) => {
       currentPlaylist.splice(action.payload, 1);
       const newStatee = {
         ...state,
-        playlist: action.payload,
+        // playlist: action.payload,
         playlist: currentPlaylist
       }
       return newStatee;
@@ -79,7 +79,7 @@ const playlistsReducer = (state = defaultState, action) => {
       });
       return {
         ...state,
-        playlist: action.payload,
+        // playlist: action.payload,
         playlist: updatedPlaylist
       };
     case DECREASE_VOTE:
@@ -91,7 +91,7 @@ const playlistsReducer = (state = defaultState, action) => {
       });
       return {
         ...state,
-        playlist: action.payload,
+        // playlist: action.payload,
         playlist: playlistWithVoteDescreased
       };
     default:

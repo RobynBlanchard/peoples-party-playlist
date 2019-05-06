@@ -7,7 +7,8 @@ import {
   decreaseVoteAndCheckForReOrder,
   increaseVoteAndCheckForReOrder,
   play,
-  pause
+  pause,
+  getCurrentlyPlayingTrack
 } from '../../actions';
 import Heading from './Heading';
 import Track from '../Track';
@@ -25,6 +26,13 @@ class Playlist extends React.Component {
     if (this.props.playlist.length === 0) {
       this.props.fetchPlaylist();
     }
+    this.timer = setInterval(()=> this.getCurrentlyPlaying(), 1000);
+  }
+
+  getCurrentlyPlaying() {
+    if (this.props.sessionStarted) {
+      this.props.getCurrentlyPlayingTrack();
+    }
   }
 
   getPlayBackState() {
@@ -38,6 +46,7 @@ class Playlist extends React.Component {
   }
 
   renderTracks(playlist) {
+    console.log('playlist', playlist);
     let position = -1;
     return playlist.map(el => {
       position += 1;
@@ -46,8 +55,19 @@ class Playlist extends React.Component {
 
       let lockedStatus = undefined;
       if (position === 0) {
+
         lockedStatus = this.getPlayBackState();
       }
+
+      // if (this.props.currentlyPlaying === '') {
+      //   if (position === 0) {
+      //     lockedStatus = this.getPlayBackState();
+      //   }
+      // }
+
+      // if (uri === this.props.currentlyPlaying) {
+      //   lockedStatus = this.getPlayBackState();
+      // }
 
       const icon = lockedStatus === 'playingAndlocked' ? 'volume' : 'pause';
       const locked =
@@ -86,6 +106,7 @@ class Playlist extends React.Component {
       return null;
     }
 
+
     return (
       <Container>
         <Heading
@@ -105,7 +126,8 @@ const mapStateToProps = state => {
   return {
     playlist: state.playlists.playlist,
     playing: state.playback.playing,
-    sessionStarted: state.session.sessionStarted
+    sessionStarted: state.session.sessionStarted,
+    currentlyPlaying: state.playback.currentPlayingTrack
   };
 };
 
@@ -116,6 +138,7 @@ export default connect(
     decreaseVoteAndCheckForReOrder,
     increaseVoteAndCheckForReOrder,
     play,
-    pause
+    pause,
+    getCurrentlyPlayingTrack
   }
 )(Playlist);
