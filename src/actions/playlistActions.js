@@ -89,8 +89,11 @@ export const increaseVoteAndCheckForReOrder = (id, position) => (
   getState
 ) => {
   const currentPlaylist = getState().playlists.playlist;
-  const topMoveablePosition = getState().session.sessionStarted ? 1 : 0
-  const allTracksAboveUpVotedTrack = currentPlaylist.slice(topMoveablePosition, position);
+  const topMoveablePosition = getState().session.sessionStarted ? 1 : 0;
+  const allTracksAboveUpVotedTrack = currentPlaylist.slice(
+    topMoveablePosition,
+    position
+  );
   const upVotedTrackNumVotes = currentPlaylist[position].votes + 1;
 
   const positionToMoveTo = updatedTrackPosition(
@@ -129,7 +132,6 @@ export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
   dispatch,
   getState
 ) => {
-
   const currentPlaylist = getState().playlists.playlist;
   const allTracksBelowDownVotedTrack = currentPlaylist.slice(
     position + 1,
@@ -170,38 +172,58 @@ export const removeTrack = (uri, id, position) => (dispatch, getState) => {
           }
         })
         .catch(err => {
-
           console.log('no user id', err);
         })
     );
   } else {
-
     console.log(`remove track failed`);
   }
 };
 
-export const addToPlaylist = (uri) => (dispatch, getState) => {
+export const addToPlaylist = (uri, name, artist, id) => (
+  dispatch,
+  getState
+) => {
+  console.log('hrerer');
   const token = getState().auth.token;
+  const playlist = getState().playlists.playlist;
+  let position = 0;
+
+  const len = playlist.length;
+
+  if (len > 0) {
+    for (let i = 0; i < len; i++) {
+      if (playlist[len - 1 - i].votes >= 0) {
+        position = len - i;
+        break;
+      }
+    }
+  }
 
   if (token) {
-    return (
-      apiInstance(token)
-        .post(`playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}`)
-        .then(data => {
-          console.log('data');
-          // dispatch(dispatchAddToPlaylst(position));
-          // return dispatch(decreaseVote(id));
-        })
-        .catch(err => {
-          console.log('no user id', err);
-        })
-    );
+    return apiInstance(token)
+      .post(
+        `playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}&position=${position}`
+      )
+      .then(data => {
+        dispatch({
+          type: 'ADD_TO_PLAYLIST',
+          payload: {
+            position: position,
+            details: {
+              uri: uri,
+              votes: 0,
+              name: name,
+              artist: artist,
+              id: id
+            }
+          }
+        });
+      })
+      .catch(err => {
+        console.log('no user id', err);
+      });
   } else {
-
     console.log(`add to playlist failed`);
   }
 };
-
-
-// if the track playing is not the track in position 0 then remove the track at position 0
-

@@ -24,7 +24,10 @@ class Search extends React.Component {
         >
           <CTAButton
             handleClick={this.props.addToPlaylist}
+            name={result.name}
+            artist={result.artists[0].name}
             uri={result.uri}
+            id={result.id}
             img={'add'}
           />
         </Track>
