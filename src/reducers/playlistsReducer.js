@@ -25,14 +25,6 @@ const playlistsReducer = (state = defaultState, action) => {
     case FETCH_PLAYLIST:
       const playlistWithResetVotes = action.payload.tracks.items.map(el => {
         return transformPlaylistData(el);
-        // const artists = el.track.artists.map(el => el.name);
-        // return {
-        //   uri: el.track.uri,
-        //   votes: 0,
-        //   name: el.track.name,
-        //   artist: artists.join(','),
-        //   id: el.track.id
-        // };
       });
       return {
         ...state,
@@ -71,7 +63,7 @@ const playlistsReducer = (state = defaultState, action) => {
       return newStatee;
     case INCREASE_VOTE:
       const updatedPlaylist = state.playlist.map(el => {
-        if (el.id.valueOf() === action.payload.valueOf()) {
+        if (el.uri.valueOf() === action.payload.valueOf()) {
           return { ...el, votes: el.votes + 1 };
         }
         return el;
@@ -82,7 +74,7 @@ const playlistsReducer = (state = defaultState, action) => {
       };
     case DECREASE_VOTE:
       const playlistWithVoteDescreased = state.playlist.map(el => {
-        if (el.id.valueOf() === action.payload.valueOf()) {
+        if (el.uri.valueOf() === action.payload.valueOf()) {
           return { ...el, votes: el.votes - 1 };
         }
         return el;

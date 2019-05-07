@@ -5,7 +5,6 @@ const transformPlaylistData = (response) => {
     votes: 0,
     name: response.track.name,
     artist: artists.join(','),
-    id: response.track.id
   }
 }
 

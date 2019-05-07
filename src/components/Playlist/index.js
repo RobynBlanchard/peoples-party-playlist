@@ -51,23 +51,12 @@ class Playlist extends React.Component {
     return playlist.map(el => {
       position += 1;
 
-      const { artist, name, votes, uri, id } = el;
+      const { artist, name, votes, uri} = el;
 
       let lockedStatus = undefined;
       if (position === 0) {
-
         lockedStatus = this.getPlayBackState();
       }
-
-      // if (this.props.currentlyPlaying === '') {
-      //   if (position === 0) {
-      //     lockedStatus = this.getPlayBackState();
-      //   }
-      // }
-
-      // if (uri === this.props.currentlyPlaying) {
-      //   lockedStatus = this.getPlayBackState();
-      // }
 
       const icon = lockedStatus === 'playingAndlocked' ? 'volume' : 'pause';
       const locked =
@@ -79,13 +68,12 @@ class Playlist extends React.Component {
           name={name}
           artist={artist}
           lockedStatus={lockedStatus}
-          key={uri}
+          key={`${uri}-${position}`}
         >
           {locked ? (
             <Icon img={icon} />
           ) : (
             <VoteDetails
-              id={id}
               position={position}
               uri={uri}
               handleUpVote={this.props.increaseVoteAndCheckForReOrder}

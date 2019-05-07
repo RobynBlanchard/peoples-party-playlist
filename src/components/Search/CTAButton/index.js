@@ -25,10 +25,10 @@ const Icon = styled.img`
   width: 20px;
 `;
 
-const CTAButton = ({handleClick, img, uri, name, artist, id}) => {
+const CTAButton = ({handleClick, img, uri, name, artist}) => {
   return (
     <Wrapper>
-      <Button onClick={() => handleClick(uri, name, artist, id)}>
+      <Button onClick={() => handleClick(uri, name, artist)}>
         <Icon src={`images/${img}.svg`} />
       </Button>
     </Wrapper>

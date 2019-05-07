@@ -7,14 +7,14 @@ import {
   REMOVE_FROM_PLAYLIST
 } from './types';
 
-export const increaseVote = id => ({
+export const increaseVote = uri => ({
   type: INCREASE_VOTE,
-  payload: id
+  payload: uri
 });
 
-export const decreaseVote = id => ({
+export const decreaseVote = uri => ({
   type: DECREASE_VOTE,
-  payload: id
+  payload: uri
 });
 
 export const moveUp = (range_start, insert_before) => ({
@@ -39,7 +39,7 @@ export const removeFromPlaylist = position => ({
 });
 
 // rename as used for moving up and down
-const reOrderPlaylist = (range_start, insert_before, id, action) => (
+const reOrderPlaylist = (range_start, insert_before, uri, action) => (
   dispatch,
   getState
 ) => {
@@ -54,10 +54,11 @@ const reOrderPlaylist = (range_start, insert_before, id, action) => (
       .then(data => {
         if (action === 'up') {
           dispatch(moveUp(range_start, insert_before));
-          dispatch(increaseVote(id));
+          dispatch(increaseVote(uri));
         } else {
           dispatch(moveDown(range_start, insert_before));
-          dispatch(decreaseVote(id));
+          debugger;
+          dispatch(decreaseVote(uri));
         }
       })
       .catch(err => {
@@ -84,7 +85,7 @@ const updatedTrackPosition = (
   return position;
 };
 
-export const increaseVoteAndCheckForReOrder = (id, position) => (
+export const increaseVoteAndCheckForReOrder = (uri, position) => (
   dispatch,
   getState
 ) => {
@@ -102,8 +103,7 @@ export const increaseVoteAndCheckForReOrder = (id, position) => (
     upVotedTrackNumVotes,
     topMoveablePosition
   );
-
-  return dispatch(reOrderPlaylist(position, positionToMoveTo, id, 'up'));
+  return dispatch(reOrderPlaylist(position, positionToMoveTo, uri, 'up'));
 };
 
 const updatedTrackPositionForDownVote = (
@@ -128,7 +128,7 @@ const updatedTrackPositionForDownVote = (
   return position;
 };
 
-export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
+export const decreaseVoteAndCheckForReOrder = (position, uri) => (
   dispatch,
   getState
 ) => {
@@ -141,7 +141,7 @@ export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
 
   // could move check for -5 to component
   if (downVotedTrackNumVotes === -5) {
-    return dispatch(removeTrack(uri, id, position));
+    return dispatch(removeTrack(uri, position));
   }
 
   const positionToMoveTo = updatedTrackPositionForDownVote(
@@ -150,10 +150,10 @@ export const decreaseVoteAndCheckForReOrder = (id, position, uri) => (
     downVotedTrackNumVotes
   );
 
-  return dispatch(reOrderPlaylist(position, positionToMoveTo, id, 'down'));
+  return dispatch(reOrderPlaylist(position, positionToMoveTo, uri, 'down'));
 };
 
-export const removeTrack = (uri, id, position) => (dispatch, getState) => {
+export const removeTrack = (uri, position) => (dispatch, getState) => {
   const token = getState().auth.token;
 
   if (token) {
@@ -167,8 +167,8 @@ export const removeTrack = (uri, id, position) => (dispatch, getState) => {
         })
         .then(data => {
           dispatch(removeFromPlaylist(position || 0));
-          if (id) {
-            return dispatch(decreaseVote(id));
+          if (uri) {
+            return dispatch(decreaseVote(uri));
           }
         })
         .catch(err => {
@@ -180,50 +180,57 @@ export const removeTrack = (uri, id, position) => (dispatch, getState) => {
   }
 };
 
-export const addToPlaylist = (uri, name, artist, id) => (
-  dispatch,
-  getState
-) => {
+export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   console.log('hrerer');
   const token = getState().auth.token;
   const playlist = getState().playlists.playlist;
-  let position = 0;
 
-  const len = playlist.length;
+  // if track is already on the playlist instead of adding thr track we increase the vote
+  // or do nothing
 
-  if (len > 0) {
-    for (let i = 0; i < len; i++) {
-      if (playlist[len - 1 - i].votes >= 0) {
-        position = len - i;
-        break;
+  // do nothing:
+  const alreadyThere = playlist.findIndex(el => el.uri === uri);
+
+  if (alreadyThere === -1) {
+    let position = 0;
+
+    const len = playlist.length;
+
+    if (len > 0) {
+      for (let i = 0; i < len; i++) {
+        if (playlist[len - 1 - i].votes >= 0) {
+          position = len - i;
+          break;
+        }
       }
     }
-  }
 
-  if (token) {
-    return apiInstance(token)
-      .post(
-        `playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}&position=${position}`
-      )
-      .then(data => {
-        dispatch({
-          type: 'ADD_TO_PLAYLIST',
-          payload: {
-            position: position,
-            details: {
-              uri: uri,
-              votes: 0,
-              name: name,
-              artist: artist,
-              id: id
+    if (token) {
+      return apiInstance(token)
+        .post(
+          `playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}&position=${position}`
+        )
+        .then(data => {
+          dispatch({
+            type: 'ADD_TO_PLAYLIST',
+            payload: {
+              position: position,
+              details: {
+                uri: uri,
+                votes: 0,
+                name: name,
+                artist: artist
+              }
             }
-          }
+          });
+        })
+        .catch(err => {
+          console.log('no user id', err);
         });
-      })
-      .catch(err => {
-        console.log('no user id', err);
-      });
+    } else {
+      console.log(`add to playlist failed`);
+    }
   } else {
-    console.log(`add to playlist failed`);
+    console.log('already on playlist!');
   }
 };
