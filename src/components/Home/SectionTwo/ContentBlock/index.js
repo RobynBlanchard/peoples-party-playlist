@@ -22,7 +22,6 @@ const sneakAPeekBack = keyframes`
 const Card = styled.div`
   height: 100%;
   width: 100%;
-  background-image: linear-gradient(to right bottom, #32333478, #000000);
   transition: all 1s linear;
   position: absolute;
   top: 0;
@@ -39,7 +38,8 @@ const Back = styled(Card)`
   align-items: center;
   justify-content: center;
   text-align: center;
-
+  color: black;
+  background-image: linear-gradient(to right bottom,#e0e0e0,#bdbdbd);
   animation: ${props => props.card === true && sneakAPeekBack} 3.5s ease-in-out;
 `;
 
@@ -47,6 +47,7 @@ const Front = styled(Card)`
   display: flex;
   align-items: center;
   justify-content: center;
+  background-image: linear-gradient(to right bottom,#212121,#424242);
 
   animation: ${props => props.card === true && sneakAPeekFront} 3.5s ease-in-out;
 `;
