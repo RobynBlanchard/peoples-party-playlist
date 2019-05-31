@@ -4,19 +4,17 @@ import SectionOne from './SectionOne';
 import SectionTwo from './SectionTwo';
 import SectionThree from './SectionThree';
 
-import { fonts } from '../../styles/index.js';
+import { fonts, colours } from '../../styles/index.js';
 
 const Wrap = styled.div`
   height: 100%;
   font-family: ${fonts.font1};
   font-size: 44px;
-  color: white;
+  color: ${colours.spotifyWhite};
 `;
 
 const Parallax = styled.div`
   background-image: url('images/vinyl.jpg');
-  /* background: linear-gradient(#540909, #022147); */
-
   height: 85vh;
 
   background-attachment: fixed;

@@ -5,32 +5,32 @@ import { Link } from 'react-router-dom';
 import { colours, fonts } from '../../../styles/index.js';
 
 const NavWrapper = styled.div`
-  background-color: ${colours.spotifyBlack};
+  background-color: ${colours.black};
   font-family: ${fonts.font1};
   position: relative;
   margin: 0px;
   width: 100%;
   height: 50px;
+  z-index: 1;
 `;
 
 const LinkWrapper = styled.div`
   & > a {
-    color: white;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
     display: block;
 
     &:hover {
-      background-color: #ddd;
-      color: black;
+      background-color: ${colours.secondaryLight};
+      color: ${colours.black};
     }
   }
 `
 
 const NavLinks = styled.div`
   display: ${props => (props.open ? 'block' : 'none')};
-  background-color: #3e3b40;
+  background-color: ${colours.primaryLight};
 `;
 
 const Burger = styled.a`

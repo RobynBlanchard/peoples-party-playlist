@@ -39,7 +39,7 @@ const Back = styled(Card)`
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: black;
+  color: ${colours.black};
   background-image: linear-gradient(to right bottom, ${colours.secondaryDark}, ${colours.secondaryLight});
 
   animation: ${props => props.card === true && sneakAPeekBack} 3.5s ease-in-out;

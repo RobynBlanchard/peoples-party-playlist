@@ -19,7 +19,7 @@ const ContentWrapper = styled.div`
   display: inline-block;
   height: 100%;
   font-size: 16px;
-  color: white;
+  color: ${colours.spotifyWhite};
 `;
 
 const List = styled.ul`
@@ -45,12 +45,12 @@ const ListItem = styled.li`
   }
 
   & > a:hover {
-    background-color: #3e3b40;
+    background-color: ${colours.primaryLight};
     border-bottom: solid ${colours.spotifyBlack} 1px;
   }
 
   & > a:active {
-    color: grey;
+    color: ${colours.secondaryLight};
   }
 `;
 

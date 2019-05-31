@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ContentBlock from './ContentBlock';
+import { colours} from '../../../styles';
 
 const Container = styled.div`
   display: flex;
@@ -9,7 +10,7 @@ const Container = styled.div`
   flex-direction: row;
   width: 100%;
   height: 100%;
-  background-color: rgba(51, 51, 51, 0.29);
+  background-color: rgba(${colours.primaryLightRGBA}, 0.29);
 `;
 
 const BlocksWrapper = styled.div`

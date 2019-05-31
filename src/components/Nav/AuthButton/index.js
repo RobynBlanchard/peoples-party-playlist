@@ -8,7 +8,7 @@ import { colours, fonts } from '../../../styles/index.js';
 const LogInButton = styled.a`
   height: 100%;
   display: block;
-  color: white;
+  color: inherit;
   text-align: center;
   text-decoration: none;
 
@@ -24,7 +24,6 @@ const LinkContainer = styled.div`
   border-right: none;
   border-left: 1px solid #bbb;
   display: block;
-  color: white;
   text-align: center;
   padding: 16px 16px;
   text-decoration: none;
@@ -34,13 +33,13 @@ const LinkContainer = styled.div`
   position: relative;
 
   &:hover {
-    background-color: #3e3b40;
+    background-color: ${colours.primaryLight};
     border-bottom: solid ${colours.spotifyBlack} 1px;
   }
 `;
 
 const DropBtn = styled.button`
-  color: white;
+  color: inherit;
   padding: 16px;
   font-size: 16px;
   background-color: ${colours.spotifyBlack};
@@ -48,7 +47,7 @@ const DropBtn = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #3e3b40;
+    background-color: ${colours.primaryLight};
     border-bottom: solid ${colours.spotifyBlack} 1px;
   }
 `;
@@ -56,7 +55,7 @@ const DropBtn = styled.button`
 const DropDownContent = styled.div`
   display: none;
   position: absolute;
-  background-color: #3e3b40;
+  background-color: ${colours.primaryLight};
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -72,7 +71,7 @@ const Dropdown = styled.div`
 
 
   &:hover {
-    background-color: #3e3b40;
+    background-color: ${colours.primaryLight};
     border-bottom: solid ${colours.spotifyBlack} 1px;
     ${DropDownContent} {
       display:block;
@@ -81,13 +80,14 @@ const Dropdown = styled.div`
 `;
 
 const Anchor = styled.a`
-  color: white;
+  color: inherit;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
 
   &:hover {
-    background-color: #ddd;
+    background-color: ${colours.secondaryLight};
+    color: ${colours.black};
   }
 `;
 class AuthButton extends React.Component {

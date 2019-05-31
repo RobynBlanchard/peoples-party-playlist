@@ -8,6 +8,7 @@ export const colours = {
   black: '#191414',
   primaryDark: '#212121',
   primaryLight: '#424242',
+  primaryLightRGBA: '66, 66, 66',
   secondaryDark: '#bdbdbd',
   secondaryLight: '#e0e0e0',
 };

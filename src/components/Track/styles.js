@@ -33,7 +33,8 @@ export const Container = styled.li`
     lockedTrack &&
     css`
       border: 1px solid grey;
-      background-color: #87868614;
+      /* background-color: #87868614; */
+      background-color: ${colours.primaryDark};
       border-radius: 24px;
       box-shadow: white;
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
