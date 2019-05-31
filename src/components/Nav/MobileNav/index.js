@@ -20,6 +20,8 @@ const LinkWrapper = styled.div`
     text-decoration: none;
     font-size: 17px;
     display: block;
+    color: ${colours.spotifyWhite};
+
 
     &:hover {
       background-color: ${colours.secondaryLight};
