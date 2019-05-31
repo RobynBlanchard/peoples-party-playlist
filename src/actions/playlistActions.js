@@ -108,13 +108,13 @@ export const handleVoteIncrease = (uri, position) => (
 const updatedTrackPositionForDownVote = (
   position,
   allTracksBelowDownVotedTrack,
-  downVotedTrackNumVotes
+  newNumberOfVotes
 ) => {
   for (let i in allTracksBelowDownVotedTrack) {
     const currentTrackVotes = allTracksBelowDownVotedTrack[i].votes;
 
     // downvoted track has more votes than next one
-    if (currentTrackVotes <= downVotedTrackNumVotes) {
+    if (currentTrackVotes <= newNumberOfVotes) {
       return parseInt(i, 10) + position;
     }
 
@@ -138,18 +138,17 @@ export const handleVoteDecrease = (uri, position) => (
     position + 1,
     currentPlaylist.length
   );
-  debugger;
-  const downVotedTrackNumVotes = currentPlaylist[position].votes - 1;
+  const newNumberOfVotes = currentPlaylist[position].votes - 1;
 
   // could move check for -5 to component
-  if (downVotedTrackNumVotes === -5) {
+  if (newNumberOfVotes === -5) {
     return dispatch(removeTrack(uri, position));
   }
 
   const positionToMoveTo = updatedTrackPositionForDownVote(
     position,
     allTracksBelowDownVotedTrack,
-    downVotedTrackNumVotes
+    newNumberOfVotes
   );
 
   return dispatch(reOrderPlaylist(position, positionToMoveTo, uri, 'down'));
