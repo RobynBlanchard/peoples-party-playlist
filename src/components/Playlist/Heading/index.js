@@ -11,7 +11,6 @@ const Button = styled.button`
   color: inherit;
   border: none;
   padding: 0;
-  font: inherit;
   outline: inherit;
   cursor: pointer;
 `;
@@ -25,7 +24,7 @@ const Icon = styled.img`
 const Heading = ({ text, img, handleClick }) => {
   return (
     <Container>
-      <Button onClick={() => handleClick()}>
+      <Button onClick={handleClick}>
         <Icon src={img} />
       </Button>
       <h2>{text}</h2>{' '}

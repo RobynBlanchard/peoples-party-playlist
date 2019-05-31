@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
+import { colours } from '../../../../styles';
 
 const sneakAPeekFront = keyframes`
   50% {
@@ -39,7 +40,8 @@ const Back = styled(Card)`
   justify-content: center;
   text-align: center;
   color: black;
-  background-image: linear-gradient(to right bottom,#e0e0e0,#bdbdbd);
+  background-image: linear-gradient(to right bottom, ${colours.secondaryDark}, ${colours.secondaryLight});
+
   animation: ${props => props.card === true && sneakAPeekBack} 3.5s ease-in-out;
 `;
 
@@ -47,7 +49,7 @@ const Front = styled(Card)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(to right bottom,#212121,#424242);
+  background-image: linear-gradient(to right bottom, ${colours.primaryDark}, ${colours.primaryLight});
 
   animation: ${props => props.card === true && sneakAPeekFront} 3.5s ease-in-out;
 `;

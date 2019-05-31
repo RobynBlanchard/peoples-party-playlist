@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colours, fonts } from '../../../styles.js';
+import { Link } from 'react-router-dom';
+
+import { colours, fonts } from '../../../styles/index.js';
 
 const NavWrapper = styled.div`
   background-color: ${colours.spotifyBlack};
@@ -11,16 +13,18 @@ const NavWrapper = styled.div`
   height: 50px;
 `;
 
-const Link = styled.a`
-  color: white;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-  display: block;
+const LinkWrapper = styled.div`
+  & > a {
+    color: white;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    display: block;
 
-  &:hover {
-    background-color: #ddd;
-    color: black;
+    &:hover {
+      background-color: #ddd;
+      color: black;
+    }
   }
 `
 
@@ -53,12 +57,18 @@ class MobileNav extends React.Component {
     return (
       <NavWrapper>
         <TopLinkWrapper>
-          <Link href="/">{/* Logo */}</Link>
+          <Link to="/">{/* Logo */}</Link>
         </TopLinkWrapper>
         <NavLinks open={this.state.mobileOpen}>
-          <Link href="#news">News</Link>
-          <Link href="#contact">Contact</Link>
-          <Link href="#about">About</Link>
+          <LinkWrapper>
+            <Link to="/playlist">Playlist</Link>
+          </LinkWrapper>
+          <LinkWrapper>
+            <Link to="/search">Search</Link>
+          </LinkWrapper>
+          <LinkWrapper>
+            <Link to="/log-out">Log out</Link>
+          </LinkWrapper>
         </NavLinks>
         <Burger onClick={this.handleClick}>
           <img src="images/hamburger.svg" />

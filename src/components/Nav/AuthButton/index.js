@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { fetchUser } from '../../../actions';
-import { colours, fonts } from '../../../styles.js';
+import { colours, fonts } from '../../../styles/index.js';
 
 const LogInButton = styled.a`
   height: 100%;
@@ -29,7 +29,6 @@ const LinkContainer = styled.div`
   padding: 16px 16px;
   text-decoration: none;
   width: 75px;
-
   list-style: none;
   display: inline-block;
   position: relative;

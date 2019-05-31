@@ -1,5 +1,5 @@
 import styled, { keyframes, css } from 'styled-components';
-import { media } from '../../../styles.js/index.js';
+import { media } from '../../../styles';
 
 export const VotesContent = styled.div`
   ${media.tablet`width: 10%;padding: 0 32px;`}
@@ -34,5 +34,5 @@ export const Icon = styled.img`
   height: 20px;
   width: 20px;
 
-  ${media.tablet`height: 32px;width: 32px;`}
+  ${media.tablet`height: 24px;width: 24px;`}
 `;

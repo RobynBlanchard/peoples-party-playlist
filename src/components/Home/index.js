@@ -4,7 +4,7 @@ import SectionOne from './SectionOne';
 import SectionTwo from './SectionTwo';
 import SectionThree from './SectionThree';
 
-import { fonts } from '../../styles.js';
+import { fonts } from '../../styles/index.js';
 
 const Wrap = styled.div`
   height: 100%;

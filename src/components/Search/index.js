@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 
 import { fetchSearchResults, addToPlaylist } from '../../actions';
-import { media } from '../../styles.js';
+import { media } from '../../styles/index.js';
 import Track from '../Track';
 import CTAButton from './CTAButton';
 import SearchBar from './SearchBar';

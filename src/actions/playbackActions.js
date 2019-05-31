@@ -8,7 +8,7 @@ export const startSession = () => {
   }
 };
 
-export const play = () => (dispatch, getState) => {
+export const resumePlayback = () => (dispatch, getState) => {
   const token = getState().auth.token;
 
   if (token) {
@@ -18,6 +18,7 @@ export const play = () => (dispatch, getState) => {
         offset: {"position": 0}
       })
       .then(data => {
+        console.log('play action')
         dispatch({
           type: 'PLAY'
         });

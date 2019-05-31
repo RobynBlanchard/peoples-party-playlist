@@ -4,3 +4,4 @@ export * from './playlistActions';
 export * from './fetchPlaylistActions';
 export * from './fetchSearchResultsActions';
 export * from './sessionActions';
+export * from './recentlyClickedActions';

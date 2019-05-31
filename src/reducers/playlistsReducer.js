@@ -31,7 +31,6 @@ const playlistsReducer = (state = defaultState, action) => {
         playlist: playlistWithResetVotes
       };
     case MOVE_UP_PlAYLIST:
-      debugger;
       let curPlaylist = state.playlist;
       curPlaylist.splice(
         action.payload.insert_before,

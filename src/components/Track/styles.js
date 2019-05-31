@@ -1,23 +1,32 @@
-import styled, { css } from 'styled-components';
-import { media } from '../../styles.js';
+import styled, { css, animation } from 'styled-components';
+import { media, colours } from '../../styles/index.js';
 
 export const Container = styled.li`
   list-style: none;
-  border-bottom: solid 1px #333333;
+  border-bottom: solid 1px #424242;
   display: flex;
   justify-content: space-between;
   width: 100%;
+  padding-right: 8px;
+  opacity: 0.9;
 
   height: 50px;
   line-height: 2px;
   ${media.tablet`height: 80px;line-height: 10px;`}
 
-  &:focus-within {
-    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
-    border-radius: 100px;
-    background: rgba(177, 228, 86, 0.16);
-    color: pink;
-  }
+  ${({ shouldFocus }) =>
+    shouldFocus &&
+    css`
+      box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+      border-radius: 100px;
+      border: 1px solid ${colours.black};
+      background-image: linear-gradient(
+        to right bottom,
+        ${colours.secondaryDark},
+        ${colours.secondaryLight}
+      );
+      color: ${colours.black};
+    `}}
 
   ${({ lockedTrack }) =>
     lockedTrack &&
@@ -38,7 +47,6 @@ export const DesktopDetails = styled.div`
   justify-content: space-between;
   padding-top: 5px;
 
-
   ${media.tablet`display: none;`}
 `;
 export const SongDesktop = styled.p`
@@ -52,16 +60,16 @@ export const ArtistDesktop = styled.p`
 
 export const MobileDetails = styled.div`
   width: 80%;
-  padding: 0 32px;
+  padding: 0 8px;
   display: none;
   ${media.tablet`display: block;`}
 `;
 
 export const SongMobile = styled.p`
-  font-size: 24px;
+  font-size: 20px;
 `;
 
 export const ArtistMobile = styled.p`
   color: grey;
-  font-size: 20px;
+  font-size: 16px;
 `;

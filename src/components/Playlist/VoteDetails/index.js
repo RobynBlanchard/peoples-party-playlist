@@ -1,10 +1,10 @@
 import React from 'react';
-import {
-  VotesContent,
-  VotesText,
-  Button,
-  Icon
-} from './styles';
+import { VotesContent, VotesText, Button, Icon } from './styles';
+
+const handleClick = (uri, position, handleVote, setRecentlyClicked) => {
+  handleVote(uri, position);
+  setRecentlyClicked(uri);
+};
 
 const VoteDetails = ({
   position,
@@ -12,19 +12,28 @@ const VoteDetails = ({
   votes,
   handleUpVote,
   handleDownVote,
+  setRecentlyClicked,
+  shouldFocus
 }) => {
-    return (
-      <VotesContent>
-        <Button onClick={() => handleDownVote(position, uri)}>
-          <Icon src="images/minus.svg" />
-        </Button>
-        <VotesText>{votes}</VotesText>
-        <Button onClick={() => handleUpVote(uri, position)}>
-          <Icon src="images/plus.svg" />
-        </Button>
-      </VotesContent>
-    );
-  // }
+  return (
+    <VotesContent>
+      <Button
+        onClick={() =>
+          handleClick(uri, position, handleDownVote, setRecentlyClicked)
+        }
+      >
+        <Icon src={`images/${shouldFocus ? 'black-' : 'white-'}minus.svg`} />
+      </Button>
+      <VotesText>{votes}</VotesText>
+      <Button
+        onClick={() =>
+          handleClick(uri, position, handleUpVote, setRecentlyClicked)
+        }
+      >
+        <Icon src={`images/${shouldFocus ? 'black-' : 'white-'}plus.svg`} />
+      </Button>
+    </VotesContent>
+  );
 };
 
 export default VoteDetails;

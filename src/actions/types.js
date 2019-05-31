@@ -17,3 +17,5 @@ export const PLAY = 'PLAY';
 export const PAUSE = 'PAUSE';
 
 export const START_SESSION = 'START_SESSION';
+
+export const SET_RECENTLY_CLICKED = 'SET_RECENTLY_CLICKED';

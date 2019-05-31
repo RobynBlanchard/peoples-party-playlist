@@ -1,9 +1,11 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import authReducer from './authReducer';
 import playlistsReducer from './playlistsReducer';
 import playbackReducer from './playbackReducer';
 import searchReducer from './searchReducer';
 import sessionReducer from './sessionReducer';
+import recentlyClickedReducer from './recentlyClickedReducer';
+
 
 const reducer = combineReducers( {
   auth: authReducer,
@@ -11,6 +13,7 @@ const reducer = combineReducers( {
   playback: playbackReducer,
   search: searchReducer,
   session: sessionReducer,
+  recentlyClicked: recentlyClickedReducer,
 } );
 
 export default reducer;

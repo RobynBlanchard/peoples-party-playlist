@@ -48,6 +48,7 @@ class SearchBar extends Component {
             type="text"
             value={this.state.searchTerm}
             onChange={this.searchTermChange}
+            placeholder={"search for an artist, song or album"}
           />
         </form>
       </Wrapper>

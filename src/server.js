@@ -11,8 +11,6 @@ const webpack = require('webpack');
 const middleware = require('webpack-dev-middleware');
 const compiler = webpack(require('../webpack.config'));
 
-
-
 import createStore from './store';
 import { signIn, signOut } from './actions';
 import { logIn, loginCallback, logOut } from './Auth';

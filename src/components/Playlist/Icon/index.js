@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { media } from '../../../styles.js';
+import { media } from '../../../styles/index.js';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -19,7 +19,8 @@ export const IconImg = styled.img`
   ${media.tablet`height: 32px;width: 32px;`}
 `;
 
-const Icon = ({ img }) => {
+const Icon = ({ isPlaying }) => {
+  const img = isPlaying ? 'volume' : 'pause-circle-regular';
   return (
     <Wrapper>
       <IconImg src={`images/${img}.svg`} />

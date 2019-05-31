@@ -57,7 +57,6 @@ const reOrderPlaylist = (range_start, insert_before, uri, action) => (
           dispatch(increaseVote(uri));
         } else {
           dispatch(moveDown(range_start, insert_before));
-          debugger;
           dispatch(decreaseVote(uri));
         }
       })
@@ -85,7 +84,7 @@ const updatedTrackPosition = (
   return position;
 };
 
-export const increaseVoteAndCheckForReOrder = (uri, position) => (
+export const handleVoteIncrease = (uri, position) => (
   dispatch,
   getState
 ) => {
@@ -128,7 +127,9 @@ const updatedTrackPositionForDownVote = (
   return position;
 };
 
-export const decreaseVoteAndCheckForReOrder = (position, uri) => (
+
+
+export const handleVoteDecrease = (uri, position) => (
   dispatch,
   getState
 ) => {
@@ -137,6 +138,7 @@ export const decreaseVoteAndCheckForReOrder = (position, uri) => (
     position + 1,
     currentPlaylist.length
   );
+  debugger;
   const downVotedTrackNumVotes = currentPlaylist[position].votes - 1;
 
   // could move check for -5 to component
@@ -181,40 +183,39 @@ export const removeTrack = (uri, position) => (dispatch, getState) => {
 };
 
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
-  console.log('hrerer');
   const token = getState().auth.token;
   const playlist = getState().playlists.playlist;
 
-  // if track is already on the playlist instead of adding thr track we increase the vote
-  // or do nothing
+  const trackFoundInPlaylist = playlist.findIndex(el => el.uri === uri);
 
-  // do nothing:
-  const alreadyThere = playlist.findIndex(el => el.uri === uri);
+  if (trackFoundInPlaylist === -1) {
+    const positionToMoveTo = (playlist, votes) => {
+      let position = 0;
 
-  if (alreadyThere === -1) {
-    let position = 0;
+      const len = playlist.length;
 
-    const len = playlist.length;
-
-    if (len > 0) {
-      for (let i = 0; i < len; i++) {
-        if (playlist[len - 1 - i].votes >= 0) {
-          position = len - i;
-          break;
+      if (len > 0) {
+        for (let i = 0; i < len; i++) {
+          if (playlist[len - 1 - i].votes >= votes) {
+            position = len - i;
+            return position
+          }
         }
       }
+      return position;
     }
+    const newPositionn = positionToMoveTo(playlist, 0);
 
     if (token) {
       return apiInstance(token)
         .post(
-          `playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}&position=${position}`
+          `playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}&position=${newPositionn}`
         )
         .then(data => {
           dispatch({
             type: 'ADD_TO_PLAYLIST',
             payload: {
-              position: position,
+              position: newPositionn,
               details: {
                 uri: uri,
                 votes: 0,
@@ -234,3 +235,5 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     console.log('already on playlist!');
   }
 };
+
+// api.dosoemthing(arg, callback)
