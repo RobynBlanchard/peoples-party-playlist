@@ -7,7 +7,7 @@ import {
   handleVoteDecrease,
   handleVoteIncrease,
   resumePlayback,
-  pause,
+  pausePlayback,
   getCurrentlyPlayingTrack,
   setRecentlyClicked
 } from '../../actions';
@@ -78,7 +78,7 @@ class Playlist extends React.Component {
   }
 
   render() {
-    const { playlist, playing, resumePlayback, pause } = this.props;
+    const { playlist, playing, resumePlayback, pausePlayback } = this.props;
 
     if (playlist.length === 0) {
       return null;
@@ -89,7 +89,7 @@ class Playlist extends React.Component {
         <Heading
           text={'Party Playlist'}
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
-          handleClick={playing ? pause : resumePlayback}
+          handleClick={playing ? pausePlayback : resumePlayback}
         />
         {this.renderTracks(playlist)}
       </Container>
@@ -116,7 +116,7 @@ export default connect(
     handleVoteDecrease,
     handleVoteIncrease,
     resumePlayback,
-    pause,
+    pausePlayback,
     getCurrentlyPlayingTrack,
     setRecentlyClicked
   }

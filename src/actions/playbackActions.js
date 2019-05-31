@@ -38,7 +38,7 @@ export const resumePlayback = () => (dispatch, getState) => {
   }
 };
 
-export const pause = () => (dispatch, getState) => {
+export const pausePlayback = () => (dispatch, getState) => {
   const token = getState().auth.token;
 
   if (token) {
