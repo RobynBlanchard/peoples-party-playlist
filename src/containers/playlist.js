@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 
 import {
   fetchPlaylist,
@@ -10,17 +9,13 @@ import {
   pausePlayback,
   getCurrentlyPlayingTrack,
   setRecentlyClicked
-} from '../../actions';
-import Heading from './Heading';
-import Track from '../Track';
-import VoteDetails from './VoteDetails';
-import Icon from './Icon';
-import { media } from '../../styles';
+} from '../actions';
+import Heading from '../components/Heading';
+import Track from '../components/Track';
+import VoteDetails from '../components/VoteDetails';
+import Icon from '../components/Icon';
+import ContentContainer from '../components/ContentContainer';
 
-const Container = styled.div`
-  width: 70%;
-  ${media.desktop`width: 95%;`}
-`;
 
 class Playlist extends React.Component {
   componentDidMount() {
@@ -98,14 +93,14 @@ class Playlist extends React.Component {
     }
 
     return (
-      <Container>
+      <ContentContainer>
         <Heading
           text={'Party Playlist'}
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           handleClick={playing ? pausePlayback : resumePlayback}
         />
         {this.renderTracks(playlist)}
-      </Container>
+      </ContentContainer>
     );
   }
 }

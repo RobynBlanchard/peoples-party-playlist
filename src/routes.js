@@ -1,5 +1,5 @@
 import Playlists from './components/Playlists';
-import Playlist from './components/Playlist';
+import Playlist from './containers/playlist';
 import AuthButton from './components/Nav/AuthButton';
 
 export default [

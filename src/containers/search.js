@@ -1,17 +1,11 @@
 import React from 'react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 
-import { fetchSearchResults, addToPlaylist } from '../../actions';
-import { media } from '../../styles';
-import Track from '../Track';
-import CTAButton from './CTAButton';
-import SearchBar from './SearchBar';
-
-const Container = styled.div`
-  width: 70%;
-  ${media.desktop`width: 95%;`}
-`;
+import { fetchSearchResults, addToPlaylist } from '../actions';
+import Track from '../components/Track';
+import CTAButton from '../components/CTAButton';
+import SearchBar from '../components/SearchBar';
+import ContentContainer from '../components/ContentContainer';
 
 class Search extends React.Component {
   renderSearchResults() {
@@ -36,10 +30,10 @@ class Search extends React.Component {
 
   render() {
     return (
-      <Container>
+      <ContentContainer>
         <SearchBar onSubmit={this.props.fetchSearchResults} />
         {this.renderSearchResults()}
-      </Container>
+      </ContentContainer>
     );
   }
 }

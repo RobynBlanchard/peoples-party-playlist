@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import { colours, constants, fonts } from '../styles';
 import Playlists from './Playlists';
-import Playlist from './Playlist';
+import Playlist from '../containers/playlist';
 import Home from './Home';
 import Nav from './Nav';
-import Search from './Search';
+import Search from '../containers/search';
 import Test from './Test';
 
 
