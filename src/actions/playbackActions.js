@@ -1,5 +1,6 @@
 import { PLAY, PAUSE, START_SESSION } from './types';
 import apiInstance from '../api';
+import { playlistId } from '../utils/constants';
 
 export const startSession = () => {
   return {
@@ -14,7 +15,7 @@ export const resumePlayback = () => (dispatch, getState) => {
   if (token) {
     return apiInstance(token)
       .put('me/player/play', {
-        context_uri: 'spotify:playlist:1OZWEFHDuPYYuvjCVhryXV',
+        context_uri: `spotify:playlist:${playlistId}`,
         offset: {"position": 0}
       })
       .then(data => {
@@ -91,7 +92,7 @@ const removeTrack = (uri) => (dispatch, getState) => {
   if (token) {
     return (
       apiInstance(token)
-        .delete(`playlists/1OZWEFHDuPYYuvjCVhryXV/tracks`, {
+        .delete(`playlists/${playlistId}/tracks`, {
           data: {
             tracks: [{ uri }]
           }

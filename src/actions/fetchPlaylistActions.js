@@ -1,4 +1,5 @@
 import apiInstance from '../api';
+import { playlistId } from '../utils/constants';
 import {
   FETCH_USER,
   FETCH_PLAYLISTS,
@@ -72,15 +73,15 @@ export const fetchPlaylist = () => (dispatch, getState) => {
 
   if (token) {
     return apiInstance(token)
-      // .get(`playlists/3bIK2LomQ4bn3pnSLQa3hb`)
-      .get(`playlists/1OZWEFHDuPYYuvjCVhryXV`)
+      .get(`playlists/${playlistId}`)
       .then(data => {
         dispatch(dispatchPlaylist(data.data));
       })
       .catch(err => {
-        console.log('no user id', err);
+        console.log('fetch playlist failed', err);
       });
   } else {
-    console.log('fetchUser playlists failed, no token');
+    debugger;
+    console.log('fetch playlist failed, invalid token, please sign in');
   }
 };

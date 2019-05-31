@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { media } from '../../../styles/index.js';
+import { media } from '../../../styles';
 
 export const Wrapper = styled.div`
   display: flex;

@@ -221,6 +221,19 @@ const TextWrapper = styled.div`
   margin-left: auto;
   margin-right: 0;
 `;
+
+const upDown = keyframes`
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-50px) rotate(-5deg); }
+  100% { transform: translateY(0); }
+
+
+`
+
+const Bird = styled.img`
+  animation: 2s ${upDown} infinite;
+`
+
 const Test = () => {
   return (
     <div>
@@ -287,7 +300,7 @@ const Test = () => {
       <Parallax>
         <Static>
           <SectionTwo>
-            <img src="images/gull-bird-flying-shape.png" />
+            <Bird src="images/gull-bird-flying-shape.png" />
             {/* <Sun>
                 <RayBox>
                     <Ray1 class="ray ray1"></Ray1>

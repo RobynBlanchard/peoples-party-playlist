@@ -1,4 +1,5 @@
 import apiInstance from '../api';
+import { playlistId } from '../utils/constants';
 import {
   INCREASE_VOTE,
   DECREASE_VOTE,
@@ -38,7 +39,6 @@ export const removeFromPlaylist = position => ({
   payload: position
 });
 
-// rename as used for moving up and down
 const reOrderPlaylist = (range_start, insert_before, uri, action) => (
   dispatch,
   getState
@@ -47,7 +47,7 @@ const reOrderPlaylist = (range_start, insert_before, uri, action) => (
 
   if (token) {
     return apiInstance(token)
-      .put(`playlists/1OZWEFHDuPYYuvjCVhryXV/tracks`, {
+      .put(`playlists/${playlistId}/tracks`, {
         range_start,
         insert_before
       })
@@ -162,7 +162,7 @@ export const removeTrack = (uri, position) => (dispatch, getState) => {
     return (
       apiInstance(token)
         // TODO pass in playlist uri
-        .delete(`playlists/1OZWEFHDuPYYuvjCVhryXV/tracks`, {
+        .delete(`playlists/${playlistId}/tracks`, {
           data: {
             tracks: [{ uri }]
           }
@@ -209,7 +209,7 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     if (token) {
       return apiInstance(token)
         .post(
-          `playlists/1OZWEFHDuPYYuvjCVhryXV/tracks?uris=${uri}&position=${newPositionn}`
+          `playlists/${playlistId}/tracks?uris=${uri}&position=${newPositionn}`
         )
         .then(data => {
           dispatch({

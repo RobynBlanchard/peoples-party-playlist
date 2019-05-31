@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { fetchUser } from '../../../actions';
-import { colours, fonts } from '../../../styles/index.js';
+import { colours, fonts } from '../../../styles';
 
 const LogInButton = styled.a`
   height: 100%;

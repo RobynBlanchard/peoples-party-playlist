@@ -2,7 +2,7 @@ import { Switch, Route } from 'react-router-dom';
 import React from 'react';
 import styled from 'styled-components';
 
-import { colours, constants, fonts } from '../styles/index.js';
+import { colours, constants, fonts } from '../styles';
 import Playlists from './Playlists';
 import Playlist from './Playlist';
 import Home from './Home';

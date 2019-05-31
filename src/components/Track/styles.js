@@ -1,5 +1,5 @@
 import styled, { css, animation } from 'styled-components';
-import { media, colours } from '../../styles/index.js';
+import { media, colours } from '../../styles';
 
 export const Container = styled.li`
   list-style: none;

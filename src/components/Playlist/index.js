@@ -15,7 +15,7 @@ import Heading from './Heading';
 import Track from '../Track';
 import VoteDetails from './VoteDetails';
 import Icon from './Icon';
-import { media } from '../../styles/index.js';
+import { media } from '../../styles';
 
 const Container = styled.div`
   width: 70%;
@@ -24,19 +24,32 @@ const Container = styled.div`
 
 class Playlist extends React.Component {
   componentDidMount() {
-    if (this.props.playlist.length === 0) {
-      this.props.fetchPlaylist();
+    const { playlist, fetchPlaylist } = this.props;
+
+    if (playlist.length === 0) {
+      fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
   }
 
   getCurrentlyPlaying() {
-    if (this.props.sessionStarted) {
-      this.props.getCurrentlyPlayingTrack();
+    const { sessionStarted, getCurrentlyPlayingTrack } = this.props;
+
+    if (sessionStarted) {
+      getCurrentlyPlayingTrack();
     }
   }
 
   renderTracks(playlist) {
+    const {
+      playing,
+      sessionStarted,
+      recentlyClickedTrack,
+      handleVoteIncrease,
+      setRecentlyClicked,
+      handleVoteDecrease
+    } = this.props;
+
     let position = -1;
     return playlist.map(el => {
       position += 1;
@@ -47,8 +60,8 @@ class Playlist extends React.Component {
 
       if (position === 0) {
         isLocked =
-          this.props.playing ||
-          (this.props.sessionStarted && !this.props.playing);
+          playing ||
+          (sessionStarted && !playing);
       }
 
       return (
@@ -56,20 +69,20 @@ class Playlist extends React.Component {
           name={name}
           artist={artist}
           isLocked={isLocked}
-          shouldFocus={this.props.recentlyClickedTrack === uri}
+          shouldFocus={recentlyClickedTrack === uri}
           key={`${uri}-${position}`}
         >
           {isLocked ? (
-            <Icon isPlaying={this.props.playing} />
+            <Icon isPlaying={playing} />
           ) : (
             <VoteDetails
               position={position}
               uri={uri}
-              handleUpVote={this.props.handleVoteIncrease}
-              setRecentlyClicked={this.props.setRecentlyClicked}
-              handleDownVote={this.props.handleVoteDecrease}
+              handleUpVote={handleVoteIncrease}
+              setRecentlyClicked={setRecentlyClicked}
+              handleDownVote={handleVoteDecrease}
               votes={votes}
-              shouldFocus={this.props.recentlyClickedTrack === uri}
+              shouldFocus={recentlyClickedTrack === uri}
             />
           )}
         </Track>

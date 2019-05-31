@@ -11,8 +11,7 @@ const dispatchSearchResults = results => ({
 export const fetchSearchResults = searchTerm => (dispatch, getState) => {
   const token = getState().auth.token;
 
-  // const query = '?q=' + searchTerm + '&type=album,track,artist,playlist';
-  const query = '?q=' + searchTerm + '&type=track';
+  const query = '?q=' + searchTerm + '&type=album,track,artist,playlist';
 
   if (token) {
     return apiInstance(token)

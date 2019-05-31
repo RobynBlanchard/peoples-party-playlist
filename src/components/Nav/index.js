@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { media } from '../../styles/index.js';
+import { media } from '../../styles';
 
 import MobileNav from './MobileNav';
 import DesktopNav from './DesktopNav';
