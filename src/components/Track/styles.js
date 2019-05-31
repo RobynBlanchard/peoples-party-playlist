@@ -26,6 +26,7 @@ export const Container = styled.li`
         ${colours.secondaryLight}
       );
       color: ${colours.black};
+      ${media.tablet`border-radius: 24px;`}
     `}}
 
   ${({ lockedTrack }) =>
