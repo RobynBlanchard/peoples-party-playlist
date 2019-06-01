@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 
-import { fetchPlaylists, fetchUser, getUserAndPlayLists } from '../../actions';
+import { fetchPlaylists, fetchUser, getUserAndPlayLists } from '../actions';
 
 class Playlists extends React.Component {
   renderPlaylistNames() {
@@ -12,7 +11,7 @@ class Playlists extends React.Component {
   }
 
   render() {
-    const { userId, fetchUser, playlists } = this.props;
+    // const { userId, fetchUser, playlists } = this.props;
     return (
       <div>
         <h2>Playlists</h2>
