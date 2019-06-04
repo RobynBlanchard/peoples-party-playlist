@@ -12,8 +12,8 @@ const middleware = require('webpack-dev-middleware');
 const compiler = webpack(require('../webpack.config'));
 
 import createStore from './store';
-import { signIn, signOut } from './actions';
-import { logIn, loginCallback, logOut } from './Auth';
+import { logInSucess, logInFailure, logOut } from './actions';
+import { logIn, loginCallback, logOutHandler } from './Auth';
 import App from './components/App';
 import routes from './routes';
 
@@ -36,15 +36,18 @@ app.get('/*', (req, res) => {
   } else if (req.url.split('?')[0] === '/callback') {
     return loginCallback(req, res);
   } else if (req.url === '/log-out') {
-    store.dispatch(signOut());
-    return logOut(req, res);
+    store.dispatch(logOut());
+    return logOutHandler(req, res);
   } else if (req.url === '/change-user') {
     return logIn(req, res);
+  } else if (req.url === '/LogInFailure') {
+    store.dispatch(logInFailure('er'));
   }
+
 
   const token = req.cookies.spotifyAccessToken;
   if (token) {
-    store.dispatch(signIn({ token: token }));
+    store.dispatch(logInSucess(token));
   }
 
   const sheet = new ServerStyleSheet();

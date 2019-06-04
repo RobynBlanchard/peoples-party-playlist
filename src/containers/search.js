@@ -9,7 +9,7 @@ import ContentContainer from '../components/ContentContainer';
 
 class Search extends React.Component {
   renderSearchResults() {
-    return this.props.results.map(result => {
+    return this.props.results && this.props.results.map(result => {
       return (
         <Track
           name={result.name}

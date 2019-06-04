@@ -115,8 +115,8 @@ class AuthButton extends React.Component {
   }
 
   render() {
-    const { signedIn, userId } = this.props;
-    if (signedIn) {
+    const { token, userId } = this.props;
+    if (token) {
       return this.renderAccountButton(userId);
     }
     return this.renderLogInButton();
@@ -127,8 +127,8 @@ AuthButton.serverFetch = fetchUser;
 
 const mapStateToProps = state => {
   return {
-    signedIn: state.auth.signedIn,
-    userId: state.auth.userId
+    token: state.auth.token,
+    userId: state.user.userId
   };
 };
 

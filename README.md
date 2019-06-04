@@ -9,3 +9,4 @@
 <!-- use variables for colors etc. -->
 <!-- animate track focus effect for 5s only  -->
 <!-- when get currently playing check playlist is the same -->
+<!-- move nav to container -->

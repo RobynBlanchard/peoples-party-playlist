@@ -44,7 +44,7 @@ export const logIn = (req, res) => {
   res.redirect(authURL(state));
 };
 
-export const logOut = (req, res) => {
+export const logOutHandler = (req, res) => {
   res.clearCookie('spotifyAccessToken');
   res.clearCookie('spotifyRefreshToken');
   res.redirect('https://accounts.spotify.com/logout');

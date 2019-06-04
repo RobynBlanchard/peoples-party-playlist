@@ -1,7 +1,9 @@
 import React from 'react';
 import { VotesContent, VotesText, Button, Icon } from './styles';
 
-const handleClick = (uri, position, handleVote, setRecentlyClicked) => {
+
+
+const handleClick = (uri, position, handleVote, setRecentlyClicked, playlist, sessionStarted) => {
   handleVote(uri, position);
   setRecentlyClicked(uri);
 };
@@ -13,7 +15,9 @@ const VoteDetails = ({
   handleUpVote,
   handleDownVote,
   setRecentlyClicked,
-  shouldFocus
+  shouldFocus,
+  playlist,
+  sessionStarted
 }) => {
   return (
     <VotesContent>

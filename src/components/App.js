@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { colours, constants, fonts } from '../styles';
-import Playlists from './Playlists';
+import Playlists from '../containers/playlists';
 import Playlist from '../containers/playlist';
 import Home from './Home';
 import Nav from './Nav';

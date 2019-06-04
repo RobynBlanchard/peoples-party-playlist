@@ -1,4 +1,4 @@
-import Playlists from './components/Playlists';
+import Playlists from './containers/playlists';
 import Playlist from './containers/playlist';
 import AuthButton from './components/Nav/AuthButton';
 

@@ -8,7 +8,8 @@ import {
   resumePlayback,
   pausePlayback,
   getCurrentlyPlayingTrack,
-  setRecentlyClicked
+  setRecentlyClicked,
+  removeTrack
 } from '../actions';
 import Heading from '../components/Heading';
 import Track from '../components/Track';
@@ -28,10 +29,15 @@ class Playlist extends React.Component {
   }
 
   getCurrentlyPlaying() {
-    const { sessionStarted, getCurrentlyPlayingTrack } = this.props;
+    const { sessionStarted, getCurrentlyPlayingTrack, currentTrack, playlist, removeTrack } = this.props;
 
     if (sessionStarted) {
       getCurrentlyPlayingTrack();
+
+      const topTrack = playlist[0].uri;
+      if (currentTrack.uri && (currentTrack.uri !== topTrack)) {
+        removeTrack(topTrack, 0);
+      }
     }
   }
 
@@ -78,6 +84,8 @@ class Playlist extends React.Component {
               handleDownVote={handleVoteDecrease}
               votes={votes}
               shouldFocus={recentlyClickedTrack === uri}
+              playlist={playlist}
+              sessionStarted={sessionStarted}
             />
           )}
         </Track>
@@ -113,6 +121,7 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     sessionStarted: state.session.sessionStarted,
     currentlyPlaying: state.playback.currentPlayingTrack,
+    currentTrack: state.playback.currentTrack,
     recentlyClickedTrack: state.recentlyClicked.recentlyClickedTrack
   };
 };
@@ -121,6 +130,7 @@ export default connect(
   mapStateToProps,
   {
     fetchPlaylist,
+    removeTrack,
     handleVoteDecrease,
     handleVoteIncrease,
     resumePlayback,

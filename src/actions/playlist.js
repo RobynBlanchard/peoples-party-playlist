@@ -1,11 +1,17 @@
-import apiInstance from '../api';
+import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import {
   INCREASE_VOTE,
   DECREASE_VOTE,
+  REORDER_TRACK,
+  REORDER_TRACK_SUCCESS,
+  REORDER_TRACK_FAILURE,
   MOVE_UP_PlAYLIST,
   MOVE_DOWN_PlAYLIST,
-  REMOVE_FROM_PLAYLIST
+  REMOVE_FROM_PLAYLIST,
+  REMOVE_TRACK,
+  REMOVE_TRACK_SUCCESS,
+  REMOVE_TRACK_FAILURE
 } from './types';
 
 export const increaseVote = uri => ({
@@ -39,34 +45,15 @@ export const removeFromPlaylist = position => ({
   payload: position
 });
 
-const reOrderPlaylist = (range_start, insert_before, uri, action) => (
-  dispatch,
-  getState
-) => {
-  const token = getState().auth.token;
-
-  if (token) {
-    return apiInstance(token)
-      .put(`playlists/${playlistId}/tracks`, {
-        range_start,
-        insert_before
-      })
-      .then(data => {
-        if (action === 'up') {
-          dispatch(moveUp(range_start, insert_before));
-          dispatch(increaseVote(uri));
-        } else {
-          dispatch(moveDown(range_start, insert_before));
-          dispatch(decreaseVote(uri));
-        }
-      })
-      .catch(err => {
-        console.log('no user id', err);
-      });
-  } else {
-    console.log(`move track ${action} the playlist failed, no token`);
-  }
-};
+export const reOrderTrack = (range_start, insert_before) => ({
+  types: [REORDER_TRACK, REORDER_TRACK_SUCCESS, REORDER_TRACK_FAILURE],
+  callAPI: token =>
+    spotifyApi(token).put(`playlists/${playlistId}/tracks`, {
+      range_start,
+      insert_before
+    }),
+  payload: { range_start, insert_before }
+});
 
 const updatedTrackPosition = (
   position,
@@ -84,25 +71,33 @@ const updatedTrackPosition = (
   return position;
 };
 
-export const handleVoteIncrease = (uri, position) => (
-  dispatch,
-  getState
-) => {
-  const currentPlaylist = getState().playlists.playlist;
-  const topMoveablePosition = getState().session.sessionStarted ? 1 : 0;
-  const allTracksAboveUpVotedTrack = currentPlaylist.slice(
+const positionToMoveTo = (playlist, sessionStarted, position) => {
+  const topMoveablePosition = sessionStarted ? 1 : 0;
+  const allTracksAboveUpVotedTrack = playlist.slice(
     topMoveablePosition,
     position
   );
-  const upVotedTrackNumVotes = currentPlaylist[position].votes + 1;
+  const upVotedTrackNumVotes = playlist[position].votes + 1;
 
-  const positionToMoveTo = updatedTrackPosition(
+  return updatedTrackPosition(
     position,
     allTracksAboveUpVotedTrack,
     upVotedTrackNumVotes,
     topMoveablePosition
   );
-  return dispatch(reOrderPlaylist(position, positionToMoveTo, uri, 'up'));
+};
+
+export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
+  const playlist = getState().playlists.playlist;
+  const sessionStarted = getState().session.sessionStarted;
+
+  const newPosition = positionToMoveTo(playlist, sessionStarted, position);
+
+  dispatch(reOrderTrack(position, newPosition)).then(data => {
+    if (data.type === REORDER_TRACK_SUCCESS) {
+      return dispatch(increaseVote(uri));
+    }
+  });
 };
 
 const updatedTrackPositionForDownVote = (
@@ -127,12 +122,7 @@ const updatedTrackPositionForDownVote = (
   return position;
 };
 
-
-
-export const handleVoteDecrease = (uri, position) => (
-  dispatch,
-  getState
-) => {
+export const handleVoteDecrease = (uri, position) => (dispatch, getState) => {
   const currentPlaylist = getState().playlists.playlist;
   const allTracksBelowDownVotedTrack = currentPlaylist.slice(
     position + 1,
@@ -150,39 +140,50 @@ export const handleVoteDecrease = (uri, position) => (
     allTracksBelowDownVotedTrack,
     newNumberOfVotes
   );
-
-  return dispatch(reOrderPlaylist(position, positionToMoveTo, uri, 'down'));
+  dispatch(reOrderTrack(position, positionToMoveTo)).then(data => {
+    if (data.type === REORDER_TRACK_SUCCESS) {
+      return dispatch(decreaseVote(uri));
+    }
+  });
 };
+
+export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
+  types: [REMOVE_TRACK, REMOVE_TRACK_SUCCESS, REMOVE_TRACK_FAILURE],
+  callAPI: token =>
+    spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
+      data: {
+        tracks: [{ uri }]
+      }
+    }),
+  payload: { position }
+});
 
 export const removeTrack = (uri, position) => (dispatch, getState) => {
-  const token = getState().auth.token;
-
-  if (token) {
-    return (
-      apiInstance(token)
-        // TODO pass in playlist uri
-        .delete(`playlists/${playlistId}/tracks`, {
-          data: {
-            tracks: [{ uri }]
-          }
-        })
-        .then(data => {
-          dispatch(removeFromPlaylist(position || 0));
-          if (uri) {
-            return dispatch(decreaseVote(uri));
-          }
-        })
-        .catch(err => {
-          console.log('no user id', err);
-        })
-    );
-  } else {
-    console.log(`remove track failed`);
-  }
+  dispatch(removeTrackFromSpotifyPlaylist(uri, position)).then(data => {
+    if (data.type === REMOVE_TRACK_SUCCESS) {
+      // To force refresh ?
+      return dispatch(decreaseVote(uri));
+    }
+  });
 };
 
+export const addToSpotifyPlaylist = (uri, position, details) => ({
+  types: [
+    'ADD_TO_PLAYLIST',
+    'ADD_TO_PLAYLIST_SUCCESS',
+    'ADD_TO_PLAYLIST_FAILURE'
+  ],
+  callAPI: token =>
+    spotifyApi(token).post(
+      `playlists/${playlistId}/tracks?uris=${uri}&position=${position}`
+    ),
+  payload: {
+    position,
+    details
+  }
+});
+
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
-  const token = getState().auth.token;
   const playlist = getState().playlists.playlist;
 
   const trackFoundInPlaylist = playlist.findIndex(el => el.uri === uri);
@@ -197,42 +198,19 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
         for (let i = 0; i < len; i++) {
           if (playlist[len - 1 - i].votes >= votes) {
             position = len - i;
-            return position
+            return position;
           }
         }
       }
       return position;
-    }
+    };
     const newPositionn = positionToMoveTo(playlist, 0);
-
-    if (token) {
-      return apiInstance(token)
-        .post(
-          `playlists/${playlistId}/tracks?uris=${uri}&position=${newPositionn}`
-        )
-        .then(data => {
-          dispatch({
-            type: 'ADD_TO_PLAYLIST',
-            payload: {
-              position: newPositionn,
-              details: {
-                uri: uri,
-                votes: 0,
-                name: name,
-                artist: artist
-              }
-            }
-          });
-        })
-        .catch(err => {
-          console.log('no user id', err);
-        });
-    } else {
-      console.log(`add to playlist failed`);
-    }
-  } else {
-    console.log('already on playlist!');
+    const details = {
+      uri: uri,
+      votes: 0,
+      name: name,
+      artist: artist
+    };
+    return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
   }
 };
-
-// api.dosoemthing(arg, callback)

@@ -1,117 +1,53 @@
-import { PLAY, PAUSE, START_SESSION } from './types';
-import apiInstance from '../api';
+import {
+  START_SESSION,
+  RESUME_PLAYBACK,
+  RESUME_PLAYBACK_SUCCESS,
+  RESUME_PLAYBACK_FAILURE,
+  PAUSE_PLAYBACK,
+  PAUSE_PLAYBACK_SUCCESS,
+  PAUSE_PLAYBACK_FAILURE,
+  GET_CURRENTLY_PLAYING,
+  GET_CURRENTLY_PLAYING_SUCCESS,
+  GET_CURRENTLY_PLAYING_FAILURE
+} from './types';
+import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 
 export const startSession = () => {
   return {
     type: START_SESSION,
     payload: true
-  }
+  };
 };
 
-export const resumePlayback = () => (dispatch, getState) => {
-  const token = getState().auth.token;
-
-  if (token) {
-    return apiInstance(token)
-      .put('me/player/play', {
-        context_uri: `spotify:playlist:${playlistId}`,
-        offset: {"position": 0}
-      })
-      .then(data => {
-        console.log('play action')
-        dispatch({
-          type: 'PLAY'
-        });
-        if (!getState().session.sessionStarted) {
-          dispatch({
-            type: START_SESSION,
-            payload: true,
-          });
-        }
-
-      })
-      .catch(err => {
-        console.log('play/resume playback failed', err);
-      });
-  } else {
-    console.log('play/resume playback failed, no token');
-  }
-};
-
-export const pausePlayback = () => (dispatch, getState) => {
-  const token = getState().auth.token;
-
-  if (token) {
-    return apiInstance(token)
-      .put('me/player/pause')
-      .then(data => {
-        dispatch({
-          type: 'PAUSE'
-        });
-      })
-      .catch(err => {
-        console.log('pause playback failed', err);
-      });
-  } else {
-    console.log('pause playback failed, no token');
-  }
-};
-
-export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
-  const token = getState().auth.token;
-  if (token) {
-    return apiInstance(token)
-      .get('me/player/currently-playing')
-      .then(data => {
-        const topSong = getState().playlists.playlist[0].uri;
-        const currentSong = data.data.item.uri;
-
-        if (topSong !== currentSong) {
-          return dispatch(removeTrack(topSong))
-        }
-      })
-      .catch(err => {
-        console.log('get currently playing failed', err);
-      });
-  } else {
-    console.log('get currently playing failed, no token');
-  }
-
-}
-
-export const removeFromPlaylist = position => ({
-  type: 'REMOVE_FROM_PLAYLIST',
-  payload: position
+export const resumePlaybackSpotify = playbackPosition => ({
+  types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
+  callAPI: token =>
+    spotifyApi(token).put('me/player/play', {
+      context_uri: `spotify:playlist:${playlistId}`,
+      offset: { position: 0 },
+      position_ms: playbackPosition
+    })
 });
 
-// duplicated in playlist actions!!!
-const removeTrack = (uri) => (dispatch, getState) => {
-  const token = getState().auth.token;
-
-  if (token) {
-    return (
-      apiInstance(token)
-        .delete(`playlists/${playlistId}/tracks`, {
-          data: {
-            tracks: [{ uri }]
-          }
-        })
-        .then(data => {
-          dispatch(removeFromPlaylist(0));
-          return dispatch({
-            type: 'CURRENTLY_PLAYING',
-            payload: {
-              uri: uri
-            }
-          });
-        })
-        .catch(err => {
-          console.log('no user id', err);
-        })
-    );
-  } else {
-
-    console.log(`remove track failed`);
-  }
+export const resumePlayback = () => (dispatch, getState) => {
+  const playbackPosition = getState().playback.currentTrack.progress_ms;
+  dispatch(resumePlaybackSpotify(playbackPosition)).then(data => {
+    if (!getState().session.sessionStarted) {
+      dispatch(startSession());
+    }
+  });
 };
+export const pausePlayback = () => ({
+  types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
+  callAPI: token => spotifyApi(token).put('me/player/pause')
+});
+
+export const getCurrentlyPlayingTrack = () => ({
+  types: [
+    GET_CURRENTLY_PLAYING,
+    GET_CURRENTLY_PLAYING_SUCCESS,
+    GET_CURRENTLY_PLAYING_FAILURE
+  ],
+  callAPI: token => spotifyApi(token).get('me/player/currently-playing')
+});

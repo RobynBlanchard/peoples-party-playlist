@@ -1,5 +1,7 @@
 import {
-  FETCH_SEARCH_RESULTS
+  FETCH_SEARCH_RESULTS,
+  FETCH_SEARCH_RESULTS_SUCCESS,
+  FETCH_SEARCH_RESULTS_FAILURE
 } from '../actions/types';
 
 const defaultState = {
@@ -8,9 +10,10 @@ const defaultState = {
 
 const searchReducer = (state = defaultState, action) => {
   switch (action.type) {
-    case FETCH_SEARCH_RESULTS:
+    case FETCH_SEARCH_RESULTS_SUCCESS:
+      // TODO: not just return tracks
       return {
-        results: action.payload.items
+        results: action.response.tracks.items
       };
 
     default:

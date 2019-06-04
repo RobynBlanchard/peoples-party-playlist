@@ -1,27 +1,42 @@
-import { PLAY, PAUSE } from '../actions/types';
+import {
+  RESUME_PLAYBACK,
+  RESUME_PLAYBACK_SUCCESS,
+  RESUME_PLAYBACK_FAILURE,
+  PAUSE_PLAYBACK,
+  PAUSE_PLAYBACK_SUCCESS,
+  PAUSE_PLAYBACK_FAILURE,
+  GET_CURRENTLY_PLAYING_SUCCESS
+} from '../actions/types';
 
 const defaultState = {
   playing: false,
-  currentPlayingTrack: ''
+  currentPlayingTrack: '',
+  currentTrack: {
+    progress_ms: null,
+    uri: '',
+  }
 };
 
 const playBackReducer = (state = defaultState, action) => {
   switch (action.type) {
-    case PLAY:
+    case RESUME_PLAYBACK_SUCCESS:
       return {
         ...state,
         playing: true
       };
-    case PAUSE:
+    case PAUSE_PLAYBACK_SUCCESS:
       return {
         ...state,
         playing: false
       };
-    case 'CURRENTLY_PLAYING':
+    case GET_CURRENTLY_PLAYING_SUCCESS:
       return {
         ...state,
-        currentPlayingTrack: action.payload.uri
+        currentTrack: {
+          progress_ms: action.response.progress_ms,
+          uri: action.response.item.uri
       }
+    }
     default:
       return state;
   }

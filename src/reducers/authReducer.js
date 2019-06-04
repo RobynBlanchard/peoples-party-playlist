@@ -2,6 +2,8 @@ import { SIGN_IN, SIGN_OUT, FETCH_USER } from '../actions/types';
 
 const defaultState = {
   signedIn: false,
+  loading: false,
+  error: null,
   token: '',
   userId: ''
 };
@@ -23,8 +25,17 @@ const authReducer = (state = defaultState, action) => {
     case FETCH_USER:
       return {
         ...state,
-        userId: action.payload
+        loading: true,
+        // userId: action.payload
+        // userId: action.payload.display_name
+
       };
+    case 'FETCH_USER_SUCCESS':
+          return {
+            ...state,
+            // loading: false, TODO:
+            userId: action.response.display_name
+          };
     default:
       return state;
   }

@@ -26,6 +26,8 @@ const saveState = (state, stateName) => {
   }
 };
 
+import { callAPIMiddleware } from './actions/callAPIMiddleware';
+
 const configureStore = initialState => {
   // const persistedState = loadState('playlist');
 
@@ -33,7 +35,7 @@ const configureStore = initialState => {
   //   initialState.playlists.playlist = persistedState.playlist || [];
   // }
 
-  const store = applyMiddleware(thunkMiddleWare)(createStore)(
+  const store = applyMiddleware(callAPIMiddleware)(createStore)(
     reducer,
     initialState
   );
