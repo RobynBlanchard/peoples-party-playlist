@@ -43,6 +43,11 @@ class SectionTwo extends React.Component {
     window.addEventListener('scroll', this.listenScrollEvent);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.listenScrollEvent);
+
+  }
+
   render() {
     const content = [
       {
