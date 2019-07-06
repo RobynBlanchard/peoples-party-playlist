@@ -8,6 +8,7 @@ const Wrapper = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+
 `;
 
 const Button = styled.button`
@@ -18,18 +19,25 @@ const Button = styled.button`
   font: inherit;
   cursor: pointer;
   outline: inherit;
+  font-size: 24px;
+
+  &:active > p {
+    transform: scale(0.8);
+  }
+
+  &:after > p {
+    transform: scale(1);
+  }
 `;
 
-const Icon = styled.img`
-  height: 20px;
-  width: 20px;
-`;
+
 
 const CTAButton = ({handleClick, img, uri, name, artist}) => {
+  console.log('herer')
   return (
     <Wrapper>
       <Button onClick={() => handleClick(uri, name, artist)}>
-        <Icon src={`images/${img}.svg`} />
+        <p> + </p>
       </Button>
     </Wrapper>
   );
