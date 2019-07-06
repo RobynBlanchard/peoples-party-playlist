@@ -17,6 +17,9 @@ const SearchInput = styled.input`
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
   outline: none;
   padding: 8px 16px;
+  font-size: 16px;
+  color: white;
+
 
   &:focus-within {
     background-color: ${colours.secondaryDark};
