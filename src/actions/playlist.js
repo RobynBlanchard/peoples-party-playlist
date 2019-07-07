@@ -187,7 +187,6 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   const playlist = getState().playlists.playlist;
 
   const trackFoundInPlaylist = playlist.findIndex(el => el.uri === uri);
-
   if (trackFoundInPlaylist === -1) {
     const positionToMoveTo = (playlist, votes) => {
       let position = 0;
@@ -213,4 +212,8 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     };
     return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
   }
+  return dispatch({
+    type: 'ADD_TO_PLAYLIST_FAILURE',
+    payload: 'Track already on playlist',
+  })
 };

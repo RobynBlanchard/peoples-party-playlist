@@ -29,6 +29,9 @@ class Search extends React.Component {
   }
 
   render() {
+    if (this.props.error) {
+      alert(this.props.error)
+    }
     return (
       <ContentContainer>
         <SearchBar onSubmit={this.props.fetchSearchResults} />
@@ -40,7 +43,8 @@ class Search extends React.Component {
 
 const mapStateTopProps = state => {
   return {
-    results: state.search.results
+    results: state.search.results,
+    error: state.playlists.error,
   };
 };
 

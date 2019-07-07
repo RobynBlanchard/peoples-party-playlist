@@ -146,6 +146,11 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         playlist: playlist
       };
+    case 'ADD_TO_PLAYLIST_FAILURE':
+      return {
+        ...state,
+        error: action.payload
+      };
     default:
       return state;
   }
