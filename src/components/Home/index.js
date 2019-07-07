@@ -14,7 +14,8 @@ const Wrap = styled.div`
 `;
 
 const Parallax = styled.div`
-  background-image: url('images/vinyl.jpg');
+  /* background-image: url('images/vinyl.jpg'); */
+  background-image:linear-gradient(to right bottom,#212121,#000000);
   height: 85vh;
 
   background-attachment: fixed;
