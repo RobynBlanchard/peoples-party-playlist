@@ -20,7 +20,7 @@ const AppContainer = styled.div`
   /* background-image: linear-gradient(to right bottom,#e0e0e0,#bdbdbd); */
   /* background-image: linear-gradient(to right bottom,#212121,#424242); */
   background-image: linear-gradient(to right bottom, ${colours.primaryDark}, ${colours.primaryLight});
-
+  min-height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
