@@ -212,6 +212,9 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     };
     return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
   }
+
+  alert('Track already on playlist');
+
   return dispatch({
     type: 'ADD_TO_PLAYLIST_FAILURE',
     payload: 'Track already on playlist',

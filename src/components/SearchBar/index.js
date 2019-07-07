@@ -20,11 +20,9 @@ const SearchInput = styled.input`
   font-size: 16px;
   color: white;
 
-
   &:focus-within {
     background-color: ${colours.secondaryDark};
     color: ${colours.black};
-
   }
 
   background: url('images/search.svg') top left no-repeat;
@@ -35,8 +33,8 @@ class SearchBar extends Component {
   state = { searchTerm: '' };
 
   searchTermChange = e => {
-    this.props.onSubmit(e.target.value);
     this.setState({ searchTerm: e.target.value });
+    this.props.onSubmit(e.target.value);
   };
 
   onFormSubmit = e => {
@@ -52,7 +50,7 @@ class SearchBar extends Component {
             type="text"
             value={this.state.searchTerm}
             onChange={this.searchTermChange}
-            placeholder={"search for an artist, song or album"}
+            placeholder={'search by artist, song or album'}
           />
         </form>
       </Wrapper>

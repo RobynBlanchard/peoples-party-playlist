@@ -144,7 +144,8 @@ const playlistsReducer = (state = defaultState, action) => {
       playlist.splice(action.position, 0, action.details);
       return {
         ...state,
-        playlist: playlist
+        playlist: playlist,
+        error: null,
       };
     case 'ADD_TO_PLAYLIST_FAILURE':
       return {
