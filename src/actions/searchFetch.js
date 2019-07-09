@@ -17,7 +17,10 @@ export const dispatchFetchSearchResults = query => ({
 
 export const fetchSearchResults = searchTerm => (dispatch, getState) => {
   if (searchTerm) {
-    const query = '?q=' + searchTerm + '&type=album,track,artist,playlist';
+    const termWithSpacesEncoded = searchTerm.replace(' ', '%20');
+    const termWithWildCard = termWithSpacesEncoded + '*';
+    const query =
+      '?q=' + termWithWildCard + '&type=album,track,artist,playlist';
     return dispatch(dispatchFetchSearchResults(query));
   }
 
