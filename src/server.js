@@ -30,8 +30,9 @@ app.use(cookieParser());
 app.get('/*', (req, res) => {
   const context = {};
   const store = createStore();
-
+  // let referer = req.headers.referer;
   if (req.url === '/login') {
+
     return logIn(req, res);
   } else if (req.url.split('?')[0] === '/callback') {
     return loginCallback(req, res);
@@ -42,6 +43,7 @@ app.get('/*', (req, res) => {
     return logIn(req, res);
   } else if (req.url === '/LogInFailure') {
     store.dispatch(logInFailure('er'));
+    // res.redirect(referer);
   }
 
 

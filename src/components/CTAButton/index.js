@@ -33,7 +33,6 @@ const Button = styled.button`
 
 
 const CTAButton = ({handleClick, img, uri, name, artist}) => {
-  console.log('herer')
   return (
     <Wrapper>
       <Button onClick={() => handleClick(uri, name, artist)}>

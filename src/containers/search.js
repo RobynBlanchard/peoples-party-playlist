@@ -8,6 +8,7 @@ import SearchBar from '../components/SearchBar';
 import ContentContainer from '../components/ContentContainer';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorIndicator from '../components/ErrorIndicator';
+import requireAuth from './requireAuth';
 
 class Search extends React.Component {
   renderSearchResults() {
@@ -58,7 +59,9 @@ const mapStateTopProps = state => {
   };
 };
 
-export default connect(
-  mapStateTopProps,
-  { fetchSearchResults, addToPlaylist }
-)(Search);
+export default requireAuth(
+  connect(
+    mapStateTopProps,
+    { fetchSearchResults, addToPlaylist }
+  )(Search)
+);

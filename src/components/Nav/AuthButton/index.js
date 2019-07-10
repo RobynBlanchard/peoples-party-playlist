@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { fetchUser } from '../../../actions';
 import { colours, fonts } from '../../../styles';
@@ -21,8 +21,6 @@ const LogInButton = styled.a`
 
 const LinkContainer = styled.div`
   padding: 14px 16px;
-  border-right: none;
-  border-left: 1px solid #bbb;
   display: block;
   text-align: center;
   padding: 16px 16px;
@@ -34,7 +32,6 @@ const LinkContainer = styled.div`
 
   &:hover {
     background-color: ${colours.primaryLight};
-    border-bottom: solid ${colours.spotifyBlack} 1px;
   }
 `;
 
@@ -48,33 +45,30 @@ const DropBtn = styled.button`
 
   &:hover {
     background-color: ${colours.primaryLight};
-    border-bottom: solid ${colours.spotifyBlack} 1px;
   }
 `;
 
 const DropDownContent = styled.div`
   display: none;
   position: absolute;
-  background-color: ${colours.primaryLight};
+  background-color: ${colours.primaryDark};
+
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
   text-align: left;
-  border-left: none ;
 `;
 
 const Dropdown = styled.div`
   position: relative;
   display: inline-block;
-  border-left: 1px solid #bbb;
   font-family: ${fonts.font1};
 
-
   &:hover {
-    background-color: ${colours.primaryLight};
-    border-bottom: solid ${colours.spotifyBlack} 1px;
+    background-color: ${colours.primaryDark};
+    border-bottom: solid ${colours.primaryDark} 1px;
     ${DropDownContent} {
-      display:block;
+      display: block;
     }
   }
 `;
@@ -86,7 +80,8 @@ const Anchor = styled.a`
   display: block;
 
   &:hover {
-    background-color: ${colours.secondaryLight};
+    background-color: ${colours.primaryDark};
+
     color: ${colours.black};
   }
 `;

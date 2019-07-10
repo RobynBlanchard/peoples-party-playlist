@@ -16,7 +16,7 @@ import Track from '../components/Track';
 import VoteDetails from '../components/VoteDetails';
 import Icon from '../components/Icon';
 import ContentContainer from '../components/ContentContainer';
-
+import requireAuth from './requireAuth';
 
 class Playlist extends React.Component {
   componentDidMount() {
@@ -29,13 +29,19 @@ class Playlist extends React.Component {
   }
 
   getCurrentlyPlaying() {
-    const { sessionStarted, getCurrentlyPlayingTrack, currentTrack, playlist, removeTrack } = this.props;
+    const {
+      sessionStarted,
+      getCurrentlyPlayingTrack,
+      currentTrack,
+      playlist,
+      removeTrack
+    } = this.props;
 
     if (sessionStarted) {
       getCurrentlyPlayingTrack();
 
       const topTrack = playlist[0].uri;
-      if (currentTrack.uri && (currentTrack.uri !== topTrack)) {
+      if (currentTrack.uri && currentTrack.uri !== topTrack) {
         removeTrack(topTrack, 0);
       }
     }
@@ -60,9 +66,7 @@ class Playlist extends React.Component {
       let isLocked;
 
       if (position === 0) {
-        isLocked =
-          playing ||
-          (sessionStarted && !playing);
+        isLocked = playing || (sessionStarted && !playing);
       }
 
       return (
@@ -126,16 +130,18 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  {
-    fetchPlaylist,
-    removeTrack,
-    handleVoteDecrease,
-    handleVoteIncrease,
-    resumePlayback,
-    pausePlayback,
-    getCurrentlyPlayingTrack,
-    setRecentlyClicked
-  }
-)(Playlist);
+export default requireAuth(
+  connect(
+    mapStateToProps,
+    {
+      fetchPlaylist,
+      removeTrack,
+      handleVoteDecrease,
+      handleVoteIncrease,
+      resumePlayback,
+      pausePlayback,
+      getCurrentlyPlayingTrack,
+      setRecentlyClicked
+    }
+  )(Playlist)
+);

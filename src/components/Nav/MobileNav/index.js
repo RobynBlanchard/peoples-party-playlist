@@ -22,13 +22,12 @@ const LinkWrapper = styled.div`
     display: block;
     color: ${colours.spotifyWhite};
 
-
     &:hover {
       background-color: ${colours.secondaryLight};
       color: ${colours.black};
     }
   }
-`
+`;
 
 const NavLinks = styled.div`
   display: ${props => (props.open ? 'block' : 'none')};
@@ -55,19 +54,29 @@ class MobileNav extends React.Component {
     this.setState({ mobileOpen: !this.state.mobileOpen });
   };
 
+  renderProtectedRoutes = () => {
+    console.log('render routes')
+    return (
+      <>
+        <LinkWrapper>
+          <Link to="/playlist">Playlist</Link>
+        </LinkWrapper>
+        <LinkWrapper>
+          <Link to="/search">Search</Link>
+        </LinkWrapper>
+      </>
+    );
+  };
+
   render() {
+    const { token } = this.props;
     return (
       <NavWrapper>
         <TopLinkWrapper>
           <Link to="/">{/* Logo */}</Link>
         </TopLinkWrapper>
         <NavLinks open={this.state.mobileOpen}>
-          <LinkWrapper>
-            <Link to="/playlist">Playlist</Link>
-          </LinkWrapper>
-          <LinkWrapper>
-            <Link to="/search">Search</Link>
-          </LinkWrapper>
+          {token && this.renderProtectedRoutes()}
           <LinkWrapper>
             <Link to="/log-out">Log out</Link>
           </LinkWrapper>

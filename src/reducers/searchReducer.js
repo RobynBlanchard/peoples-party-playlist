@@ -14,11 +14,15 @@ const defaultState = {
 const searchReducer = (state = defaultState, action) => {
   switch (action.type) {
     case FETCH_SEARCH_RESULTS:
+        console.log('fetch')
+
       return {
         ...state,
         loading: true
       };
     case FETCH_SEARCH_RESULTS_SUCCESS:
+      console.log('sucess')
+      console.log(action)
       return {
         results: action.response.tracks.items,
         loading: false,
@@ -31,6 +35,7 @@ const searchReducer = (state = defaultState, action) => {
         error: action
       };
     case CLEAR_RESULTS:
+      console.log('clear results')
       return {
         results: [],
         loading: false,

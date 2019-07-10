@@ -6,19 +6,15 @@ import { colours, constants, fonts } from '../styles';
 import Playlists from '../containers/playlists';
 import Playlist from '../containers/playlist';
 import Home from './Home';
-import Nav from './Nav';
 import Search from '../containers/search';
 import Test from './Test';
-
+import Nav from '../containers/nav';
 
 const AppContainer = styled.div`
   margin-right: auto;
   margin-left: auto;
   font-family: ${fonts.font1};
   color: ${colours.spotifyWhite};
-  /* background: linear-gradient(#540909, #022147); */
-  /* background-image: linear-gradient(to right bottom,#e0e0e0,#bdbdbd); */
-  /* background-image: linear-gradient(to right bottom,#212121,#424242); */
   background-image: linear-gradient(to right bottom, ${colours.primaryDark}, ${colours.primaryLight});
   min-height: 100vh;
   width: 100%;

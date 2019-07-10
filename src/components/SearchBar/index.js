@@ -4,8 +4,7 @@ import { colours } from '../../styles';
 
 const Wrapper = styled.div`
   text-align: center;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin: 8px 0;
 `;
 
 const SearchInput = styled.input`
@@ -16,40 +15,42 @@ const SearchInput = styled.input`
   box-shadow: white;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
   outline: none;
-  padding: 8px 16px;
+  padding: 8px 16px 8px 48px;
   font-size: 16px;
   color: white;
+  background: url('images/search.svg') top left no-repeat;
 
   &:focus-within {
     background-color: ${colours.secondaryDark};
     color: ${colours.black};
   }
-
-  background: url('images/search.svg') top left no-repeat;
-  padding-left: 48px;
 `;
 
 class SearchBar extends Component {
   state = { searchTerm: '' };
 
-  searchTermChange = e => {
+  handleSearchTermChange = e => {
+    console.log('e.target.value', e.target.value)
+    console.log('handle search term change')
     this.setState({ searchTerm: e.target.value });
     this.props.onSubmit(e.target.value);
   };
 
-  onFormSubmit = e => {
+  // remove ?
+  handleFormSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state.searchTerm);
+    this.props.onSubmit(e.target.value);
+    // this.props.onSubmit(this.state.searchTerm);
   };
 
   render() {
     return (
       <Wrapper>
-        <form onSubmit={this.onFormSubmit}>
+        <form onSubmit={this.handleFormSubmit}>
           <SearchInput
             type="text"
             value={this.state.searchTerm}
-            onChange={this.searchTermChange}
+            onChange={this.handleSearchTermChange}
             placeholder={'search by artist, song or album'}
           />
         </form>

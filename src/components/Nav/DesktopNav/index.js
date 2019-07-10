@@ -27,14 +27,21 @@ const List = styled.ul`
   margin: 0;
   padding: 0;
   height: 100%;
-  border-left: 1px solid #bbb;
 `;
 
 const ListItem = styled.li`
   float: left;
   height: 100%;
-  border-right: 1px solid #bbb;
   position: relative;
+
+  background: linear-gradient(
+    to top,
+    ${colours.primaryDark} 50%,
+    ${colours.spotifyBlack} 50%
+  );
+  background-size: 200% 200%;
+  background-position: top;
+  transition: background 1s ease;
 
   & > a {
     display: block;
@@ -44,9 +51,11 @@ const ListItem = styled.li`
     text-decoration: none;
   }
 
-  & > a:hover {
-    background-color: ${colours.primaryLight};
-    border-bottom: solid ${colours.spotifyBlack} 1px;
+  &:hover {
+    background-color: ${colours.primaryDark};
+    border-bottom: solid ${colours.primaryDark} 1px;
+
+    background-position: bottom;
   }
 
   & > a:active {
@@ -54,7 +63,22 @@ const ListItem = styled.li`
   }
 `;
 
-const Nav = ({ colour, logo }) => {
+const Nav = ({ token }) => {
+  const renderProtectedRoutes = () => {
+    if (token) {
+      return (
+        <>
+          <ListItem>
+            <Link to="/playlist">Test Playlist</Link>
+          </ListItem>
+          <ListItem>
+            <Link to="/search">Search</Link>
+          </ListItem>
+        </>
+      );
+    }
+  };
+
   return (
     <Container>
       <ContentWrapper>
@@ -62,12 +86,7 @@ const Nav = ({ colour, logo }) => {
           <ListItem>
             <Link to="/">Home</Link>
           </ListItem>
-          <ListItem>
-            <Link to="/playlist">Test Playlist</Link>
-          </ListItem>
-          <ListItem>
-            <Link to="/search">Search</Link>
-          </ListItem>
+          {token && renderProtectedRoutes()}
           <ListItem style={{ float: 'right' }}>
             <AuthButton />
           </ListItem>
