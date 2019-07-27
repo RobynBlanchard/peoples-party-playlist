@@ -14,6 +14,17 @@ const NavWrapper = styled.div`
   z-index: 1;
 `;
 
+const Chevron = styled.div`
+  transform: ${props => props.shouldRotate && 'rotate(180deg)'};
+  transition: all 0.5s;
+`;
+
+const DropDownContent = styled.div`
+  display: ${props => (props.open ? 'block !important;`' : 'none')};
+  background-color: ${colours.secondaryLight};
+  opacity: 0.8;
+`;
+
 const LinkWrapper = styled.div`
   & > a {
     padding: 14px 16px;
@@ -47,11 +58,33 @@ const TopLinkWrapper = styled.div`
   height: 50px;
 `;
 
-class MobileNav extends React.Component {
-  state = { mobileOpen: false };
+const HomeIconLink = styled.img`
+  height: 40px;
+  padding: 4px;
+`;
 
-  handleClick = () => {
-    this.setState({ mobileOpen: !this.state.mobileOpen });
+const AccountDropDown = styled.a`
+  display: flex !important;
+  justify-content: space-between;
+`;
+
+const ExternalLink = styled.a`
+  color: black !important;
+  &:active,
+  &:hover {
+    background-color: ${colours.secondaryDark} !important;
+  }
+`;
+
+class MobileNav extends React.Component {
+  state = { menuOpen: false, accountAccordianOpen: false };
+
+  handleMenuOpenClick = () => {
+    this.setState({ menuOpen: !this.state.menuOpen });
+  };
+
+  handleAccordianClick = () => {
+    this.setState({ accountAccordianOpen: !this.state.accountAccordianOpen });
   };
 
   renderProtectedRoutes = () => {
@@ -67,20 +100,48 @@ class MobileNav extends React.Component {
     );
   };
 
+  renderAccountDropDown = (accountAccordianOpen) => (
+    <div onClick={this.handleAccordianClick}>
+      <LinkWrapper>
+        <AccountDropDown href="#">
+          <div>Account</div>
+          <Chevron shouldRotate={accountAccordianOpen}>&#9660;</Chevron>
+        </AccountDropDown>
+      </LinkWrapper>
+
+      <DropDownContent open={accountAccordianOpen}>
+        <LinkWrapper>
+          <ExternalLink href="/change-user">Change user</ExternalLink>
+        </LinkWrapper>
+        <LinkWrapper>
+          <ExternalLink href="/log-out">Log out</ExternalLink>
+        </LinkWrapper>
+      </DropDownContent>
+    </div>
+  );
+
   render() {
     const { token } = this.props;
+    const { menuOpen, accountAccordianOpen } = this.state;
+
     return (
       <NavWrapper>
         <TopLinkWrapper>
-          <Link to="/">{/* Logo */}</Link>
+          <Link to="/">
+            <HomeIconLink src={'images/jukebox.svg'} />
+          </Link>
         </TopLinkWrapper>
-        <NavLinks open={this.state.mobileOpen}>
+        <NavLinks open={menuOpen}>
           {token && this.renderProtectedRoutes()}
-          <LinkWrapper>
-            <Link to="/log-out">Log out</Link>
-          </LinkWrapper>
+          {token ? (
+            this.renderAccountDropDown(accountAccordianOpen)
+          ) : (
+            <LinkWrapper>
+              <a href="/login">Log in</a>
+            </LinkWrapper>
+          )}
         </NavLinks>
-        <Burger onClick={this.handleClick}>
+        <Burger onClick={this.handleMenuOpenClick}>
           <img src="images/hamburger.svg" />
         </Burger>
       </NavWrapper>
