@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { colours, media } from '../../styles';
+import { colours, media } from '../../globalStyles';
 
 const Wrapper = styled.div`
   text-align: center;

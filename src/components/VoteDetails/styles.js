@@ -1,5 +1,5 @@
 import styled, { keyframes, css } from 'styled-components';
-import { media } from '../../styles';
+import { media } from '../../globalStyles';
 
 export const VotesContent = styled.div`
   ${media.tablet`width: 10%;padding: 0 32px;`}

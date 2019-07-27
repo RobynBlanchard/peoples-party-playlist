@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import ContentBlock from './ContentBlock';
-import { colours} from '../../../styles';
+import { colours} from '../../../globalStyles';
 
 const Container = styled.div`
   display: flex;

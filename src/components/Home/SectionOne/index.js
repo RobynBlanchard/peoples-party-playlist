@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { fonts, media } from '../../../styles';
+import { fonts, media } from '../../../globalStyles';
 import Mouse from './Mouse';
 
 const Title = styled.div`

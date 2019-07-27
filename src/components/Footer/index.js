@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { colours } from '../styles.js';
+import { colours } from '../globalStyles.js';
 
 const FooterPlayer = styled.div`
   bottom: 0;

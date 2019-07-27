@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { colours } from '../../../styles';
+import { colours } from '../../../globalStyles';
 
 const Container = styled.div`
   margin: 0px;
