@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import AuthButton from '../AuthButton';
 import { colours } from '../../../styles';
 
 const Container = styled.div`
@@ -47,7 +46,7 @@ const ListItem = styled.li`
     display: block;
     color: ${colours.spotifyWhite};
     text-align: center;
-    padding: 16px 16px;
+    padding: 16px 12px;
     text-decoration: none;
   }
 
@@ -63,21 +62,72 @@ const ListItem = styled.li`
   }
 `;
 
-const Nav = ({ token }) => {
-  const renderProtectedRoutes = () => {
-    if (token) {
-      return (
-        <>
-          <ListItem>
-            <Link to="/playlist">Test Playlist</Link>
-          </ListItem>
-          <ListItem>
-            <Link to="/search">Search</Link>
-          </ListItem>
-        </>
-      );
+const DropDownContent = styled.div`
+  display: none;
+  position: absolute;
+  width: 130px;
+  text-align: left;
+  z-index: 1;
+`;
+
+const ListItemDropDown = styled(ListItem)`
+  position: relative;
+
+  &:hover {
+    ${DropDownContent} {
+      display: block;
     }
-  };
+  }
+`;
+
+const ExternalLink = styled.a`
+  color: inherit;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  background-color: ${colours.spotifyBlack};
+
+  &:hover {
+    background-color: ${colours.primaryDark};
+  }
+`;
+
+const Logo = styled.img`
+  height: 20px;
+  width: 20px;
+  float: right;
+`;
+
+const Nav = ({ token, userId }) => {
+  const renderProtectedRoutes = () => (
+    <>
+      <ListItem>
+        <Link to="/playlist">Test Playlist</Link>
+      </ListItem>
+      <ListItem>
+        <Link to="/search">Search</Link>
+      </ListItem>
+    </>
+  );
+
+  const renderAccount = () => (
+    <>
+      <Link to="#">{userId ? userId : 'Account'}</Link>
+      <DropDownContent>
+        <ExternalLink href="/change-user">Change user</ExternalLink>
+        <ExternalLink href="/log-out">Log out</ExternalLink>
+      </DropDownContent>
+    </>
+  );
+
+  const renderLogIn = () => (
+    <>
+      <a href="/login">
+        Log In&nbsp;
+        <Logo src="http://localhost:3000/images/Spotify_Icon_RGB_Green.png" />
+      </a>
+    </>
+  );
 
   return (
     <Container>
@@ -87,9 +137,9 @@ const Nav = ({ token }) => {
             <Link to="/">Home</Link>
           </ListItem>
           {token && renderProtectedRoutes()}
-          <ListItem style={{ float: 'right' }}>
-            <AuthButton />
-          </ListItem>
+          <ListItemDropDown style={{ float: 'right' }}>
+            {token ? renderAccount() : renderLogIn()}
+          </ListItemDropDown>
         </List>
       </ContentWrapper>
     </Container>

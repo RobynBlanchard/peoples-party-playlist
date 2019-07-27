@@ -15,11 +15,11 @@ const MobileNavContainer = styled.div`
   ${media.tablet`display: block;`}
 `;
 
-const Nav = ({ token }) => {
+const Nav = ({ token, userId }) => {
   return (
     <>
       <DesktopNavContainer>
-        <DesktopNav token={token} />
+        <DesktopNav token={token} userId={userId} />
       </DesktopNavContainer>
       <MobileNavContainer>
         <MobileNav token={token} />

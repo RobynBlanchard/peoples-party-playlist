@@ -16,10 +16,10 @@ module.exports = {
         use: [
           {
             loader: 'file-loader',
-            options: {},
-          },
-        ],
-      },
+            options: {}
+          }
+        ]
+      }
     ]
   },
   plugins: [new CopyPlugin([{ from: 'static/img', to: 'images' }])]

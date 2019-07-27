@@ -1,13 +1,8 @@
 import Playlists from './containers/playlists';
 import Playlist from './containers/playlist';
-import AuthButton from './components/Nav/AuthButton';
+import Nav from './containers/nav';
 
 export default [
-  {
-    path: '/',
-    component: AuthButton,
-    // exact: true
-  },
   {
     path: '/playlists',
     component: Playlists,
@@ -16,6 +11,11 @@ export default [
   {
     path: '/playlist',
     component: Playlist,
+    // exact: true
+  },
+  {
+    path: '*',
+    component: Nav,
     // exact: true
   }
 ];
