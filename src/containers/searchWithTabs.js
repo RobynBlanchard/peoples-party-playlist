@@ -49,7 +49,6 @@ class Search extends React.Component {
     if (fetchSearchResultsError) return <ErrorIndicator />;
 
     // if (loading && results.length === 0) return <LoadingIndicator />;
-    console.log('results', results)
     // console.log('===================', this.state.resultType);
     const type = this.state.resultType;
 

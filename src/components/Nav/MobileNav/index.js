@@ -55,7 +55,6 @@ class MobileNav extends React.Component {
   };
 
   renderProtectedRoutes = () => {
-    console.log('render routes')
     return (
       <>
         <LinkWrapper>

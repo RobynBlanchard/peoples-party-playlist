@@ -1,4 +1,2 @@
-require("@babel/register")( {
-  presets: ["@babel/preset-env" ],
-} );
-require( "./src/server" );
+require('@babel/register');
+require('./src/server');

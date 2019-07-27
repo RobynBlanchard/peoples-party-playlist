@@ -124,7 +124,6 @@ const playlistsReducer = (state = defaultState, action) => {
         }
         return el;
       });
-      console.log('increase vote reducer')
       return {
         ...state,
         playlist: updatedPlaylist
