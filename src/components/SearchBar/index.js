@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { colours } from '../../styles';
+import { colours, media } from '../../styles';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -8,6 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const SearchInput = styled.input`
+  ${media.phone`width: 70vw;`}
   width: 50vw;
   height: 24px;
   border: 1px solid grey;
@@ -30,8 +31,6 @@ class SearchBar extends Component {
   state = { searchTerm: '' };
 
   handleSearchTermChange = e => {
-    console.log('e.target.value', e.target.value)
-    console.log('handle search term change')
     this.setState({ searchTerm: e.target.value });
     this.props.onSubmit(e.target.value);
   };
