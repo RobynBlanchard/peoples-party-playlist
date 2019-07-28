@@ -45,7 +45,7 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error: action.error
       };
     case REORDER_TRACK:
         return {

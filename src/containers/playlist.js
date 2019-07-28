@@ -17,12 +17,13 @@ import VoteDetails from '../components/VoteDetails';
 import Icon from '../components/Icon';
 import ContentContainer from '../components/ContentContainer';
 import requireAuth from './requireAuth';
+import ErrorIndicator from '../components/ErrorIndicator';
 
 class Playlist extends React.Component {
   componentDidMount() {
     const { playlist, fetchPlaylist } = this.props;
 
-    if (playlist.length === 0) {
+    if (playlist.playlist.length === 0) {
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
@@ -40,7 +41,7 @@ class Playlist extends React.Component {
     if (sessionStarted) {
       getCurrentlyPlayingTrack();
 
-      const topTrack = playlist[0].uri;
+      const topTrack = playlist.playlist[0].uri;
       if (currentTrack.uri && currentTrack.uri !== topTrack) {
         removeTrack(topTrack, 0);
       }
@@ -99,8 +100,10 @@ class Playlist extends React.Component {
 
   render() {
     const { playlist, playing, resumePlayback, pausePlayback } = this.props;
+    console.log('playkst', playlist)
+    if (playlist.error) return  <ErrorIndicator />;
 
-    if (playlist.length === 0) {
+    if (playlist.playlist.length === 0) {
       return null;
     }
 
@@ -111,7 +114,7 @@ class Playlist extends React.Component {
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           handleClick={playing ? pausePlayback : resumePlayback}
         />
-        {this.renderTracks(playlist)}
+        {this.renderTracks(playlist.playlist)}
       </ContentContainer>
     );
   }
@@ -121,7 +124,7 @@ Playlist.serverFetch = fetchPlaylist;
 
 const mapStateToProps = state => {
   return {
-    playlist: state.playlists.playlist,
+    playlist: state.playlists,
     playing: state.playback.playing,
     sessionStarted: state.session.sessionStarted,
     currentlyPlaying: state.playback.currentPlayingTrack,
