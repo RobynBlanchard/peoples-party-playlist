@@ -100,7 +100,6 @@ class Playlist extends React.Component {
 
   render() {
     const { playlist, playing, resumePlayback, pausePlayback } = this.props;
-    console.log('playkst', playlist)
     if (playlist.error) return  <ErrorIndicator />;
 
     if (playlist.playlist.length === 0) {

@@ -11,7 +11,10 @@ import {
   REMOVE_FROM_PLAYLIST,
   REMOVE_TRACK,
   REMOVE_TRACK_SUCCESS,
-  REMOVE_TRACK_FAILURE
+  REMOVE_TRACK_FAILURE,
+  ADD_TO_PLAYLIST,
+  ADD_TO_PLAYLIST_SUCCESS,
+  ADD_TO_PLAYLIST_FAILURE
 } from './types';
 
 import axios from 'axios';
@@ -90,16 +93,51 @@ const positionToMoveTo = (playlist, sessionStarted, position) => {
 };
 
 export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
-  const playlist = getState().playlists.playlist;
-  const sessionStarted = getState().session.sessionStarted;
+  // insert vote with user id
+  // select from votes where num of votes is above given num of votes
+  // if should move then move ( call spotify api )
 
-  const newPosition = positionToMoveTo(playlist, sessionStarted, position);
+  axios
+    .post('/add-vote', {
+      userId: 123,
+      uri: uri
+    })
+    .then(resp => {
+      console.log('added vote to db');
+      axios.get('/votes', { params: { uri: uri } }).then(resp => {
+        const votes = resp.data.votes;
+        console.log('num votes with same uri', votes);
+          axios
+          .get('/votesGreaterThan', { params: { votes: votes } })
+          .then(resp => {
+            console.log('num tracks with more votes', resp.data.offset);
+            // const votes = resp.data;
 
-  dispatch(reOrderTrack(position, newPosition)).then(data => {
-    if (data.type === REORDER_TRACK_SUCCESS) {
-      return dispatch(increaseVote(uri));
-    }
-  });
+            const posToMoveTo = resp.data.offset;
+            console.log('moving to index', posToMoveTo);
+            dispatch(reOrderTrack(position, posToMoveTo)).then(data => {
+              if (data.type === REORDER_TRACK_SUCCESS) {
+                console.log('success');
+                return dispatch(increaseVote(uri));
+              }
+            });
+          });
+      });
+    })
+    .catch(err => {
+      console.log('error adding vote');
+    });
+
+  // const playlist = getState().playlists.playlist;
+  // const sessionStarted = getState().session.sessionStarted;
+
+  // const newPosition = positionToMoveTo(playlist, sessionStarted, position);
+
+  // dispatch(reOrderTrack(position, newPosition)).then(data => {
+  //   if (data.type === REORDER_TRACK_SUCCESS) {
+  //     return dispatch(increaseVote(uri));
+  //   }
+  // });
 };
 
 const updatedTrackPositionForDownVote = (
@@ -170,11 +208,7 @@ export const removeTrack = (uri, position) => (dispatch, getState) => {
 };
 
 export const addToSpotifyPlaylist = (uri, position, details) => ({
-  types: [
-    'ADD_TO_PLAYLIST',
-    'ADD_TO_PLAYLIST_SUCCESS',
-    'ADD_TO_PLAYLIST_FAILURE'
-  ],
+  types: [ADD_TO_PLAYLIST, ADD_TO_PLAYLIST_SUCCESS, ADD_TO_PLAYLIST_FAILURE],
   callAPI: token =>
     spotifyApi(token).post(
       `playlists/${playlistId}/tracks?uris=${uri}&position=${position}`
@@ -212,22 +246,23 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
       name: name,
       artist: artist
     };
-    // return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
+    return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
 
-    return dispatch(addToSpotifyPlaylist(uri, newPositionn, details)).then(data => {
-      if (data.type === 'ADD_TO_PLAYLIST_SUCCESS') {
-        console.log('uri', uri)
-        return axios.post('/add-to-playlist', {
-          uri
-        })
-      }
-    });
+    // return dispatch(addToSpotifyPlaylist(uri, newPositionn, details)).then(
+    //   data => {
+    //     if (data.type === ADD_TO_PLAYLIST_SUCCESS) {
+    //       return axios.post('/add-to-playlist', {
+    //         uri
+    //       });
+    //     }
+    //   }
+    // );
   }
 
   alert('Track already on playlist');
 
   return dispatch({
-    type: 'ADD_TO_PLAYLIST_FAILURE',
-    payload: 'Track already on playlist',
-  })
+    type: ADD_TO_PLAYLIST_FAILURE,
+    payload: 'Track already on playlist'
+  });
 };

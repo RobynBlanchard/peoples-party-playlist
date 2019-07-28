@@ -10,9 +10,9 @@ import {
   logIn,
   logOut,
   logInCallback,
-  logInFailure
+  logInFailure,
 } from './controllers/authentication';
-import { addToPlaylist } from './controllers/playlist';
+import { addToPlaylist, addVote, getVotes, howFarToMove } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
 
@@ -22,6 +22,10 @@ export default (app, store) => {
   app.get('/change-user', logIn);
   app.get('/LogInFailure', logInFailure(store));
   app.get('/callback', logInCallback);
+  app.get('/votes', getVotes);
+  app.get('/votesGreaterThan', howFarToMove);
+
+
 
   app.get('/*', (req, res) => {
     const context = {};
@@ -57,4 +61,5 @@ export default (app, store) => {
   });
 
   app.post('/add-to-playlist', addToPlaylist);
+  app.post('/add-vote', addVote);
 };

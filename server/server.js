@@ -8,7 +8,8 @@ import router from './router';
 const app = express();
 
 app.use(bodyParser.urlencoded());
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(bodyParser.json({ type: '*/*' }))
 app.use(cookieParser());
 app.use(express.static('public'));
 
