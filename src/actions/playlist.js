@@ -93,16 +93,15 @@ const positionToMoveTo = (playlist, sessionStarted, position) => {
 };
 
 export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
-  // insert vote with user id
-  // select from votes where num of votes is above given num of votes
-  // if should move then move ( call spotify api )
-
   axios
     .post('/add-vote', {
       userId: 123,
       uri: uri
     })
     .then(resp => {
+      if (resp.data.error) {
+        return;
+      }
       console.log('added vote to db');
       axios.get('/votes', { params: { uri: uri } }).then(resp => {
         const votes = resp.data.votes;

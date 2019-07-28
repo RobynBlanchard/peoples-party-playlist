@@ -6,10 +6,12 @@ var url = 'mongodb://localhost:27017/peoples-party-playlist';
 export const addToPlaylist = (req, res, next) => {
   const uri = req.body.uri;
 
+
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var dbo = db.db('peoples-party-playlist');
     var myobj = { uri: uri };
+
     dbo.collection('tracks').insertOne(myobj, function(err, res) {
       if (err) throw err;
       console.log('1 document inserted');
@@ -31,14 +33,34 @@ export const addVote = (req, res, next) => {
     if (err) throw err;
     var dbo = db.db('peoples-party-playlist');
     var myobj = { uri, userId };
-    dbo.collection('votes').insertOne(myobj, function(err, res) {
+
+    dbo.collection('votes').count(myobj, function(err, resp) {
       if (err) throw err;
-      console.log('1 document inserted');
-      db.close();
+      console.log('respppppp', resp);
+      if (resp > 5) {
+        console.log('HEY')
+        db.close();
+        res.json({ error: 'already voted 5 times' });
+        // return;
+      } else {
+        dbo.collection('votes').insertOne(myobj, function(err, res) {
+          if (err) throw err;
+          console.log('1 document inserted');
+          db.close();
+        });
+      }
+      // })
     });
+
+
+    // dbo.collection('votes').insertOne(myobj, function(err, res) {
+    //   if (err) throw err;
+    //   console.log('1 document inserted');
+    //   db.close();
+    // });
     // });
 
-    res.send({ resp: 'ye' });
+    // res.send({ resp: 'ye' });
     // connect to client
     // add track with zero votes
   });
