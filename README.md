@@ -11,3 +11,18 @@
 <!-- when get currently playing check playlist is the same -->
 <!-- move nav to container -->
 <!-- get import png files working -->
+
+
+<!-- go to /invite -->
+<!-- drop cookie with user id -->
+
+<!-- add to playlist -->
+<!-- post to spotify -->
+<!-- post to db - track with 0 votes -->
+
+<!-- up votr -->
+<!-- post to db -->
+
+
+<!-- all interactions via new api -->
+<!-- poll db for updated playlist votes -->

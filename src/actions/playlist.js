@@ -14,6 +14,8 @@ import {
   REMOVE_TRACK_FAILURE
 } from './types';
 
+import axios from 'axios';
+
 export const increaseVote = uri => ({
   type: INCREASE_VOTE,
   payload: uri
@@ -210,7 +212,16 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
       name: name,
       artist: artist
     };
-    return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
+    // return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
+
+    return dispatch(addToSpotifyPlaylist(uri, newPositionn, details)).then(data => {
+      if (data.type === 'ADD_TO_PLAYLIST_SUCCESS') {
+        console.log('uri', uri)
+        return axios.post('/add-to-playlist', {
+          uri
+        })
+      }
+    });
   }
 
   alert('Track already on playlist');

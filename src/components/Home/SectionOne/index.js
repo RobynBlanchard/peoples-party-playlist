@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { fonts, media } from '../../../globalStyles';
 import Mouse from './Mouse';
-
+import axios from 'axios';
 const Title = styled.div`
   display: flex;
   flex-direction: column;
