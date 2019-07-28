@@ -102,18 +102,14 @@ export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
       if (resp.data.error) {
         return;
       }
-      console.log('added vote to db');
       axios.get('/votes', { params: { uri: uri } }).then(resp => {
         const votes = resp.data.votes;
-        console.log('num votes with same uri', votes);
-          axios
+
+        axios
           .get('/votesGreaterThan', { params: { votes: votes } })
           .then(resp => {
-            console.log('num tracks with more votes', resp.data.offset);
-            // const votes = resp.data;
-
             const posToMoveTo = resp.data.offset;
-            console.log('moving to index', posToMoveTo);
+
             dispatch(reOrderTrack(position, posToMoveTo)).then(data => {
               if (data.type === REORDER_TRACK_SUCCESS) {
                 console.log('success');
@@ -126,17 +122,6 @@ export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
     .catch(err => {
       console.log('error adding vote');
     });
-
-  // const playlist = getState().playlists.playlist;
-  // const sessionStarted = getState().session.sessionStarted;
-
-  // const newPosition = positionToMoveTo(playlist, sessionStarted, position);
-
-  // dispatch(reOrderTrack(position, newPosition)).then(data => {
-  //   if (data.type === REORDER_TRACK_SUCCESS) {
-  //     return dispatch(increaseVote(uri));
-  //   }
-  // });
 };
 
 const updatedTrackPositionForDownVote = (

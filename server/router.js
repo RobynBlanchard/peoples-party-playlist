@@ -25,8 +25,6 @@ export default (app, store) => {
   app.get('/votes', getVotes);
   app.get('/votesGreaterThan', howFarToMove);
 
-
-
   app.get('/*', (req, res) => {
     const context = {};
 
@@ -60,6 +58,6 @@ export default (app, store) => {
     });
   });
 
-  app.post('/add-to-playlist', addToPlaylist);
+  // app.post('/add-to-playlist', addToPlaylist);
   app.post('/add-vote', addVote);
 };
