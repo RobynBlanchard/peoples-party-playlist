@@ -3,7 +3,7 @@ import mongo from 'mongodb';
 var MongoClient = mongo.MongoClient;
 // var url = 'mongodb://localhost:27017/peoples-party-playlist';
 var url = process.env.MONGODB_URI || 'mongodb://localhost/peoples-party-playlist';
-
+var dbase = process.env.DBASE || 'peoples-party-playlist';
 export const addTrack = (req, res, next) => {
   const uri = req.body.uri;
   const name = req.body.name;
@@ -11,7 +11,7 @@ export const addTrack = (req, res, next) => {
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db('peoples-party-playlist');
+    var dbo = db.db(dbase);
     var myobj = { uri, votes: 0, users: [], name, artist };
     dbo.collection('tracks').insertOne(myobj, function(err, resp) {
       if (err) throw err;
@@ -28,7 +28,7 @@ export const addVote = (req, res, next) => {
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db('peoples-party-playlist');
+    var dbo = db.db(dbase);
 
     var myquery = { uri: uri };
     dbo
@@ -52,7 +52,7 @@ export const decreaseVote = (req, res, next) => {
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db('peoples-party-playlist');
+    var dbo = db.db(dbase);
 
     var myquery = { uri: uri };
     dbo
@@ -73,7 +73,7 @@ export const decreaseVote = (req, res, next) => {
 export const fetchPlaylist = (req, res, next) => {
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db('peoples-party-playlist');
+    var dbo = db.db(dbase);
     var mysort = { votes: -1 };
     dbo
       .collection('tracks')
