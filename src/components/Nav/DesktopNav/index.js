@@ -124,7 +124,7 @@ const Nav = ({ token, userId }) => {
     <>
       <a href="/login">
         Log In&nbsp;
-        <Logo src="http://localhost:3000/images/Spotify_Icon_RGB_Green.png" />
+        <Logo src="/images/Spotify_Icon_RGB_Green.png" />
       </a>
     </>
   );

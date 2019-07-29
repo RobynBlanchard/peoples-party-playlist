@@ -5,7 +5,7 @@ import request from 'request';
 const ClientID = process.env.clientID;
 const ClientSecret = process.env.client_secret;
 const stateKey = 'spotify_auth_state';
-const redirectURI = 'http://localhost:3000/callback';
+const redirectURI = 'http://localhost:5000/callback';
 
 const authURL = state => {
   const spotifyAuthURI = 'https://accounts.spotify.com/authorize';

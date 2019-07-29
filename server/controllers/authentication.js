@@ -10,7 +10,7 @@ import {
 const ClientID = process.env.clientID;
 const ClientSecret = process.env.client_secret;
 const stateKey = 'spotify_auth_state';
-const redirectURI = process.env.REDIRECT_URI || 'http://localhost:3000/callback';
+const redirectURI = process.env.REDIRECT_URI || 'http://localhost:5000/callback';
 
 const authURL = state => {
   const spotifyAuthURI = 'https://accounts.spotify.com/authorize';
@@ -99,6 +99,6 @@ export const logOut = store => {
 export const logInFailure = store => {
   return (req, res, next) => {
     store.dispatch(logInFailureAction('er'));
-    res.redirect('http://localhost:3000/');
+    res.redirect('http://localhost:5000/');
   };
 };
