@@ -2,6 +2,11 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+  mode: "development",
+	optimization: {
+		// We no not want to minimize our code.
+		minimize: false
+	},
   context: path.join(__dirname, 'src'),
   entry: './client.js',
   output: {

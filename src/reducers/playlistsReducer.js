@@ -21,6 +21,7 @@ import transformPlaylistData from './playlistsTransformer';
 
 const defaultState = {
   playlist: [],
+  newPlalist: [],
   error: null,
   loading: false
 };
@@ -118,27 +119,27 @@ const playlistsReducer = (state = defaultState, action) => {
       // };
       // return newStatee;
     case INCREASE_VOTE:
-      const updatedPlaylist = state.playlist.map(el => {
-        if (el.uri.valueOf() === action.payload.valueOf()) {
-          return { ...el, votes: el.votes + 1 };
-        }
-        return el;
-      });
-      return {
-        ...state,
-        playlist: updatedPlaylist
-      };
+      // const updatedPlaylist = state.playlist.map(el => {
+      //   if (el.uri.valueOf() === action.payload.valueOf()) {
+      //     return { ...el, votes: el.votes + 1 };
+      //   }
+      //   return el;
+      // });
+      // return {
+      //   ...state,
+      //   playlist: updatedPlaylist
+      // };
     case DECREASE_VOTE:
-      const playlistWithVoteDescreased = state.playlist.map(el => {
-        if (el.uri.valueOf() === action.payload.valueOf()) {
-          return { ...el, votes: el.votes - 1 };
-        }
-        return el;
-      });
-      return {
-        ...state,
-        playlist: playlistWithVoteDescreased
-      };
+      // const playlistWithVoteDescreased = state.playlist.map(el => {
+      //   if (el.uri.valueOf() === action.payload.valueOf()) {
+      //     return { ...el, votes: el.votes - 1 };
+      //   }
+      //   return el;
+      // });
+      // return {
+      //   ...state,
+      //   playlist: playlistWithVoteDescreased
+      // };
     case 'ADD_TO_PLAYLIST_SUCCESS':
       playlist.splice(action.position, 0, action.details);
       return {
@@ -151,6 +152,12 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         error: action.payload
       };
+    case 'PLAYLIST':
+
+      return {
+        ...state,
+        newPlalist: action.payload
+      }
     default:
       return state;
   }

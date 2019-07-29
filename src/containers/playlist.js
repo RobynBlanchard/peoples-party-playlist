@@ -27,6 +27,8 @@ class Playlist extends React.Component {
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
+    this.timer = setInterval(() => fetchPlaylist(), 3000);
+
   }
 
   getCurrentlyPlaying() {
@@ -63,6 +65,8 @@ class Playlist extends React.Component {
       position += 1;
 
       const { artist, name, votes, uri } = el;
+      // const { votes, uri } = el;
+
 
       let isLocked;
 
@@ -100,11 +104,11 @@ class Playlist extends React.Component {
 
   render() {
     const { playlist, playing, resumePlayback, pausePlayback } = this.props;
-    if (playlist.error) return  <ErrorIndicator />;
+    // if (playlist.error) return  <ErrorIndicator />;
 
-    if (playlist.playlist.length === 0) {
-      return null;
-    }
+    // if (playlist.playlist.length === 0) {
+    //   return null;
+    // }
 
     return (
       <ContentContainer>
@@ -113,7 +117,7 @@ class Playlist extends React.Component {
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           handleClick={playing ? pausePlayback : resumePlayback}
         />
-        {this.renderTracks(playlist.playlist)}
+        {this.renderTracks(playlist.newPlalist)}
       </ContentContainer>
     );
   }
