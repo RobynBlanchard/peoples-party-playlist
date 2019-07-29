@@ -37,9 +37,7 @@
     "webpack": "^4.38.0",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.0.0",
-    "webpack-node-externals": "^1.7.2"
-  },
-  "devDependencies": {
+    "webpack-node-externals": "^1.7.2",
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.0",
@@ -61,5 +59,6 @@
     "image-webpack-loader": "^4.6.0",
     "url-loader": "^1.1.2",
     "webpack-dev-middleware": "^3.6.1"
-  }
+  },
+  "devDependencies": {}
 }
