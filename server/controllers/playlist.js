@@ -1,7 +1,8 @@
 import mongo from 'mongodb';
 
 var MongoClient = mongo.MongoClient;
-var url = 'mongodb://localhost:27017/peoples-party-playlist';
+// var url = 'mongodb://localhost:27017/peoples-party-playlist';
+var url = process.env.MONGODB_URI || 'mongodb://localhost/peoples-party-playlist';
 
 export const addTrack = (req, res, next) => {
   const uri = req.body.uri;
