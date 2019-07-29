@@ -45,6 +45,30 @@ export const addVote = (req, res, next) => {
   });
 };
 
+export const decreaseVote = (req, res, next) => {
+  const uri = req.body.uri;
+  const userId = req.cookies['userId'];
+
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db('peoples-party-playlist');
+
+    var myquery = { uri: uri };
+    dbo
+      .collection('tracks')
+      .updateOne(
+        myquery,
+        { $push: { users: userId }, $inc: { votes: -1 } },
+        function(err, resp) {
+          if (err) throw err;
+          res.json({ error: null });
+          console.log('1 document updated');
+          db.close();
+        }
+      );
+  });
+};
+
 export const fetchPlaylist = (req, res, next) => {
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;

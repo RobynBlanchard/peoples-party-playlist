@@ -15,7 +15,7 @@ import {
 import {
   invite
 } from './controllers/user';
-import { addTrack, addVote, fetchPlaylist } from './controllers/playlist';
+import { addTrack, addVote, decreaseVote, fetchPlaylist } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
 
@@ -64,4 +64,6 @@ export default (app, store) => {
 
   app.post('/add-to-playlist', addTrack);
   app.post('/add-vote', addVote);
+  app.post('/decrement-vote', decreaseVote);
+
 };

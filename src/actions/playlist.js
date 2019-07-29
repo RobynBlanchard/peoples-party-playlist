@@ -31,14 +31,33 @@ export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
       uri: uri
     })
     .then(resp => {
-      axios.get('/playlist-fetch');
+      return axios.get('/playlist-fetch');
     })
     .then(resp => {
       const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
-      dispatch(reOrderTrack(position, index));
+      return dispatch(reOrderTrack(position, index));
     })
     .catch(err => {
       console.log('error adding vote');
+    });
+};
+
+export const handleVoteDecrease = (uri, position) => (dispatch, getState) => {
+  axios
+    .post('/decrement-vote', {
+      uri: uri
+    })
+    .then(resp => {
+      return axios.get('/playlist-fetch');
+    })
+    .then(resp => {
+      console.log(resp);
+      const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
+      return dispatch(reOrderTrack(position, index));
+    })
+    .catch(err => {
+      console.log(err);
+      console.log('error decrementing vote');
     });
 };
 
@@ -58,7 +77,7 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     .post('/add-to-playlist', { uri: uri, name: name, artist: artist })
     .then(resp => {
       // instead fetch playlist and get query to return array of uris then find index
-      axios.get('/playlist-fetch');
+      return axios.get('/playlist-fetch');
     })
     .then(resp => {
       const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
