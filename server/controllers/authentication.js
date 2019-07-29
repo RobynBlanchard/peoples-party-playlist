@@ -88,9 +88,8 @@ export const logInCallback = (req, res) => {
 };
 
 export const logOut = store => {
-  store.dispatch(logOutAction());
-
   return (req, res, next) => {
+    store.dispatch(logOutAction());
     res.clearCookie('spotifyAccessToken');
     res.clearCookie('spotifyRefreshToken');
     res.redirect('https://accounts.spotify.com/logout');
@@ -98,9 +97,8 @@ export const logOut = store => {
 };
 
 export const logInFailure = store => {
-  store.dispatch(logInFailureAction('er'));
-
   return (req, res, next) => {
+    store.dispatch(logInFailureAction('er'));
     res.redirect('http://localhost:3000/');
   };
 };
