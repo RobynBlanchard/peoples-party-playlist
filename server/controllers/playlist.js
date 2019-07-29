@@ -39,7 +39,7 @@ export const addTrack = (req, res, next) => {
 
 export const addVote = (req, res, next) => {
   const uri = req.body.uri;
-  const userId = req.body.userId;
+  const userId = req.cookies['userId'];
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
@@ -50,7 +50,7 @@ export const addVote = (req, res, next) => {
     // dbo.collection("customers").updateOne(myquery, newvalues, function(err, res) {
     dbo.collection('tracks').updateOne(
       myquery,
-      { $push: { users: 123 }, $inc: { votes: 1 } },
+      { $push: { users: userId }, $inc: { votes: 1 } },
       // { $inc: { votes: 1 } },
       function(err, resp) {
         if (err) throw err;

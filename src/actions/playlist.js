@@ -96,7 +96,6 @@ export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
   console.log('vote increase')
   axios
     .post('/add-vote', {
-      userId: 123,
       uri: uri
     })
     .then(resp => {

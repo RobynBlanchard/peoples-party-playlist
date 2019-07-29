@@ -12,6 +12,9 @@ import {
   logInCallback,
   logInFailure,
 } from './controllers/authentication';
+import {
+  invite
+} from './controllers/user';
 import { addTrack, addVote, getVotes, howFarToMove, fetchPlaylist } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
@@ -25,6 +28,8 @@ export default (app, store) => {
   app.get('/votes', getVotes);
   app.get('/votesGreaterThan', howFarToMove);
   app.get('/playlist-fetch', fetchPlaylist);
+  app.get('/invite', invite);
+
 
   app.get('/*', (req, res) => {
     const context = {};
