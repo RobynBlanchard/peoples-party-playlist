@@ -26,3 +26,11 @@
 
 <!-- all interactions via new api -->
 <!-- poll db for updated playlist votes -->
+
+
+<!-- ------------------------ -->
+<!-- limit to 5 votes -->
+<!-- only allow vote with user id -->
+<!-- maybe after sign in generae invite link -->
+<!-- websocket -->
+<!-- remove track if -5 votes -->

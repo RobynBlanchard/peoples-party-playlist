@@ -12,7 +12,7 @@ export const Container = styled.li`
 
   height: 50px;
   line-height: 2px;
-  ${media.tablet`height: 80px;line-height: 10px;`}
+  ${media.tablet`height: 80px;line-height: 1;`}
 
   ${({ shouldFocus }) =>
     shouldFocus &&
@@ -68,10 +68,12 @@ export const MobileDetails = styled.div`
 `;
 
 export const SongMobile = styled.p`
-  font-size: 20px;
+  /* font-size: 20px; */
+  margin: 8px 0;
 `;
 
 export const ArtistMobile = styled.p`
   color: grey;
   font-size: 16px;
+  margin: 8px 0;
 `;
