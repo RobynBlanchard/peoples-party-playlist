@@ -1,13 +1,9 @@
 import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import {
-  INCREASE_VOTE,
-  DECREASE_VOTE,
   REORDER_TRACK,
   REORDER_TRACK_SUCCESS,
   REORDER_TRACK_FAILURE,
-  MOVE_UP_PlAYLIST,
-  MOVE_DOWN_PlAYLIST,
   REMOVE_FROM_PLAYLIST,
   REMOVE_TRACK,
   REMOVE_TRACK_SUCCESS,
@@ -19,37 +15,6 @@ import {
 
 import axios from 'axios';
 
-export const increaseVote = uri => ({
-  type: INCREASE_VOTE,
-  payload: uri
-});
-
-export const decreaseVote = uri => ({
-  type: DECREASE_VOTE,
-  payload: uri
-});
-
-export const moveUp = (range_start, insert_before) => ({
-  type: MOVE_UP_PlAYLIST,
-  payload: {
-    range_start,
-    insert_before
-  }
-});
-
-export const moveDown = (range_start, insert_before) => ({
-  type: MOVE_DOWN_PlAYLIST,
-  payload: {
-    range_start,
-    insert_before
-  }
-});
-
-export const removeFromPlaylist = position => ({
-  type: REMOVE_FROM_PLAYLIST,
-  payload: position
-});
-
 export const reOrderTrack = (range_start, insert_before) => ({
   types: [REORDER_TRACK, REORDER_TRACK_SUCCESS, REORDER_TRACK_FAILURE],
   callAPI: token =>
@@ -60,162 +25,21 @@ export const reOrderTrack = (range_start, insert_before) => ({
   payload: { range_start, insert_before }
 });
 
-const updatedTrackPosition = (
-  position,
-  allTracksAboveUpVotedTrack,
-  upVotedTrackNumVotes,
-  topMoveablePosition
-) => {
-  for (let i in allTracksAboveUpVotedTrack) {
-    const currentTrackVotes = allTracksAboveUpVotedTrack[i].votes;
-
-    if (currentTrackVotes < upVotedTrackNumVotes) {
-      return parseInt(i, 10) + topMoveablePosition;
-    }
-  }
-  return position;
-};
-
-const positionToMoveTo = (playlist, sessionStarted, position) => {
-  const topMoveablePosition = sessionStarted ? 1 : 0;
-  const allTracksAboveUpVotedTrack = playlist.slice(
-    topMoveablePosition,
-    position
-  );
-  const upVotedTrackNumVotes = playlist[position].votes + 1;
-
-  return updatedTrackPosition(
-    position,
-    allTracksAboveUpVotedTrack,
-    upVotedTrackNumVotes,
-    topMoveablePosition
-  );
-};
-
 export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
-  console.log('vote increase')
   axios
     .post('/add-vote', {
       uri: uri
     })
     .then(resp => {
-      console.log('added vote to db')
-
-      axios.get('/playlist-fetch').then(resp => {
-        // console.log('!!', resp)
-        const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
-        console.log('should move to pos:', index)
-        dispatch(reOrderTrack(position, index)).then(data => {
-          // if (data.type === REORDER_TRACK_SUCCESS) {
-            // console.log('success');
-            // return dispatch(increaseVote(uri));
-          // }
-        });
-        // return dispatch(addToSpotifyPlaylist(uri, index)).then(
-        //           data => {
-        //             console.log('data', data)
-        //             // if (data.type === ADD_TO_PLAYLIST_SUCCESS) {
-        //             //   return axios.post('/add-to-playlist', {
-        //             //     uri
-        //             //   });
-        //             }
-        //           // }
-        //         );
-      })
-      .catch(err => {
-        console.log('error', err);
-      });
-      // if (resp.data.error) {
-      //   return;
-      // }
-      // axios.get('/votes', { params: { uri: uri } }).then(resp => {
-      //   const votes = resp.data.votes;
-      //   console.log('track now has num votes:', votes)
-      //   axios
-      //     .get('/votesGreaterThan', { params: { votes: votes } })
-      //     .then(resp => {
-      //       console.log('track with more votes:', resp.data.pos)
-      //       const posToMoveTo = resp.data.pos;
-
-      //       dispatch(reOrderTrack(position, posToMoveTo)).then(data => {
-      //         if (data.type === REORDER_TRACK_SUCCESS) {
-      //           console.log('success');
-      //           return dispatch(increaseVote(uri));
-      //         }
-      //       });
-      //     });
-      // });
+      axios.get('/playlist-fetch');
+    })
+    .then(resp => {
+      const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
+      dispatch(reOrderTrack(position, index));
     })
     .catch(err => {
       console.log('error adding vote');
     });
-};
-
-const updatedTrackPositionForDownVote = (
-  position,
-  allTracksBelowDownVotedTrack,
-  newNumberOfVotes
-) => {
-  for (let i in allTracksBelowDownVotedTrack) {
-    const currentTrackVotes = allTracksBelowDownVotedTrack[i].votes;
-
-    // downvoted track has more votes than next one
-    if (currentTrackVotes <= newNumberOfVotes) {
-      return parseInt(i, 10) + position;
-    }
-
-    // end of playlist
-    if (parseInt(i, 10) === allTracksBelowDownVotedTrack.length - 1) {
-      return parseInt(i, 10) + position + 1;
-    }
-  }
-  // track downvoted was already the last one on the playlist
-  return position;
-};
-
-export const handleVoteDecrease = (uri, position) => (dispatch, getState) => {
-  const currentPlaylist = getState().playlists.playlist;
-  const allTracksBelowDownVotedTrack = currentPlaylist.slice(
-    position + 1,
-    currentPlaylist.length
-  );
-  const newNumberOfVotes = currentPlaylist[position].votes - 1;
-
-  // could move check for -5 to component
-  if (newNumberOfVotes === -5) {
-    return dispatch(removeTrack(uri, position));
-  }
-
-  const positionToMoveTo = updatedTrackPositionForDownVote(
-    position,
-    allTracksBelowDownVotedTrack,
-    newNumberOfVotes
-  );
-  dispatch(reOrderTrack(position, positionToMoveTo)).then(data => {
-    if (data.type === REORDER_TRACK_SUCCESS) {
-      return dispatch(decreaseVote(uri));
-    }
-  });
-};
-
-export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
-  types: [REMOVE_TRACK, REMOVE_TRACK_SUCCESS, REMOVE_TRACK_FAILURE],
-  callAPI: token =>
-    spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
-      data: {
-        tracks: [{ uri }]
-      }
-    }),
-  payload: { position }
-});
-
-export const removeTrack = (uri, position) => (dispatch, getState) => {
-  dispatch(removeTrackFromSpotifyPlaylist(uri, position)).then(data => {
-    if (data.type === REMOVE_TRACK_SUCCESS) {
-      // To force refresh ?
-      return dispatch(decreaseVote(uri));
-    }
-  });
 };
 
 export const addToSpotifyPlaylist = (uri, position) => ({
@@ -225,116 +49,47 @@ export const addToSpotifyPlaylist = (uri, position) => ({
       `playlists/${playlistId}/tracks?uris=${uri}&position=${position}`
     ),
   payload: {
-    position,
-    // details
+    position
   }
 });
 
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
-  //  return dispatch(addToSpotifyPlaylist(uri, newPositionn, details)).then(
-  //     data => {
-  //       if (data.type === ADD_TO_PLAYLIST_SUCCESS) {
-  //         return axios.post('/add-to-playlist', {
-  //           uri
-  //         });
-  //       }
-  //     }
-  //   );
-  axios.post('/add-to-playlist', {uri: uri, name: name, artist: artist}).then(resp => {
-
-    // instead fetch playlist and get query to return array of uris then find index
-    axios.get('/playlist-fetch').then(resp => {
-      // console.log('!!', resp)
+  axios
+    .post('/add-to-playlist', { uri: uri, name: name, artist: artist })
+    .then(resp => {
+      // instead fetch playlist and get query to return array of uris then find index
+      axios.get('/playlist-fetch');
+    })
+    .then(resp => {
       const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
-      console.log('should move to pos:', index)
-      return dispatch(addToSpotifyPlaylist(uri, index)).then(
-                data => {
-                  // if (data.type === ADD_TO_PLAYLIST_SUCCESS) {
-                  //   return axios.post('/add-to-playlist', {
-                  //     uri
-                  //   });
-                  }
-                // }
-              );
+      return dispatch(addToSpotifyPlaylist(uri, index));
     })
     .catch(err => {
       console.log('error', err);
     });
-
-    // get playlist
-    // find index of
-
-    // axios
-    //     .get('/votesGreaterThan', { params: { votes: 0 } })
-    //     .then(resp => {
-    //       const posToMoveTo = resp.data.pos;
-    //       console.log('posToMoveTo', posToMoveTo)
-
-    //       return dispatch(addToSpotifyPlaylist(uri, posToMoveTo)).then(
-    //         data => {
-    //           // if (data.type === ADD_TO_PLAYLIST_SUCCESS) {
-    //           //   return axios.post('/add-to-playlist', {
-    //           //     uri
-    //           //   });
-    //           // }
-    //         }
-    //       );
-
-
-          // dispatch(reOrderTrack(position, posToMoveTo)).then(data => {
-          //   if (data.type === REORDER_TRACK_SUCCESS) {
-          //     console.log('success');
-          //     return dispatch(increaseVote(uri));
-          //   }
-          // });
-        // });
-
-  }).catch(err => console.log(err))
-  // get all tracks
-
-  // const playlist = getState().playlists.playlist;
-
-  // const trackFoundInPlaylist = playlist.findIndex(el => el.uri === uri);
-  // if (trackFoundInPlaylist === -1) {
-  //   const positionToMoveTo = (playlist, votes) => {
-  //     let position = 0;
-
-  //     const len = playlist.length;
-
-  //     if (len > 0) {
-  //       for (let i = 0; i < len; i++) {
-  //         if (playlist[len - 1 - i].votes >= votes) {
-  //           position = len - i;
-  //           return position;
-  //         }
-  //       }
-  //     }
-  //     return position;
-  //   };
-  //   const newPositionn = positionToMoveTo(playlist, 0);
-  //   const details = {
-  //     uri: uri,
-  //     votes: 0,
-  //     name: name,
-  //     artist: artist
-  //   };
-  //   return dispatch(addToSpotifyPlaylist(uri, newPositionn, details));
-
-  //   // return dispatch(addToSpotifyPlaylist(uri, newPositionn, details)).then(
-  //   //   data => {
-  //   //     if (data.type === ADD_TO_PLAYLIST_SUCCESS) {
-  //   //       return axios.post('/add-to-playlist', {
-  //   //         uri
-  //   //       });
-  //   //     }
-  //   //   }
-  //   // );
-  // }
-
-  // alert('Track already on playlist');
-
-  // return dispatch({
-  //   type: ADD_TO_PLAYLIST_FAILURE,
-  //   payload: 'Track already on playlist'
-  // });
 };
+
+// export const removeFromPlaylist = position => ({
+//   type: REMOVE_FROM_PLAYLIST,
+//   payload: position
+// });
+
+// export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
+//   types: [REMOVE_TRACK, REMOVE_TRACK_SUCCESS, REMOVE_TRACK_FAILURE],
+//   callAPI: token =>
+//     spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
+//       data: {
+//         tracks: [{ uri }]
+//       }
+//     }),
+//   payload: { position }
+// });
+
+// export const removeTrack = (uri, position) => (dispatch, getState) => {
+//   dispatch(removeTrackFromSpotifyPlaylist(uri, position)).then(data => {
+//     if (data.type === REMOVE_TRACK_SUCCESS) {
+//       // To force refresh ?
+//       return dispatch(decreaseVote(uri));
+//     }
+//   });
+// };

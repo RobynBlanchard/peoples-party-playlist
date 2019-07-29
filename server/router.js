@@ -15,7 +15,7 @@ import {
 import {
   invite
 } from './controllers/user';
-import { addTrack, addVote, getVotes, howFarToMove, fetchPlaylist } from './controllers/playlist';
+import { addTrack, addVote, fetchPlaylist } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
 
@@ -25,8 +25,6 @@ export default (app, store) => {
   app.get('/change-user', logIn);
   app.get('/LogInFailure', logInFailure(store));
   app.get('/callback', logInCallback);
-  app.get('/votes', getVotes);
-  app.get('/votesGreaterThan', howFarToMove);
   app.get('/playlist-fetch', fetchPlaylist);
   app.get('/invite', invite);
 
