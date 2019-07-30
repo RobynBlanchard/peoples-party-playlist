@@ -34,8 +34,9 @@ const configureStore = initialState => {
   // if (initialState && persistedState) {
   //   initialState.playlists.playlist = persistedState.playlist || [];
   // }
+  const middleware = [thunkMiddleWare, callAPIMiddleware]
 
-  const store = applyMiddleware(callAPIMiddleware)(createStore)(
+  const store = applyMiddleware(...middleware)(createStore)(
     reducer,
     initialState
   );
