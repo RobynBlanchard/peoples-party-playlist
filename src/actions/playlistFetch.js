@@ -15,12 +15,14 @@ import {
 
 export const fetchPlaylist = () => (dispatch, getState) => {
   axios
-    .get('/playlist-fetch')
+    .get('/playlist/api/v1/tracks')
     .then(resp => {
-      dispatch({
-        type: 'PLAYLIST',
-        payload: resp.data.playlist,
-      })
+      if (resp.status === 200) {
+        dispatch({
+          type: 'PLAYLIST',
+          payload: resp.data.tracks,
+        })
+      }
     })
     .catch(err => {
       console.log('error', err);

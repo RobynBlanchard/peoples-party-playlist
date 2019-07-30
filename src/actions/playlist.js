@@ -31,11 +31,13 @@ export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
       uri: uri
     })
     .then(resp => {
-      return axios.get('/playlist-fetch');
+      return axios.get('/playlist/api/v1/tracks');
     })
     .then(resp => {
-      const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
-      return dispatch(reOrderTrack(position, index));
+      if (resp.status === 200) {
+        const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
+        return dispatch(reOrderTrack(position, index));
+      }
     })
     .catch(err => {
       console.log('error adding vote');
@@ -48,12 +50,13 @@ export const handleVoteDecrease = (uri, position) => (dispatch, getState) => {
       uri: uri
     })
     .then(resp => {
-      return axios.get('/playlist-fetch');
+      return axios.get('/playlist/api/v1/tracks');
     })
     .then(resp => {
-      console.log(resp);
-      const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
-      return dispatch(reOrderTrack(position, index));
+      if (resp.status === 200) {
+        const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
+        return dispatch(reOrderTrack(position, index));
+      }
     })
     .catch(err => {
       console.log(err);
@@ -76,12 +79,16 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   axios
     .post('/add-to-playlist', { uri: uri, name: name, artist: artist })
     .then(resp => {
+      // check status code 201
+
       // instead fetch playlist and get query to return array of uris then find index
-      return axios.get('/playlist-fetch');
+      return axios.get('/playlist/api/v1/tracks');
     })
     .then(resp => {
-      const index = resp.data.playlist.map(e => e.uri).indexOf(uri);
-      return dispatch(addToSpotifyPlaylist(uri, index));
+      if (resp.status === 200) {
+        const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
+        return dispatch(addToSpotifyPlaylist(uri, index));
+      }
     })
     .catch(err => {
       console.log('error', err);

@@ -70,7 +70,7 @@ export const decreaseVote = (req, res, next) => {
   });
 };
 
-export const fetchPlaylist = (req, res, next) => {
+export const getTracks = (req, res, next) => {
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var dbo = db.db(dbase);
@@ -81,8 +81,7 @@ export const fetchPlaylist = (req, res, next) => {
       .sort(mysort)
       .toArray(function(err, result) {
         if (err) throw err;
-        // console.log(result);
-        res.json({ playlist: result });
+        res.status(200).json({ tracks: result });
         db.close();
       });
   });

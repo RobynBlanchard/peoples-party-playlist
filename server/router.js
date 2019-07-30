@@ -15,7 +15,7 @@ import {
 import {
   invite
 } from './controllers/user';
-import { addTrack, addVote, decreaseVote, fetchPlaylist } from './controllers/playlist';
+import { addTrack, addVote, decreaseVote, getTracks } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
 
@@ -25,7 +25,7 @@ export default (app, store) => {
   app.get('/change-user', logIn);
   app.get('/LogInFailure', logInFailure(store));
   app.get('/callback', logInCallback);
-  app.get('/playlist-fetch', fetchPlaylist);
+  app.get('/playlist/api/v1/tracks', getTracks);
   app.get('/invite', invite);
 
 
@@ -62,8 +62,8 @@ export default (app, store) => {
     });
   });
 
-  app.post('/add-to-playlist', addTrack);
-  app.post('/add-vote', addVote);
-  app.post('/decrement-vote', decreaseVote);
+  app.post('/add-to-playlist', addTrack); //playlist/api/v1/tracks
+  app.post('/add-vote', addVote); // track
+  app.post('/decrement-vote', decreaseVote); // track
 
 };
