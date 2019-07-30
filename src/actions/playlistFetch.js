@@ -14,17 +14,22 @@ import {
 // });
 
 export const fetchPlaylist = () => (dispatch, getState) => {
+  console.log('fetch playis!!!!')
   axios
-    .get('/playlist/api/v1/tracks')
+    .get('http://localhost:5000/playlist/api/v1/tracks')
     .then(resp => {
+  console.log(' res fetch playis!!!!')
+
       if (resp.status === 200) {
-        dispatch({
+        return dispatch({
           type: 'PLAYLIST',
           payload: resp.data.tracks,
         })
       }
     })
     .catch(err => {
-      console.log('error', err);
+      console.log('hee=====================init',)
+
+      console.log('error -- ', err);
     });
 };

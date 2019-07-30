@@ -34,3 +34,13 @@
 <!-- maybe after sign in generae invite link -->
 <!-- websocket -->
 <!-- remove track if -5 votes -->
+
+
+<!-- add to playlist action -->
+  <!-- // TODO: currently fetching playlist to work out new position of track
+  // instead of looking at db, look at state
+
+  // can't fetch sorted and with votes gte to votes/ 0, as tracks with similar votes wil be indeterminate -->
+
+
+<!-- add last updated/timestamp to track -> to get css to high;ighted -->

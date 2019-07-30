@@ -76,6 +76,7 @@ export const patchTrack = (req, res, next) => {
 export const getTracks = (req, res, next) => {
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
+
     var dbo = db.db(dbase);
     var mysort = { votes: -1 };
     dbo
@@ -83,11 +84,33 @@ export const getTracks = (req, res, next) => {
       .find()
       .sort(mysort)
       .toArray(function(err, result) {
+
         if (err) throw err;
+
+        console.log('tracks', result)
         res.status(200).json({ tracks: result });
         db.close();
+        return
       });
   });
 };
+
+// new track 0 votes
+// export const getPosition = (req, res, next) => {
+//   MongoClient.connect(url, function(err, db) {
+//     if (err) throw err;
+//     var dbo = db.db(dbase);
+//     var mysort = { votes: -1 };
+//     dbo
+//       .collection('tracks')
+//       .find({ votes: { $gte: 0 } })
+//       .sort(mysort)
+//       .toArray(function(err, result) {
+//         if (err) throw err;
+//         res.status(200).json({ position: result.length });
+//         db.close();
+//       });
+//   });
+// };
 
 // TODO: if last updated at is less than 5 secs ago then focus on track

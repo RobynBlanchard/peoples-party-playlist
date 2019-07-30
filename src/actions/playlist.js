@@ -2,8 +2,6 @@ import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import {
   REORDER_TRACK,
-  REORDER_TRACK_SUCCESS,
-  REORDER_TRACK_FAILURE,
   REMOVE_FROM_PLAYLIST,
   REMOVE_TRACK,
   REMOVE_TRACK_SUCCESS,
@@ -11,13 +9,30 @@ import {
   ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_SUCCESS,
   ADD_TO_PLAYLIST_FAILURE,
-  RESUME_PLAYBACK
+  RESUME_PLAYBACK,
+  ADD_TO_SPOTIFY_PLAYLIST,
+  ADD_TO_SPOTIFY_PLAYLIST_SUCCESS,
+  ADD_TO_SPOTIFY_PLAYLIST_FAILURE,
+  REORDER_TRACK_SPOTIFY,
+  REORDER_TRACK_SPOTIFY_SUCCESS,
+  REORDER_TRACK_SPOTIFY_FAILURE,
 } from './types';
 
 import axios from 'axios';
 
-export const reOrderTrack = (range_start, insert_before) => ({
-  types: [REORDER_TRACK, REORDER_TRACK_SUCCESS, REORDER_TRACK_FAILURE],
+function sendSocketMessage(action) {
+  return {
+    handler: 'WS',
+    ...action
+  };
+}
+
+export const reOrderTrackSpotify = (range_start, insert_before) => ({
+  types: [
+    REORDER_TRACK_SPOTIFY,
+    REORDER_TRACK_SPOTIFY_SUCCESS,
+    REORDER_TRACK_SPOTIFY_FAILURE,
+  ],
   callAPI: token =>
     spotifyApi(token).put(`playlists/${playlistId}/tracks`, {
       range_start,
@@ -26,21 +41,57 @@ export const reOrderTrack = (range_start, insert_before) => ({
   payload: { range_start, insert_before }
 });
 
+const findPositionFromUri = uri => {
+  return axios.get('/playlist/api/v1/tracks').then(resp => {
+    if (resp.status === 200) {
+      const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
+      return index;
+    }
+  });
+};
+
 export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
+  let newPosition;
+  // could work out new position first - instead of from db
   axios
+    // increment vote of track in db
     .patch(`/playlist/api/v1/tracks/${uri}`, {
       vote: 1
     })
+    // get the new position of the track in the playlist
     .then(resp => {
       if (resp.status === 204) {
-        return axios.get('/playlist/api/v1/tracks');
+        return findPositionFromUri(uri);
       }
     })
-    .then(resp => {
-      if (resp.status === 200) {
-        const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
-        return dispatch(reOrderTrack(position, index));
+    // update spotify playlist with new track position
+    .then(index => {
+      newPosition = index;
+
+      return dispatch(reOrderTrackSpotify(position, index));
+    })
+    // track was updated in spotify and db successfully
+    // -> display increase vote to user
+    .then(data => {
+      if (data.type === 'REORDER_TRACK_SPOTIFY_SUCCESS') {
+        const payload = {
+          position: position
+        };
+
+        return dispatch(
+          sendSocketMessage({ type: 'INCREASE_VOTE', payload: payload })
+        );
       }
+    })
+    // -> re-order track in ui
+    .then(resp => {
+      const payload = {
+        insert_before: newPosition,
+        range_start: position
+      };
+      return dispatch(
+        sendSocketMessage({ type: 'REORDER_TRACK', payload: payload })
+      );
     })
     .catch(err => {
       console.log('error adding vote');
@@ -70,7 +121,7 @@ export const handleVoteDecrease = (uri, position) => (dispatch, getState) => {
 };
 
 export const addToSpotifyPlaylist = (uri, position) => ({
-  types: [ADD_TO_PLAYLIST, ADD_TO_PLAYLIST_SUCCESS, ADD_TO_PLAYLIST_FAILURE],
+  types: [ADD_TO_SPOTIFY_PLAYLIST, ADD_TO_SPOTIFY_PLAYLIST_SUCCESS, ADD_TO_SPOTIFY_PLAYLIST_FAILURE],
   callAPI: token =>
     spotifyApi(token).post(
       `playlists/${playlistId}/tracks?uris=${uri}&position=${position}`
@@ -81,31 +132,39 @@ export const addToSpotifyPlaylist = (uri, position) => ({
 });
 
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
-  console.log('ACTION')
-  function sendSocketMessage(message) {
-    return {
-        type : "SEND_WEBSOCKET_MESSAGE",
-        payload : message
-    }
-  }
-  dispatch(sendSocketMessage('test message'))
-  // axios
-  //   .post('/playlist/api/v1/tracks', { uri: uri, name: name, artist: artist })
-  //   .then(resp => {
-  //     if (resp.status === 201) {
-  //       // instead fetch playlist and get query to return array of uris then find index
-  //       return axios.get('/playlist/api/v1/tracks');
-  //     }
-  //   })
-  //   .then(resp => {
-  //     if (resp.status === 200) {
-  //       const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
-  //       return dispatch(addToSpotifyPlaylist(uri, index));
-  //     }
-  //   })
-  //   .catch(err => {
-  //     console.log('error', err);
-  //   });
+  let newPosition;
+  axios
+    .post('/playlist/api/v1/tracks', { uri: uri, name: name, artist: artist })
+    .then(resp => {
+      if (resp.status === 201) {
+        return findPositionFromUri(uri);
+      }
+    })
+    .then(index => {
+      newPosition = index;
+      return dispatch(addToSpotifyPlaylist(uri, newPosition));
+    })
+    .then(data => {
+      if (data.type === ADD_TO_SPOTIFY_PLAYLIST_SUCCESS) {
+        const track = {
+          artist,
+          name,
+          votes: 0,
+          uri
+        };
+        const payload = {
+          position: newPosition,
+          track: track
+        };
+        return dispatch(
+          sendSocketMessage({ type: 'ADD_TO_PLAYLIST', payload: payload })
+        );
+      }
+      // else TODO:
+    })
+    .catch(err => {
+      console.log('error', err);
+    });
 };
 
 // export const removeFromPlaylist = position => ({

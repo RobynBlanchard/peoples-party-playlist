@@ -13,7 +13,13 @@ import {
   DECREASE_VOTE,
   REMOVE_TRACK,
   REMOVE_TRACK_SUCCESS,
-  REMOVE_TRACK_FAILURE
+  REMOVE_TRACK_FAILURE,
+  ADD_TO_SPOTIFY_PLAYLIST,
+  ADD_TO_SPOTIFY_PLAYLIST_SUCCESS,
+  ADD_TO_SPOTIFY_PLAYLIST_FAILURE,
+  REORDER_TRACK_SPOTIFY,
+  REORDER_TRACK_SPOTIFY_SUCCESS,
+  REORDER_TRACK_SPOTIFY_FAILURE,
 } from '../actions/types';
 import transformPlaylistData from './playlistsTransformer';
 
@@ -29,72 +35,44 @@ const defaultState = {
 // rename to playlist
 const playlistsReducer = (state = defaultState, action) => {
   let playlist = state.playlist;
+  let newPlalist = state.newPlalist;
+
+  console.log(state)
+
 
   switch (action.type) {
     case FETCH_PLAYLIST:
       return {
-        ...state,
-        loading: true
+        newPlalist: action.payload,
+        // loading: true
       };
-    case FETCH_PLAYLIST_SUCCESS:
-      return {
-        ...state,
-        playlist: transformPlaylistData(action.response), // could pass transformers to action and handle in middleware..
-        error: null
-      };
-    case FETCH_PLAYLIST_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: action.error
-      };
+    // case FETCH_PLAYLIST_SUCCESS:
+    //   return {
+    //     ...state,
+    //     playlist: transformPlaylistData(action.response), // could pass transformers to action and handle in middleware..
+    //     error: null
+    //   };
+    // case FETCH_PLAYLIST_FAILURE:
+    //   return {
+    //     ...state,
+    //     loading: false,
+    //     error: action.error
+    //   };
+
     case REORDER_TRACK:
-        return {
-          ...state,
-          loading: true
-        };
-    case REORDER_TRACK_SUCCESS:
-      // only move up within app if moved up successfully at spotify's end
-      playlist.splice(
-        action.insert_before,
+      newPlalist.splice(
+        action.payload.insert_before,
         0,
-        playlist.splice(action.range_start, 1)[0]
+        newPlalist.splice(action.payload.range_start, 1)[0]
       );
 
       return {
           ...state,
-          playlist,
+          newPlalist,
           loading: false,
           error: null,
         };
-    case REORDER_TRACK_FAILURE:
-        return {
-          ...state,
-          loading: false,
-          error: action.payload,
-        };
-      // case MOVE_UP_PlAYLIST:
-      //   let curPlaylist = state.playlist;
-      //   curPlaylist.splice(
-      //     action.payload.insert_before,
-      //     0,
-      //     curPlaylist.splice(action.payload.range_start, 1)[0]
-      //   );
-      //   return {
-      //     ...state,
-      //     playlist: curPlaylist
-      //   };
-      // case MOVE_DOWN_PlAYLIST:
-      //   let curPlaylist2 = state.playlist;
-      //   curPlaylist2.splice(
-      //     action.payload.insert_before,
-      //     0,
-      //     curPlaylist2.splice(action.payload.range_start, 1)[0]
-      //   );
-      // return {
-      //   ...state,
-      //   playlist: curPlaylist2
-      // };
+
     case REMOVE_TRACK:
         return {
           ...state,
@@ -119,6 +97,22 @@ const playlistsReducer = (state = defaultState, action) => {
       // };
       // return newStatee;
     case INCREASE_VOTE:
+      if (newPlalist.length === 0) {
+        return {
+          ...state,
+        }
+      }
+      debugger;
+        newPlalist[action.payload.position].votes += 1;
+
+        console.log('NEW PL', newPlalist)
+        const res =  {
+          ...state,
+          newPlalist
+        }
+        debugger;
+        return res;
+
       // const updatedPlaylist = state.playlist.map(el => {
       //   if (el.uri.valueOf() === action.payload.valueOf()) {
       //     return { ...el, votes: el.votes + 1 };
@@ -140,29 +134,49 @@ const playlistsReducer = (state = defaultState, action) => {
       //   ...state,
       //   playlist: playlistWithVoteDescreased
       // };
-    case 'ADD_TO_PLAYLIST_SUCCESS':
-      playlist.splice(action.position, 0, action.details);
-      return {
-        ...state,
-        playlist: playlist,
-        error: null,
-      };
-    case 'ADD_TO_PLAYLIST_FAILURE':
-      return {
-        ...state,
-        error: action.payload
-      };
-    case 'PLAYLIST':
 
+    case 'PLAYLIST':
       return {
         ...state,
         newPlalist: action.payload
       }
-     case 'SOCKET_MESSAGE_RECEIVED':
-       console.log('reducer, message received')
-       console.log(action)
-       return state;
-       break;
+    case 'ADD_TO_PLAYLIST':
+      if (newPlalist.length === 0) {
+        return {
+          ...state,
+        }
+      }
+      newPlalist.splice(action.payload.position, 0, action.payload.track)
+      return {
+        ...state,
+        newPlalist: newPlalist
+      }
+    // TODO: handle these properly
+    // could indicate on track just clicked when track has been added
+    case ADD_TO_SPOTIFY_PLAYLIST:
+      return {
+        ...state,
+      }
+    case ADD_TO_SPOTIFY_PLAYLIST_SUCCESS:
+      return {
+        ...state
+      }
+    case ADD_TO_SPOTIFY_PLAYLIST_FAILURE:
+      return {
+        ...state
+      }
+    case REORDER_TRACK_SPOTIFY:
+        return {
+          ...state,
+        }
+    case REORDER_TRACK_SPOTIFY_SUCCESS:
+      return {
+        ...state
+      }
+    case REORDER_TRACK_SPOTIFY_FAILURE:
+      return {
+        ...state
+      }
     default:
       return state;
   }

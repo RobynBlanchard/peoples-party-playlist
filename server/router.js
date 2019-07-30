@@ -15,7 +15,7 @@ import {
 import {
   invite
 } from './controllers/user';
-import { addTrack, patchTrack, getTracks } from './controllers/playlist';
+import { addTrack, patchTrack, getTracks, getPosition } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
 
@@ -26,6 +26,7 @@ export default (app, store) => {
   app.get('/LogInFailure', logInFailure(store));
   app.get('/callback', logInCallback);
   app.get('/playlist/api/v1/tracks', getTracks);
+  // app.get('/test-get-pos', getPosition);
   app.get('/invite', invite);
 
 
@@ -41,9 +42,15 @@ export default (app, store) => {
 
     const dataRequirements = routes
       .filter(route => matchPath(req.path, route))
-      .map(route => route.component)
+      .map(route => {
+        console.log('route', route)
+        return route.component
+      })
       .filter(comp => comp.serverFetch)
-      .map(comp => store.dispatch(comp.serverFetch()));
+      .map(comp => {
+        console.log('====', comp.serverFetch)
+        return store.dispatch(comp.serverFetch())
+      });
 
     Promise.all(dataRequirements).then(() => {
       const jsx = (

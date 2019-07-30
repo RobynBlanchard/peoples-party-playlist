@@ -24,10 +24,13 @@ class Playlist extends React.Component {
     const { playlist, fetchPlaylist } = this.props;
 
     if (playlist.playlist.length === 0) {
+      console.log('playlist was empty')
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
-    this.timer = setInterval(() => fetchPlaylist(), 3000);
+
+    // if socet connection closed then do this?
+    // this.timer = setInterval(() => fetchPlaylist(), 3000);
 
   }
 
@@ -104,6 +107,7 @@ class Playlist extends React.Component {
 
   render() {
     const { playlist, playing, resumePlayback, pausePlayback } = this.props;
+    console.log('playlist------', playlist)
     // if (playlist.error) return  <ErrorIndicator />;
 
     // if (playlist.playlist.length === 0) {
@@ -136,8 +140,8 @@ const mapStateToProps = state => {
   };
 };
 
-export default requireAuth(
-  connect(
+// export default requireAuth(
+  export default connect(
     mapStateToProps,
     {
       fetchPlaylist,
@@ -150,4 +154,4 @@ export default requireAuth(
       setRecentlyClicked
     }
   )(Playlist)
-);
+// );
