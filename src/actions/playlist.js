@@ -10,7 +10,8 @@ import {
   REMOVE_TRACK_FAILURE,
   ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_SUCCESS,
-  ADD_TO_PLAYLIST_FAILURE
+  ADD_TO_PLAYLIST_FAILURE,
+  RESUME_PLAYBACK
 } from './types';
 
 import axios from 'axios';
@@ -27,11 +28,13 @@ export const reOrderTrack = (range_start, insert_before) => ({
 
 export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
   axios
-    .post('/add-vote', {
-      uri: uri
+    .patch(`/playlist/api/v1/tracks/${uri}`, {
+      vote: 1
     })
     .then(resp => {
-      return axios.get('/playlist/api/v1/tracks');
+      if (resp.status === 204) {
+        return axios.get('/playlist/api/v1/tracks');
+      }
     })
     .then(resp => {
       if (resp.status === 200) {
@@ -46,11 +49,13 @@ export const handleVoteIncrease = (uri, position) => (dispatch, getState) => {
 
 export const handleVoteDecrease = (uri, position) => (dispatch, getState) => {
   axios
-    .post('/decrement-vote', {
-      uri: uri
+    .patch(`/playlist/api/v1/tracks/${uri}`, {
+      vote: -1
     })
     .then(resp => {
-      return axios.get('/playlist/api/v1/tracks');
+      if (resp.status === 204) {
+        return axios.get('/playlist/api/v1/tracks');
+      }
     })
     .then(resp => {
       if (resp.status === 200) {
@@ -77,12 +82,12 @@ export const addToSpotifyPlaylist = (uri, position) => ({
 
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   axios
-    .post('/add-to-playlist', { uri: uri, name: name, artist: artist })
+    .post('/playlist/api/v1/tracks', { uri: uri, name: name, artist: artist })
     .then(resp => {
-      // check status code 201
-
-      // instead fetch playlist and get query to return array of uris then find index
-      return axios.get('/playlist/api/v1/tracks');
+      if (resp.status === 201) {
+        // instead fetch playlist and get query to return array of uris then find index
+        return axios.get('/playlist/api/v1/tracks');
+      }
     })
     .then(resp => {
       if (resp.status === 200) {

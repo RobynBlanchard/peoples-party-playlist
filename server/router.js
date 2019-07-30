@@ -15,7 +15,7 @@ import {
 import {
   invite
 } from './controllers/user';
-import { addTrack, addVote, decreaseVote, getTracks } from './controllers/playlist';
+import { addTrack, patchTrack, getTracks } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
 
@@ -62,8 +62,6 @@ export default (app, store) => {
     });
   });
 
-  app.post('/add-to-playlist', addTrack); //playlist/api/v1/tracks
-  app.post('/add-vote', addVote); // track
-  app.post('/decrement-vote', decreaseVote); // track
-
+  app.post('/playlist/api/v1/tracks', addTrack);
+  app.patch('/playlist/api/v1/tracks/:id', patchTrack); // id is track uri
 };
