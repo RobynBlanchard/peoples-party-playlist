@@ -158,6 +158,11 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         newPlalist: action.payload
       }
+     case 'SOCKET_MESSAGE_RECEIVED':
+       console.log('reducer, message received')
+       console.log(action)
+       return state;
+       break;
     default:
       return state;
   }

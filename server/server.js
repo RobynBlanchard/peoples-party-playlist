@@ -30,6 +30,11 @@ const io = socketIO(server)
 io.on('connection', socket => {
   console.log('User connected')
 
+  socket.on('message', (message) => {
+    console.log('Server received message: ', message)
+    io.sockets.emit('message', message)
+  })
+
   socket.on('disconnect', () => {
     console.log('user disconnected')
   })

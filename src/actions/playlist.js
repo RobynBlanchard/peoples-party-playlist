@@ -81,23 +81,31 @@ export const addToSpotifyPlaylist = (uri, position) => ({
 });
 
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
-  axios
-    .post('/playlist/api/v1/tracks', { uri: uri, name: name, artist: artist })
-    .then(resp => {
-      if (resp.status === 201) {
-        // instead fetch playlist and get query to return array of uris then find index
-        return axios.get('/playlist/api/v1/tracks');
-      }
-    })
-    .then(resp => {
-      if (resp.status === 200) {
-        const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
-        return dispatch(addToSpotifyPlaylist(uri, index));
-      }
-    })
-    .catch(err => {
-      console.log('error', err);
-    });
+  console.log('ACTION')
+  function sendSocketMessage(message) {
+    return {
+        type : "SEND_WEBSOCKET_MESSAGE",
+        payload : message
+    }
+  }
+  dispatch(sendSocketMessage('test message'))
+  // axios
+  //   .post('/playlist/api/v1/tracks', { uri: uri, name: name, artist: artist })
+  //   .then(resp => {
+  //     if (resp.status === 201) {
+  //       // instead fetch playlist and get query to return array of uris then find index
+  //       return axios.get('/playlist/api/v1/tracks');
+  //     }
+  //   })
+  //   .then(resp => {
+  //     if (resp.status === 200) {
+  //       const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
+  //       return dispatch(addToSpotifyPlaylist(uri, index));
+  //     }
+  //   })
+  //   .catch(err => {
+  //     console.log('error', err);
+  //   });
 };
 
 // export const removeFromPlaylist = position => ({
