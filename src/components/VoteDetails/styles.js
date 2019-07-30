@@ -13,11 +13,11 @@ export const VotesContent = styled.div`
 `;
 
 export const VotesText = styled.p`
-  padding: 10px;
+  padding: 0 10px;
   width: 20px;
   text-align: center;
 
-  ${media.tablet`font-size: 20px;`}
+  ${media.tablet`font-size: 18px;`}
 `;
 
 export const Button = styled.button`

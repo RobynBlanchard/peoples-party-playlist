@@ -11,8 +11,8 @@ export const Container = styled.li`
   opacity: 0.9;
 
   height: 50px;
-  line-height: 2px;
-  ${media.tablet`height: 80px;line-height: 1;`}
+   line-height: 2px;
+  /* ${media.tablet`height: 80px;line-height: 1;`} */
 
   ${({ shouldFocus }) =>
     shouldFocus &&
@@ -52,7 +52,6 @@ export const DesktopDetails = styled.div`
   ${media.tablet`display: none;`}
 `;
 export const SongDesktop = styled.p`
-  width: 40%;
   padding: 0 10px;
 `;
 
@@ -65,11 +64,14 @@ export const MobileDetails = styled.div`
   padding: 0 8px;
   display: none;
   ${media.tablet`display: block;`}
+
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 export const SongMobile = styled.p`
-  /* font-size: 20px; */
   margin: 8px 0;
+  line-height: 1;
 `;
 
 export const ArtistMobile = styled.p`
