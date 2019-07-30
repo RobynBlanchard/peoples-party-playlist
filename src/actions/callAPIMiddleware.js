@@ -26,6 +26,7 @@ export function callAPIMiddleware({ dispatch, getState }) {
 
     const [requestType, successType, failureType] = types;
 
+    // TODO: CHANGE - MAKE NOT JUST FOR SPOTIFY CALLS
     const token = getState().auth.token;
     if (!token) {
       return;
@@ -40,6 +41,7 @@ export function callAPIMiddleware({ dispatch, getState }) {
 
     return callAPI(token)
       .then(response => {
+        console.log('SUCESS!!')
         return dispatch(
           Object.assign({}, payload, {
             response: response.data,

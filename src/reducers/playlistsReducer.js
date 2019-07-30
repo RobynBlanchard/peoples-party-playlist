@@ -9,6 +9,7 @@ import {
   MOVE_UP_PlAYLIST,
   MOVE_DOWN_PlAYLIST,
   REMOVE_FROM_PLAYLIST,
+  ADD_TO_PLAYLIST,
   INCREASE_VOTE,
   DECREASE_VOTE,
   REMOVE_TRACK,
@@ -20,6 +21,7 @@ import {
   REORDER_TRACK_SPOTIFY,
   REORDER_TRACK_SPOTIFY_SUCCESS,
   REORDER_TRACK_SPOTIFY_FAILURE,
+  UPDATE_VOTE
 } from '../actions/types';
 import transformPlaylistData from './playlistsTransformer';
 
@@ -46,6 +48,11 @@ const playlistsReducer = (state = defaultState, action) => {
         newPlalist: action.payload,
         // loading: true
       };
+    case 'FETCH_PLAYLIST_FROM_DB_SUCCESS':
+      return {
+        ...state,
+        newPlalist: action.payload,
+      }
     // case FETCH_PLAYLIST_SUCCESS:
     //   return {
     //     ...state,
@@ -78,9 +85,7 @@ const playlistsReducer = (state = defaultState, action) => {
           ...state,
         }
     case REMOVE_TRACK_SUCCESS:
-      // debugger;
       playlist.splice(action.position, 1);
-      // debugger;
 
       return {
         ...state,
@@ -96,21 +101,17 @@ const playlistsReducer = (state = defaultState, action) => {
       //   playlist: currentPlaylist
       // };
       // return newStatee;
-    case INCREASE_VOTE:
+    case UPDATE_VOTE:
       if (newPlalist.length === 0) {
         return {
           ...state,
         }
       }
-      debugger;
-        newPlalist[action.payload.position].votes += 1;
-
-        console.log('NEW PL', newPlalist)
+        newPlalist[action.payload.position].votes += action.payload.change;
         const res =  {
           ...state,
           newPlalist
         }
-        debugger;
         return res;
 
       // const updatedPlaylist = state.playlist.map(el => {
@@ -123,7 +124,7 @@ const playlistsReducer = (state = defaultState, action) => {
       //   ...state,
       //   playlist: updatedPlaylist
       // };
-    case DECREASE_VOTE:
+    // case DECREASE_VOTE:
       // const playlistWithVoteDescreased = state.playlist.map(el => {
       //   if (el.uri.valueOf() === action.payload.valueOf()) {
       //     return { ...el, votes: el.votes - 1 };
@@ -135,12 +136,7 @@ const playlistsReducer = (state = defaultState, action) => {
       //   playlist: playlistWithVoteDescreased
       // };
 
-    case 'PLAYLIST':
-      return {
-        ...state,
-        newPlalist: action.payload
-      }
-    case 'ADD_TO_PLAYLIST':
+    case ADD_TO_PLAYLIST:
       if (newPlalist.length === 0) {
         return {
           ...state,

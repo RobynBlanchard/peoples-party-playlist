@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 
 import {
   fetchPlaylist,
-  handleVoteDecrease,
-  handleVoteIncrease,
+  updateTrackNumOfVotes,
   resumePlayback,
   pausePlayback,
   getCurrentlyPlayingTrack,
@@ -58,9 +57,8 @@ class Playlist extends React.Component {
       playing,
       sessionStarted,
       recentlyClickedTrack,
-      handleVoteIncrease,
+      updateTrackNumOfVotes,
       setRecentlyClicked,
-      handleVoteDecrease
     } = this.props;
 
     let position = -1;
@@ -91,9 +89,9 @@ class Playlist extends React.Component {
             <VoteDetails
               position={position}
               uri={uri}
-              handleUpVote={handleVoteIncrease}
+              handleUpVote={updateTrackNumOfVotes}
               setRecentlyClicked={setRecentlyClicked}
-              handleDownVote={handleVoteDecrease}
+              handleDownVote={updateTrackNumOfVotes}
               votes={votes}
               shouldFocus={recentlyClickedTrack === uri}
               playlist={playlist}
@@ -140,14 +138,14 @@ const mapStateToProps = state => {
   };
 };
 
+// TODO:- put back
 // export default requireAuth(
   export default connect(
     mapStateToProps,
     {
       fetchPlaylist,
       removeTrack,
-      handleVoteDecrease,
-      handleVoteIncrease,
+      updateTrackNumOfVotes,
       resumePlayback,
       pausePlayback,
       getCurrentlyPlayingTrack,
