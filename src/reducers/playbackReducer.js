@@ -33,8 +33,8 @@ const playBackReducer = (state = defaultState, action) => {
       return {
         ...state,
         currentTrack: {
-          progress_ms: action.response.progress_ms,
-          uri: action.response.item.uri
+          progress_ms: action.payload.response.progress_ms,
+          uri: action.payload.response.item.uri
       }
     }
     default:

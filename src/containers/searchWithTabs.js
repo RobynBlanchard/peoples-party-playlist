@@ -88,7 +88,6 @@ class Search extends React.Component {
   }
 
   handleClick = (e, type) => {
-    console.log('handle click');
     e.preventDefault();
     this.setState({ resultType: type });
   };

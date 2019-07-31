@@ -20,6 +20,13 @@ export const startSession = () => {
   };
 };
 
+function sendSocketMessage(action) {
+  return {
+    handler: 'WS',
+    ...action
+  };
+}
+
 export const resumePlaybackSpotify = playbackPosition => ({
   types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
   callAPI: token =>
@@ -27,14 +34,16 @@ export const resumePlaybackSpotify = playbackPosition => ({
       context_uri: `spotify:playlist:${playlistId}`,
       offset: { position: 0 },
       position_ms: playbackPosition
-    })
+    }),
+  // wsHandler: [RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE]
 });
 
 export const resumePlayback = () => (dispatch, getState) => {
+  console.log('RESUME PLAYBACK')
   const playbackPosition = getState().playback.currentTrack.progress_ms;
   dispatch(resumePlaybackSpotify(playbackPosition)).then(data => {
     if (!getState().session.sessionStarted) {
-      dispatch(startSession());
+      dispatch(sendSocketMessage(startSession()));
     }
   });
 };

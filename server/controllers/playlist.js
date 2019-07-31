@@ -66,10 +66,6 @@ export const patchTrack = (req, res, next) => {
         { new: true },
         function(err, resp) {
           if (err) throw err;
-          console.log('=============== ypdated at value', resp.value.updatedAt);
-          console.log('=============== ypdated at value', resp.updatedAt);
-          console.log('=============== ypdated at value', resp.value.votes);
-
           res
             .status(204)
             .json({
@@ -117,8 +113,6 @@ export const getTracks = (req, res, next) => {
       .find()
       .sort(mysort)
       .toArray(function(err, result) {
-        console.log('----', result[0]._id.getTimestamp());
-        console.log('----', result);
 
         if (err) throw err;
 

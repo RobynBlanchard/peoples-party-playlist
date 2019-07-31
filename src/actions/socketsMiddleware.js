@@ -13,6 +13,7 @@ export const createMySocketMiddleware = () => {
     return next => action => {
       if (action.handler === 'WS') {
         console.log('socket sends action')
+        // socket.send(action);
         socket.send({ type: action.type, payload: action.payload });
         return;
       }

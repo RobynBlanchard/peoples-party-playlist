@@ -41,14 +41,13 @@ class Playlist extends React.Component {
       removeTrack
     } = this.props;
 
-    if (sessionStarted) {
-      getCurrentlyPlayingTrack();
-
-      const topTrack = playlist.playlist[0].uri;
-      if (currentTrack.uri && currentTrack.uri !== topTrack) {
-        removeTrack(topTrack, 0);
-      }
-    }
+    // if (sessionStarted) {
+    //   getCurrentlyPlayingTrack();
+    //   const topTrack = playlist.newPlalist[0].uri;
+    //   if (currentTrack.uri && currentTrack.uri !== topTrack) {
+    //     removeTrack(topTrack, 0);
+    //   }
+    // }
   }
 
   renderTracks(playlist) {
@@ -77,7 +76,6 @@ class Playlist extends React.Component {
         // return new Date().toISOString()
       }
       if (position === 0) {
-        console.log('should focs', updatedAt  > (fiveSecondsAgo()))
         isLocked = playing || (sessionStarted && !playing);
       }
 

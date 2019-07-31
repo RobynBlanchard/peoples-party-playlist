@@ -77,7 +77,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
   dispatch(updateTrackVotesInDB(uri, change))
     // get the new position of the track in the playlist
     .then(resp => {
-      console.log(resp)
       if (resp.type === UPDATE_TRACK_IN_DB_SUCCESS) {
         // TODO: fix
         // newTS = resp.data.track.timestamp;
@@ -90,7 +89,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
     .then(data => {
       newPosition = data.index;
       newTS = data.updatedAt
-      console.log('data', data)
       return dispatch(reOrderTrackSpotify(position, data.index));
     })
     // track was updated in spotify and db successfully

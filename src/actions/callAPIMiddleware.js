@@ -41,12 +41,24 @@ export function callAPIMiddleware({ dispatch, getState }) {
 
     return callAPI(token)
       .then(response => {
-        return dispatch(
-          Object.assign({}, payload, {
-            response: response.data,
-            type: successType
-          })
-        );
+        // console.log(response)
+        // console.log(Object.assign({}, payload, {
+        //   response: response.data,
+        //   type: successType,
+        //   handler: 'WS',
+        // }))
+        // return dispatch(
+        //   Object.assign({}, payload, {
+        //     response: response.data,
+        //     type: successType,
+        //     // handler: 'WS',
+        //   })s
+        // );
+        return dispatch({
+          payload: { ...payload, response },
+          type: successType,
+          handler: 'WS'
+        });
       })
       .catch(error => {
         dispatch(

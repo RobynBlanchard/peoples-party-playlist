@@ -17,7 +17,7 @@ const user = (state = defaultState, action) => {
       return {
         ...state,
         loading: false,
-        userId: action.response.display_name
+        userId: action.payload.response.display_name
       };
     case FETCH_USER_ID_FAILURE:
       return {
