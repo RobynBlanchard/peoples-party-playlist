@@ -6,6 +6,7 @@ var url =
   process.env.MONGODB_URI || 'mongodb://localhost/peoples-party-playlist';
 var dbase = process.env.DBASE || 'peoples-party-playlist';
 
+// https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/#db.collection.findAndModify
 export const addTrack = (req, res, next) => {
   const uri = req.body.uri;
   const name = req.body.name;
@@ -33,16 +34,48 @@ export const patchTrack = (req, res, next) => {
     if (err) throw err;
     var dbo = db.db(dbase);
 
+    // var updatedAt = new Date().toISOString();
+    // console.log('updated at', updatedAt)
+
     var myquery = { uri: uri };
     dbo
       .collection('tracks')
-      .updateOne(
+      // .updateOne(
+      //   myquery,
+      //   // Update Timestamp too TODO:!!!
+      //   { $push: { users: userId }, $inc: { votes: vote } },
+      //   function(err, resp) {
+      //     console.log('==============', resp)
+      //     // console.log('==============', resp.toArray())
+      //     console.log('==============', resp._id.getTimestamp())
+
+      //     if (err) throw err;
+      //     res.sendStatus(204);
+      //     console.log('1 document updated');
+      //     db.close();
+      //   }
+      // );
+      .findAndModify(
         myquery,
-        { $push: { users: userId }, $inc: { votes: vote } },
+        [['_id', 'asc']],
+        {
+          $push: { users: userId },
+          $inc: { votes: vote },
+          $set: { updatedAt: new Date().toISOString() }
+        },
+        { new: true },
         function(err, resp) {
           if (err) throw err;
-          res.sendStatus(204);
-          console.log('1 document updated');
+          console.log('=============== ypdated at value', resp.value.updatedAt);
+          console.log('=============== ypdated at value', resp.updatedAt);
+          console.log('=============== ypdated at value', resp.value.votes);
+
+          res
+            .status(204)
+            .json({
+              track: { ...resp.value, timestamp: resp.value._id.getTimestamp() }
+            });
+          // res.sendStatus(204);
           db.close();
         }
       );
@@ -84,13 +117,21 @@ export const getTracks = (req, res, next) => {
       .find()
       .sort(mysort)
       .toArray(function(err, result) {
+        console.log('----', result[0]._id.getTimestamp());
+        console.log('----', result);
 
         if (err) throw err;
 
-        console.log('tracks', result)
-        res.status(200).json({ tracks: result });
+        const tracksWithTimeStamps = result.map(track => {
+          return {
+            ...track,
+            timestamp: track._id.getTimestamp()
+          };
+        });
+
+        res.status(200).json({ tracks: tracksWithTimeStamps });
         db.close();
-        return
+        return;
       });
   });
 };

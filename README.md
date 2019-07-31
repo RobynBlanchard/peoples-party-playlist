@@ -44,3 +44,6 @@
 
 
 <!-- add last updated/timestamp to track -> to get css to high;ighted -->
+<!-- when updating vote update timestamp -->
+<!-- fix playback and locked trsck -->
+<!-- debounce on click -->

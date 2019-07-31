@@ -23,7 +23,6 @@ class Playlist extends React.Component {
     const { playlist, fetchPlaylist } = this.props;
 
     if (playlist.playlist.length === 0) {
-      console.log('playlist was empty')
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
@@ -65,22 +64,37 @@ class Playlist extends React.Component {
     return playlist.map(el => {
       position += 1;
 
-      const { artist, name, votes, uri } = el;
-      // const { votes, uri } = el;
-
+      const { artist, name, votes, uri, timestamp, updatedAt } = el;
 
       let isLocked;
 
+      const fiveSecondsAgo = () => {
+        const d = new Date();
+        // d.setHours(d.getHours()-1);
+        d.setSeconds(d.getSeconds()-2);
+
+        return d.toISOString()
+        // return new Date().toISOString()
+      }
       if (position === 0) {
+        console.log('should focs', updatedAt  > (fiveSecondsAgo()))
         isLocked = playing || (sessionStarted && !playing);
       }
+
+
 
       return (
         <Track
           name={name}
           artist={artist}
           isLocked={isLocked}
-          shouldFocus={recentlyClickedTrack === uri}
+          // shouldFocus={recentlyClickedTrack === uri}
+          // TODO: use date now - 5s
+          // TODO:
+          // shouldFocus={timestamp > fiveSecondsAgo()}
+          shouldFocus={updatedAt  > (fiveSecondsAgo())}
+
+
           key={`${uri}-${position}`}
         >
           {isLocked ? (
@@ -104,8 +118,8 @@ class Playlist extends React.Component {
   }
 
   render() {
+    console.log('render')
     const { playlist, playing, resumePlayback, pausePlayback } = this.props;
-    console.log('playlist------', playlist)
     // if (playlist.error) return  <ErrorIndicator />;
 
     // if (playlist.playlist.length === 0) {

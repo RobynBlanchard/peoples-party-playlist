@@ -50,7 +50,7 @@ const findPositionFromUri = uri => {
   return axios.get('/playlist/api/v1/tracks').then(resp => {
     if (resp.status === 200) {
       const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
-      return index;
+      return {index, updatedAt: resp.data.tracks[index].updatedAt};
     }
   });
 };
@@ -71,20 +71,27 @@ export const updateTrackVotesInDB = (uri, vote) => ({
 
 export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getState) => {
   let newPosition;
+  let newTS;
   // could work out new position first - instead of from db
   // change should be 1 or -1
   dispatch(updateTrackVotesInDB(uri, change))
     // get the new position of the track in the playlist
     .then(resp => {
+      console.log(resp)
       if (resp.type === UPDATE_TRACK_IN_DB_SUCCESS) {
+        // TODO: fix
+        // newTS = resp.data.track.timestamp;
+
         return findPositionFromUri(uri);
+        // TODO: instead use find one and update
       }
     })
     // update spotify playlist with new track position
-    .then(index => {
-      newPosition = index;
-
-      return dispatch(reOrderTrackSpotify(position, index));
+    .then(data => {
+      newPosition = data.index;
+      newTS = data.updatedAt
+      console.log('data', data)
+      return dispatch(reOrderTrackSpotify(position, data.index));
     })
     // track was updated in spotify and db successfully
     // -> display increase vote to user
@@ -93,6 +100,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
         const payload = {
           position: position,
           change: change,
+          updatedAt: newTS
         };
 
         return dispatch(
@@ -111,7 +119,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
       );
     })
     .catch(err => {
-      console.log('error adding vote');
+      console.log('error adding vote', err);
     });
 };
 

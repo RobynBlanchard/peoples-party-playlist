@@ -25,6 +25,6 @@ export const fetchPlaylist = () => (dispatch, getState) => {
       }
     })
     .catch(err => {
-      console.log('error -- ', err);
+      console.log('error: ', err);
     });
 };

@@ -43,12 +43,10 @@ export default (app, store) => {
     const dataRequirements = routes
       .filter(route => matchPath(req.path, route))
       .map(route => {
-        console.log('route', route)
         return route.component
       })
       .filter(comp => comp.serverFetch)
       .map(comp => {
-        console.log('====', comp.serverFetch)
         return store.dispatch(comp.serverFetch())
       });
 

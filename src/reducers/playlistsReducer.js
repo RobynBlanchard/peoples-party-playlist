@@ -39,9 +39,6 @@ const playlistsReducer = (state = defaultState, action) => {
   let playlist = state.playlist;
   let newPlalist = state.newPlalist;
 
-  console.log(state)
-
-
   switch (action.type) {
     case FETCH_PLAYLIST:
       return {
@@ -108,6 +105,7 @@ const playlistsReducer = (state = defaultState, action) => {
         }
       }
         newPlalist[action.payload.position].votes += action.payload.change;
+        newPlalist[action.payload.position].updatedAt = action.payload.updatedAt;
         const res =  {
           ...state,
           newPlalist
