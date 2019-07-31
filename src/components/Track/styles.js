@@ -1,5 +1,15 @@
-import styled, { css, animation } from 'styled-components';
+import styled, { css, animation, keyframes } from 'styled-components';
 import { media, colours } from '../../globalStyles';
+
+const highlight = keyframes`
+  50% {
+    color: green
+  }
+
+  /* 100% {
+    border: 10px solid red
+  } */
+`
 
 export const Container = styled.li`
   list-style: none;
@@ -13,21 +23,8 @@ export const Container = styled.li`
   height: 50px;
    line-height: 2px;
   /* ${media.tablet`height: 80px;line-height: 1;`} */
+  animation: ${props => props.shouldFocus && highlight} 1s ease-in-out;
 
-  ${({ shouldFocus }) =>
-    shouldFocus &&
-    css`
-      box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
-      border-radius: 100px;
-      border: 1px solid ${colours.black};
-      background-image: linear-gradient(
-        to right bottom,
-        ${colours.secondaryDark},
-        ${colours.secondaryLight}
-      );
-      color: ${colours.black};
-      ${media.tablet`border-radius: 24px;`}
-    `}}
 
   ${({ lockedTrack }) =>
     lockedTrack &&

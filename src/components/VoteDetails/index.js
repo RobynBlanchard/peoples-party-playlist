@@ -26,7 +26,7 @@ const VoteDetails = ({
           handleClick(uri, position, handleDownVote, setRecentlyClicked, -1)
         }
       >
-        <Icon src={`images/${shouldFocus ? 'black-' : 'white-'}minus.svg`} />
+        <Icon src={`images/white-minus.svg`} />
       </Button>
       <VotesText>{votes}</VotesText>
       <Button
@@ -34,7 +34,7 @@ const VoteDetails = ({
           handleClick(uri, position, handleUpVote, setRecentlyClicked, 1)
         }
       >
-        <Icon src={`images/${shouldFocus ? 'black-' : 'white-'}plus.svg`} />
+        <Icon src={`images/white-plus.svg`} />
       </Button>
     </VotesContent>
   );
