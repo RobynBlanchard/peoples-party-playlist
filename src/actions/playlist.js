@@ -46,7 +46,28 @@ export const reOrderTrackSpotify = (range_start, insert_before) => ({
   payload: { range_start, insert_before }
 });
 
+const spotifyOffset = () => {
+  return axios.get('/playlist/api/v1/tracks', { params:
+    { removed: true, locked: true}
+  }).then(res => {
+    const offset = res.data.res.length;
+    debugger;
+    return offset
+  })
+  //  count
+}
+
 const findPositionFromUri = uri => {
+  // filter out removed and locked
+  // sort
+  // find position
+
+  // count number removed and locked (if not removing from spotify)
+  // ^ might make sense to change this later
+
+  // tell spotify to move track from old position + above count to new position + above count
+
+
   return axios.get('/playlist/api/v1/tracks').then(resp => {
     if (resp.status === 200) {
       const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
@@ -92,51 +113,79 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
   let newTS;
   // could work out new position first - instead of from db
   // change should be 1 or -1
-  dispatch(updateTrackVotesInDB(uri, change))
+
+  // will send socket to update vote
+  return dispatch(updateTrackVotesInDB(uri, change))
     // get the new position of the track in the playlist
     .then(resp => {
-      if (resp.type === UPDATE_TRACK_IN_DB_SUCCESS) {
+      debugger;
+      // TODO: fix
+      // if (resp.type === UPDATE_TRACK_IN_DB_SUCCESS) {
         // TODO: fix
         // newTS = resp.data.track.timestamp;
 
         return findPositionFromUri(uri);
         // TODO: instead use find one and update
-      }
-    })
-    // update spotify playlist with new track position
-    .then(data => {
-      // TODO: position will now be off
-
+      // }
+    }).then(data => {
       newPosition = data.index;
       newTS = data.updatedAt
-      return dispatch(reOrderTrackSpotify(position, data.index));
+
+      if (newPosition === position) {
+        // TODO: not this
+        throw new Error('no need')
+        // return;
+      }
+
+      return spotifyOffset();
+    })
+    // update spotify playlist with new track position
+    .then(offset => {
+      debugger;
+      // TODO: position will now be off
+
+      const range_start = offset + position;
+      const range_end = offset + newPosition;
+
+
+      // only call if position has changed!
+      return dispatch(reOrderTrackSpotify(range_start, range_end));
     })
     // track was updated in spotify and db successfully
     // -> display increase vote to user
     .then(data => {
       if (data.type === 'REORDER_TRACK_SPOTIFY_SUCCESS') {
-        const payload = {
-          position: position,
-          change: change,
-          updatedAt: newTS
-        };
+        // const payload = {
+        //   position: position,
+        //   change: change,
+        //   updatedAt: newTS
+        // };
 
+        // return dispatch(
+        //   sendSocketMessage({ type: UPDATE_VOTE, payload: payload })
+        // );
+
+        const payload = {
+          insert_before: newPosition,
+          range_start: position
+        };
         return dispatch(
-          sendSocketMessage({ type: UPDATE_VOTE, payload: payload })
+          sendSocketMessage({ type: 'REORDER_TRACK', payload: payload })
         );
       }
     })
     // -> re-order track in ui
-    .then(resp => {
-      const payload = {
-        insert_before: newPosition,
-        range_start: position
-      };
-      return dispatch(
-        sendSocketMessage({ type: 'REORDER_TRACK', payload: payload })
-      );
-    })
+    // .then(resp => {
+    //   const payload = {
+    //     insert_before: newPosition,
+    //     range_start: position
+    //   };
+    //   return dispatch(
+    //     sendSocketMessage({ type: 'REORDER_TRACK', payload: payload })
+    //   );
+    // })
     .catch(err => {
+      debugger;
       console.log('error adding vote', err);
     });
 };
@@ -176,8 +225,15 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
       }
     })
     .then(index => {
+      // TODO: add offset
+      // spotifyOffset()
       newPosition = index;
-      return dispatch(addToSpotifyPlaylist(uri, newPosition));
+
+      return spotifyOffset();
+    })
+    .then(offset => {
+
+      return dispatch(addToSpotifyPlaylist(uri, newPosition + offset));
     })
     .then(data => {
       if (data.type === ADD_TO_SPOTIFY_PLAYLIST_SUCCESS) {

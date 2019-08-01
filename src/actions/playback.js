@@ -75,6 +75,8 @@ export const getCurrentlyPlayingTrack = ()  => (dispatch, getState) => {
 
         if (previousCurrentlyPlayingTrack !== currentlyPlayingTrack) {
 
+          // TODO: dispatch remove track from playlisst state
+
           return dispatch(updateTrack(currentlyPlayingTrack, {locked: true}));
           // might aswell say removed true ?
         }

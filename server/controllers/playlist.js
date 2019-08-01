@@ -76,7 +76,8 @@ export const patchTrack = (req, res, next) => {
           { new: true },
           function(err, resp) {
             if (err) throw err;
-            res.status(204).json({
+            console.log('HERE 1')
+            res.json({
               track: { ...resp.value, timestamp: resp.value._id.getTimestamp() }
             });
             // res.sendStatus(204);
@@ -114,30 +115,58 @@ export const patchTrack = (req, res, next) => {
 
 //
 export const getTracks = (req, res, next) => {
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
+  const removed = req.query.removed;
+  const locked = req.query.locked;
 
-    var dbo = db.db(dbase);
-    var mysort = { votes: -1 };
-    dbo
-      .collection('tracks')
-      .find({removed: false, locked: false })
-      .sort(mysort)
-      .toArray(function(err, result) {
-        if (err) throw err;
 
-        const tracksWithTimeStamps = result.map(track => {
-          return {
-            ...track,
-            timestamp: track._id.getTimestamp()
-          };
+  // TODO: make apis better
+
+  if (removed && locked) {
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+
+      var dbo = db.db(dbase);
+      var mysort = { votes: -1 };
+      dbo
+        .collection('tracks')
+        .find({removed: true, locked: true })
+        .sort(mysort)
+        .toArray(function(err, result) {
+          if (err) throw err;
+
+
+          res.status(200).json({ res: result });
+          db.close();
+          return;
         });
+    });
+  } else {
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
 
-        res.status(200).json({ tracks: tracksWithTimeStamps });
-        db.close();
-        return;
-      });
-  });
+      var dbo = db.db(dbase);
+      var mysort = { votes: -1 };
+      dbo
+        .collection('tracks')
+        .find({removed: false, locked: false })
+        .sort(mysort)
+        .toArray(function(err, result) {
+          if (err) throw err;
+
+          const tracksWithTimeStamps = result.map(track => {
+            return {
+              ...track,
+              timestamp: track._id.getTimestamp()
+            };
+          });
+
+          res.status(200).json({ tracks: tracksWithTimeStamps });
+          db.close();
+          return;
+        });
+    });
+  }
+
 };
 
 // new track 0 votes
