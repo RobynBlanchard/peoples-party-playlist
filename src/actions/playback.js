@@ -40,7 +40,7 @@ export const resumePlaybackSpotify = playbackPosition => ({
 
 export const resumePlayback = () => (dispatch, getState) => {
   console.log('RESUME PLAYBACK')
-  const playbackPosition = getState().playback.currentTrack.progress_ms;
+  const playbackPosition = getState().playback.progress_ms;
   dispatch(resumePlaybackSpotify(playbackPosition)).then(data => {
     if (!getState().session.sessionStarted) {
       dispatch(sendSocketMessage(startSession()));
@@ -52,7 +52,7 @@ export const pausePlayback = () => ({
   callAPI: token => spotifyApi(token).put('me/player/pause')
 });
 
-export const getCurrentlyPlayingTrack = () => ({
+export const getCurrentlyPlayingTrackSpotify = () => ({
   types: [
     GET_CURRENTLY_PLAYING,
     GET_CURRENTLY_PLAYING_SUCCESS,
@@ -60,3 +60,29 @@ export const getCurrentlyPlayingTrack = () => ({
   ],
   callAPI: token => spotifyApi(token).get('me/player/currently-playing')
 });
+
+
+import { updateTrack } from './playlist';
+export const getCurrentlyPlayingTrack = ()  => (dispatch, getState) => {
+  dispatch(getCurrentlyPlayingTrackSpotify()).then(resp => {
+    if (resp) {
+
+      if (resp.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
+        const state = getState();
+
+        const previousCurrentlyPlayingTrack = state.playback.currentTrack.uri
+        const currentlyPlayingTrack = resp.payload.response.data.item.uri;
+
+        if (previousCurrentlyPlayingTrack !== currentlyPlayingTrack) {
+
+          return dispatch(updateTrack(currentlyPlayingTrack, {locked: true}));
+          // might aswell say removed true ?
+        }
+
+        // if track,ocked is flse then lock it
+      }
+    }
+  })
+}
+
+//

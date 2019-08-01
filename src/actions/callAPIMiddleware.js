@@ -47,6 +47,7 @@ export function callAPIMiddleware({ dispatch, getState }) {
         //   type: successType,
         //   handler: 'WS',
         // }))
+
         // return dispatch(
         //   Object.assign({}, payload, {
         //     response: response.data,
@@ -54,11 +55,18 @@ export function callAPIMiddleware({ dispatch, getState }) {
         //     // handler: 'WS',
         //   })s
         // );
-        return dispatch({
-          payload: { ...payload, response },
-          type: successType,
-          handler: 'WS'
-        });
+        if (successType !== 'GET_CURRENTLY_PLAYING_SUCCESS') {
+          return dispatch({
+            payload: { ...payload, response },
+            type: successType,
+            handler: 'WS'
+          });
+        } else {
+          return dispatch({
+            payload: { ...payload, response },
+            type: successType
+          });
+        }
       })
       .catch(error => {
         dispatch(

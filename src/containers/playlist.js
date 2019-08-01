@@ -8,7 +8,8 @@ import {
   pausePlayback,
   getCurrentlyPlayingTrack,
   setRecentlyClicked,
-  removeTrack
+  removeTrack,
+  updateTrack
 } from '../actions';
 import Heading from '../components/Heading';
 import Track from '../components/Track';
@@ -29,25 +30,62 @@ class Playlist extends React.Component {
 
     // if socet connection closed then do this?
     // this.timer = setInterval(() => fetchPlaylist(), 3000);
-
   }
 
   getCurrentlyPlaying() {
     const {
       sessionStarted,
       getCurrentlyPlayingTrack,
-      currentTrack,
+      // currentTrack,
       playlist,
-      removeTrack
+      removeTrack,
+      updateTrack
     } = this.props;
 
-    // if (sessionStarted) {
-    //   getCurrentlyPlayingTrack();
-    //   const topTrack = playlist.newPlalist[0].uri;
-    //   if (currentTrack.uri && currentTrack.uri !== topTrack) {
-    //     removeTrack(topTrack, 0);
-    //   }
-    // }
+    if (sessionStarted) {
+      getCurrentlyPlayingTrack();
+      // const topTrack = playlist.newPlalist[0].uri;
+      // if (currentTrack.uri && currentTrack.uri !== topTrack) {
+        // if locked true and not currently playing - remove track
+
+        // for now just 'locking it'
+        // updateTrack(topTrack, { removed: true });
+        // should
+
+
+        // remove(topTrack, 0);
+
+        // ie remove
+        // lockTrack(topTrack);
+      // }
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    Object.entries(this.props).forEach(([key, val]) => {
+      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+    }
+
+    );
+    // Object.entries(this.state).forEach(([key, val]) =>
+    //   prevState[key] !== val && console.log(`State '${key}' changed`)
+    // );
+  }
+
+  renderCurrentlyPlaying(playing, track) {
+    const { artist, name, uri } = track;
+
+    return (
+      <Track
+        name={name}
+        artist={artist}
+        isLocked={true}
+        shouldFocus={false}
+        key={`${uri}-${name}`}
+      >
+        <Icon isPlaying={playing} />
+      </Track>
+    );
   }
 
   renderTracks(playlist) {
@@ -57,67 +95,61 @@ class Playlist extends React.Component {
       recentlyClickedTrack,
       updateTrackNumOfVotes,
       setRecentlyClicked,
+      lockTrack,
+      // currentTrack
     } = this.props;
 
     let position = -1;
     return playlist.map(el => {
       position += 1;
 
-      const { artist, name, votes, uri, timestamp, updatedAt } = el;
-
-      let isLocked;
+      const { artist, name, votes, uri, updatedAt } = el;
 
       const fiveSecondsAgo = () => {
         const d = new Date();
-        // d.setHours(d.getHours()-1);
-        d.setSeconds(d.getSeconds()-2);
+        d.setSeconds(d.getSeconds() - 2);
 
-        return d.toISOString()
-        // return new Date().toISOString()
-      }
-      if (position === 0) {
-        isLocked = playing || (sessionStarted && !playing);
-      }
-
-
+        return d.toISOString();
+      };
 
       return (
         <Track
           name={name}
           artist={artist}
-          isLocked={isLocked}
-          // shouldFocus={recentlyClickedTrack === uri}
-          // TODO: use date now - 5s
-          // TODO:
-          // shouldFocus={timestamp > fiveSecondsAgo()}
-          shouldFocus={updatedAt  > (fiveSecondsAgo())}
-
-
+          isLocked={false}
+          shouldFocus={updatedAt > fiveSecondsAgo()}
           key={`${uri}-${position}`}
         >
-          {isLocked ? (
-            <Icon isPlaying={playing} />
-          ) : (
-            <VoteDetails
-              position={position}
-              uri={uri}
-              handleUpVote={updateTrackNumOfVotes}
-              setRecentlyClicked={setRecentlyClicked}
-              handleDownVote={updateTrackNumOfVotes}
-              votes={votes}
-              shouldFocus={recentlyClickedTrack === uri}
-              playlist={playlist}
-              sessionStarted={sessionStarted}
-            />
-          )}
+          <VoteDetails
+            position={position}
+            uri={uri}
+            handleUpVote={updateTrackNumOfVotes}
+            setRecentlyClicked={setRecentlyClicked}
+            handleDownVote={updateTrackNumOfVotes}
+            votes={votes}
+            shouldFocus={recentlyClickedTrack === uri}
+            playlist={playlist}
+            sessionStarted={sessionStarted}
+          />
         </Track>
       );
     });
   }
 
   render() {
-    console.log('render')
+    console.log('render');
     const { playlist, playing, resumePlayback, pausePlayback } = this.props;
+
+    // if currently playing
+    // move currently playing to first element
+
+    // if (this.props.currentTrack.uri) {
+    //   // playlist.newPlalist.unshift(this.props.currentTrack)
+    // }
+
+    // const newPlaylist = playlist.filter(el => {
+    //   !el.locked || ()
+    // })
     // if (playlist.error) return  <ErrorIndicator />;
 
     // if (playlist.playlist.length === 0) {
@@ -131,6 +163,8 @@ class Playlist extends React.Component {
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           handleClick={playing ? pausePlayback : resumePlayback}
         />
+        {/* render only if changed uri */}
+        {/* {this.props.currentTrack.uri && this.renderCurrentlyPlaying(playing, this.props.currentTrack)} */}
         {this.renderTracks(playlist.newPlalist)}
       </ContentContainer>
     );
@@ -144,24 +178,25 @@ const mapStateToProps = state => {
     playlist: state.playlists,
     playing: state.playback.playing,
     sessionStarted: state.session.sessionStarted,
-    currentlyPlaying: state.playback.currentPlayingTrack,
-    currentTrack: state.playback.currentTrack,
+    // currentlyPlaying: state.playback.currentPlayingTrack,
+    // currentTrack: state.playback.currentTrack,
     recentlyClickedTrack: state.recentlyClicked.recentlyClickedTrack
   };
 };
 
 // TODO:- put back
 // export default requireAuth(
-  export default connect(
-    mapStateToProps,
-    {
-      fetchPlaylist,
-      removeTrack,
-      updateTrackNumOfVotes,
-      resumePlayback,
-      pausePlayback,
-      getCurrentlyPlayingTrack,
-      setRecentlyClicked
-    }
-  )(Playlist)
+export default connect(
+  mapStateToProps,
+  {
+    fetchPlaylist,
+    removeTrack,
+    updateTrackNumOfVotes,
+    resumePlayback,
+    pausePlayback,
+    getCurrentlyPlayingTrack,
+    setRecentlyClicked,
+    updateTrack
+  }
+)(Playlist);
 // );

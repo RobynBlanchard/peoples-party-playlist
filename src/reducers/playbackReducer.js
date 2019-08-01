@@ -12,9 +12,12 @@ const defaultState = {
   playing: false,
   currentPlayingTrack: '',
   currentTrack: {
-    progress_ms: null,
+    // progress_ms: null,
     uri: '',
-  }
+    artist: '',
+    name: '',
+  },
+  progress_ms: null,
 };
 
 const playBackReducer = (state = defaultState, action) => {
@@ -29,13 +32,17 @@ const playBackReducer = (state = defaultState, action) => {
         ...state,
         playing: false
       };
+
+      // dont want to send this all the time
     case GET_CURRENTLY_PLAYING_SUCCESS:
       return {
         ...state,
-        currentTrack: {
-          progress_ms: action.payload.response.progress_ms,
-          uri: action.payload.response.item.uri
-      }
+        progress_ms: action.payload.response.data.progress_ms,
+          currentTrack: {
+            uri: action.payload.response.data.item.uri,
+            artist: action.payload.response.data.item.artists[0].name,
+            name: action.payload.response.data.item.name,
+        }
     }
     default:
       return state;

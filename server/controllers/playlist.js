@@ -28,54 +28,63 @@ export const addTrack = (req, res, next) => {
 export const patchTrack = (req, res, next) => {
   const uri = req.params.id;
   const userId = req.cookies['userId'];
-  const vote = req.body.vote; // 1 for increment, -1 for decrement
+  const shouldLock = req.body.lock || req.body.locked;
+  if (shouldLock) {
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbase);
 
-  MongoClient.connect(url, function(err, db) {
-    if (err) throw err;
-    var dbo = db.db(dbase);
+      var myquery = { uri: uri };
+      dbo
+        .collection('tracks')
+        .findAndModify(
+          myquery,
+          [['_id', 'asc']],
+          {
+            $set: { locked: true }
+          },
+          { new: true },
+          function(err, resp) {
+            if (err) throw err;
+            res.json({
+              track: { ...resp.value }
+            });
+            // res.sendStatus(204);
+            db.close();
+          }
+        );
+    });
+  } else {
+    const vote = req.body.vote; // 1 for increment, -1 for decrement
 
-    // var updatedAt = new Date().toISOString();
-    // console.log('updated at', updatedAt)
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db(dbase);
 
-    var myquery = { uri: uri };
-    dbo
-      .collection('tracks')
-      // .updateOne(
-      //   myquery,
-      //   // Update Timestamp too TODO:!!!
-      //   { $push: { users: userId }, $inc: { votes: vote } },
-      //   function(err, resp) {
-      //     console.log('==============', resp)
-      //     // console.log('==============', resp.toArray())
-      //     console.log('==============', resp._id.getTimestamp())
+      var myquery = { uri: uri };
 
-      //     if (err) throw err;
-      //     res.sendStatus(204);
-      //     console.log('1 document updated');
-      //     db.close();
-      //   }
-      // );
-      .findAndModify(
-        myquery,
-        [['_id', 'asc']],
-        {
-          $push: { users: userId },
-          $inc: { votes: vote },
-          $set: { updatedAt: new Date().toISOString() }
-        },
-        { new: true },
-        function(err, resp) {
-          if (err) throw err;
-          res
-            .status(204)
-            .json({
+      dbo
+        .collection('tracks')
+        .findAndModify(
+          myquery,
+          [['_id', 'asc']],
+          {
+            $push: { users: userId },
+            $inc: { votes: vote },
+            $set: { updatedAt: new Date().toISOString() }
+          },
+          { new: true },
+          function(err, resp) {
+            if (err) throw err;
+            res.status(204).json({
               track: { ...resp.value, timestamp: resp.value._id.getTimestamp() }
             });
-          // res.sendStatus(204);
-          db.close();
-        }
-      );
-  });
+            // res.sendStatus(204);
+            db.close();
+          }
+        );
+    });
+  }
 };
 
 // export const decreaseVote = (req, res, next) => {
@@ -102,6 +111,8 @@ export const patchTrack = (req, res, next) => {
 //   });
 // };
 
+
+//
 export const getTracks = (req, res, next) => {
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
@@ -110,10 +121,9 @@ export const getTracks = (req, res, next) => {
     var mysort = { votes: -1 };
     dbo
       .collection('tracks')
-      .find()
+      .find({removed: false, locked: false })
       .sort(mysort)
       .toArray(function(err, result) {
-
         if (err) throw err;
 
         const tracksWithTimeStamps = result.map(track => {

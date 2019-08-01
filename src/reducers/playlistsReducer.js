@@ -171,6 +171,17 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state
       }
+    case 'UPDATE_TRACK_IN_DB_SUCCESS':
+      newPlalist = newPlalist.map(el => {
+        if (el.uri === action.payload.response.data.track.uri) {
+          return action.payload.response.data.track
+        }
+        return el
+      })
+      return {
+        ...state,
+        newPlalist: newPlalist
+      }
     default:
       return state;
   }

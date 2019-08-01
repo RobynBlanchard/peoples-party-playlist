@@ -55,7 +55,9 @@ const findPositionFromUri = uri => {
   });
 };
 
-// TODO: better name
+// TODO: better name]
+
+// change to just updated track
 export const updateTrackVotesInDB = (uri, vote) => ({
   types: [
     UPDATE_TRACK_IN_DB,
@@ -68,6 +70,22 @@ export const updateTrackVotesInDB = (uri, vote) => ({
     })
   // payload: { range_start, insert_before }
 });
+
+export const updateTrack = (uri, update) => (dispatch, getState) => {
+  dispatch({
+    types: [
+      UPDATE_TRACK_IN_DB,
+      UPDATE_TRACK_IN_DB_SUCCESS,
+      UPDATE_TRACK_IN_DB_FAILURE
+    ],
+    callAPI: () =>
+      // axios.patch(`/playlist/api/v1/tracks/${uri}`, {
+      //   lock: true
+      // })
+      axios.patch(`/playlist/api/v1/tracks/${uri}`, update)
+
+  })
+}
 
 export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getState) => {
   let newPosition;
@@ -87,6 +105,8 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
     })
     // update spotify playlist with new track position
     .then(data => {
+      // TODO: position will now be off
+
       newPosition = data.index;
       newTS = data.updatedAt
       return dispatch(reOrderTrackSpotify(position, data.index));
@@ -205,4 +225,14 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
 //       return dispatch(decreaseVote(uri));
 //     }
 //   });
+// };
+
+
+// export const removeTrack = (uri, position) => (dispatch, getState) => {
+  // dispatch(removeTrackFromSpotifyPlaylist(uri, position)).then(data => {
+  //   if (data.type === REMOVE_TRACK_SUCCESS) {
+  //     // To force refresh ?
+  //     return dispatch(decreaseVote(uri));
+  //   }
+  // });
 // };

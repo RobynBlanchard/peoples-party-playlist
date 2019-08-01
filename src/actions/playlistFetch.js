@@ -13,6 +13,8 @@ import {
 //   callAPI: token => spotifyApi(token).get(`playlists/${playlistId}`),
 // });
 
+
+// 1. send currently playing
 export const fetchPlaylist = () => (dispatch, getState) => {
   axios
     .get('http://localhost:5000/playlist/api/v1/tracks')
