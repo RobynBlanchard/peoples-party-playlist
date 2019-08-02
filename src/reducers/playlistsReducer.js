@@ -82,11 +82,12 @@ const playlistsReducer = (state = defaultState, action) => {
           ...state,
         }
     case REMOVE_TRACK_SUCCESS:
-      playlist.splice(action.position, 1);
+    console.log('remove track in first position')
+    newPlalist.splice(action.payload, 1);
 
       return {
         ...state,
-        playlist
+        newPlalist
       }
     case REMOVE_TRACK_FAILURE:
 
@@ -172,12 +173,15 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state
       }
     case 'UPDATE_TRACK_IN_DB_SUCCESS':
-      newPlalist = newPlalist.map(el => {
+    debugger;
+        newPlalist = newPlalist.map(el => {
         if (el.uri === action.payload.response.data.track.uri) {
           return action.payload.response.data.track
         }
         return el
-      })
+      });
+
+      newPlalist = newPlalist.filter(el => !el.removed)
       return {
         ...state,
         newPlalist: newPlalist

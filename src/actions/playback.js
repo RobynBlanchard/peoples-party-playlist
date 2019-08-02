@@ -30,7 +30,7 @@ function sendSocketMessage(action) {
 export const resumePlaybackSpotify = playbackPosition => ({
   types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
   callAPI: token =>
-    spotifyApi(token).put('me/player/play', {
+    spotifyApi(token).put('me/player/play?device_id=493b2e30cd53bf17c7c1e2b94a0fff686110739a', {
       context_uri: `spotify:playlist:${playlistId}`,
       offset: { position: 0 },
       position_ms: playbackPosition
@@ -39,13 +39,67 @@ export const resumePlaybackSpotify = playbackPosition => ({
 });
 
 export const resumePlayback = () => (dispatch, getState) => {
-  console.log('RESUME PLAYBACK')
   const playbackPosition = getState().playback.progress_ms;
-  dispatch(resumePlaybackSpotify(playbackPosition)).then(data => {
-    if (!getState().session.sessionStarted) {
-      dispatch(sendSocketMessage(startSession()));
-    }
-  });
+  
+  if (!getState().session.sessionStarted) {
+    const playlist = getState().playlists.newPlalist;
+
+    dispatch(sendSocketMessage(startSession()));
+    dispatch(resumePlaybackSpotify(playbackPosition)).then( res => {
+
+      dispatch(updateTrack(playlist[0].uri, {
+        $set: { locked: true }
+      }))
+    })
+  } else {
+    dispatch(resumePlaybackSpotify(playbackPosition))
+  }
+
+
+
+  // console.log('RESUME PLAYBACK')
+  // const playbackPosition = getState().playback.progress_ms;
+  // const playlist = getState().playlists.newPlalist;
+
+  // if (!getState().session.sessionStarted) {
+  //   dispatch({type: 'GET_CURRENTLY_PLAYING_SUCCESS', payload: {
+  //     response: {
+  //       data: {
+  //         progress_ms: '',
+  //         item: {
+  //           uri: playlist[0].uri,
+  //           artists: playlist[0].artist,
+  //           name: playlist[0].name,
+  //         }
+  //       }
+  //     }
+  //   }})
+  //     dispatch(updateTrack(playlist[0].uri, {locked: true}));
+  //     dispatch(sendSocketMessage({type: 'REMOVE_TRACK_SUCCESS', payload: 0}));
+  //     dispatch(sendSocketMessage(startSession()));
+  //     dispatch(resumePlaybackSpotify(playbackPosition))
+
+  // }
+  // dispatch(resumePlaybackSpotify(playbackPosition))
+
+  // dispatch(resumePlaybackSpotify(playbackPosition)).then(data => {
+  //   if (!getState().session.sessionStarted) {
+  //     dispatch(sendSocketMessage(startSession()));
+  //     dispatch({type: 'GET_CURRENTLY_PLAYING_SUCCESS', payload: {
+  //       response: {
+  //         data: {
+  //           progress_ms: '',
+  //           item: {
+  //             uri:,
+  //             artists: [],
+  //             name:
+  //           }
+  //         }
+  //       }
+
+  //     }})
+  //   }
+  // });
 };
 export const pausePlayback = () => ({
   types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
@@ -64,26 +118,41 @@ export const getCurrentlyPlayingTrackSpotify = () => ({
 
 import { updateTrack } from './playlist';
 export const getCurrentlyPlayingTrack = ()  => (dispatch, getState) => {
-  dispatch(getCurrentlyPlayingTrackSpotify()).then(resp => {
-    if (resp) {
-
-      if (resp.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
+  return dispatch(getCurrentlyPlayingTrackSpotify()).then(resp => {
+    // if (resp) {
+      // TODO: figure out why no resp reutrned
+      debugger
+      // if (resp.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
         const state = getState();
 
         const previousCurrentlyPlayingTrack = state.playback.currentTrack.uri
         const currentlyPlayingTrack = resp.payload.response.data.item.uri;
 
+        // console.log('previousCurrentlyPlayingTrack', previousCurrentlyPlayingTrack)
+        // console.log('currentlyPlayingTrack', currentlyPlayingTrack)
         if (previousCurrentlyPlayingTrack !== currentlyPlayingTrack) {
-
+          debugger;
+          console.log('new currently playinh track')
+          dispatch(updateTrack(previousCurrentlyPlayingTrack, { $set: {removed: true} }));
+          dispatch(updateTrack(currentlyPlayingTrack,{$set: { locked: true }}));
+        // }
           // TODO: dispatch remove track from playlisst state
 
-          return dispatch(updateTrack(currentlyPlayingTrack, {locked: true}));
+          // update with removed true also
+          // return dispatch({ type: 'REMOVE_TRACK_SUCCESS', payload: 0 }).then(resp => {
+          //   console.log('set currently playing track as locked in db')
+          //   return dispatch(updateTrack(currentlyPlayingTrack,{
+          //     $set: { locked: true }
+          //   }));
+
+          // })
+
           // might aswell say removed true ?
-        }
+        // }
 
         // if track,ocked is flse then lock it
       }
-    }
+    // }
   })
 }
 

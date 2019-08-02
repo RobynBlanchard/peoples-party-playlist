@@ -15,7 +15,7 @@ export const addTrack = (req, res, next) => {
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var dbo = db.db(dbase);
-    var myobj = { uri, votes: 0, users: [], name, artist };
+    var myobj = { uri, votes: 0, users: [], name, artist, updatedAt: new Date().toISOString(), removed: false, locked: false } ;
     dbo.collection('tracks').insertOne(myobj, function(err, resp) {
       if (err) throw err;
       res.sendStatus(201);
@@ -26,66 +26,99 @@ export const addTrack = (req, res, next) => {
 };
 
 export const patchTrack = (req, res, next) => {
+  const update = req.body.update;
+  console.log('====== 1', update)
+
   const uri = req.params.id;
-  const userId = req.cookies['userId'];
-  const shouldLock = req.body.lock || req.body.locked;
-  if (shouldLock) {
-    MongoClient.connect(url, function(err, db) {
-      if (err) throw err;
-      var dbo = db.db(dbase);
+  console.log('====== 1')
+  
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db(dbase);
+    console.log('====== 2')
 
-      var myquery = { uri: uri };
-      dbo
-        .collection('tracks')
-        .findAndModify(
-          myquery,
-          [['_id', 'asc']],
-          {
-            $set: { locked: true }
-          },
-          { new: true },
-          function(err, resp) {
-            if (err) throw err;
-            res.json({
-              track: { ...resp.value }
-            });
-            // res.sendStatus(204);
-            db.close();
-          }
-        );
-    });
-  } else {
-    const vote = req.body.vote; // 1 for increment, -1 for decrement
+    var myquery = { uri: uri };
+    dbo
+      .collection('tracks')
+      .findAndModify(
+        myquery,
+        [['_id', 'asc']],
+        update,
+        { new: true },
+        function(err, resp) {
+          console.log('====== 3', resp)
+          if (err) throw err;
+          res.json({
+            track: { ...resp.value }
+          });
+          // res.sendStatus(204);
+          db.close();
+        }
+      );
+  });
 
-    MongoClient.connect(url, function(err, db) {
-      if (err) throw err;
-      var dbo = db.db(dbase);
 
-      var myquery = { uri: uri };
+  // const uri = req.params.id;
+  // const userId = req.cookies['userId'];
+  // const shouldLock = req.body.lock || req.body.locked;
+  // if (shouldLock) {
+  //   MongoClient.connect(url, function(err, db) {
+  //     if (err) throw err;
+  //     var dbo = db.db(dbase);
 
-      dbo
-        .collection('tracks')
-        .findAndModify(
-          myquery,
-          [['_id', 'asc']],
-          {
-            $push: { users: userId },
-            $inc: { votes: vote },
-            $set: { updatedAt: new Date().toISOString() }
-          },
-          { new: true },
-          function(err, resp) {
-            if (err) throw err;
-            console.log('HERE 1')
-            res.json({
-              track: { ...resp.value, timestamp: resp.value._id.getTimestamp() }
-            });
-            // res.sendStatus(204);
-            db.close();
-          }
-        );
-    });
-  }
+  //     var myquery = { uri: uri };
+  //     dbo
+  //       .collection('tracks')
+  //       .findAndModify(
+  //         myquery,
+  //         [['_id', 'asc']],
+  //         {
+  //           $set: { locked: true }
+  //         },
+  //         { new: true },
+  //         function(err, resp) {
+  //           console.log('======', resp.value)
+  //           if (err) throw err;
+  //           res.json({
+  //             track: { ...resp.value }
+  //           });
+  //           // res.sendStatus(204);
+  //           db.close();
+  //         }
+  //       );
+  //   });
+  // } else {
+  //   const vote = req.body.vote; // 1 for increment, -1 for decrement
+
+  //   MongoClient.connect(url, function(err, db) {
+  //     if (err) throw err;
+  //     var dbo = db.db(dbase);
+
+  //     var myquery = { uri: uri };
+
+  //     dbo
+  //       .collection('tracks')
+  //       .findAndModify(
+  //         myquery,
+  //         [['_id', 'asc']],
+  //         {
+  //           $push: { users: userId },
+  //           $inc: { votes: vote },
+  //           $set: { updatedAt: new Date().toISOString() }
+  //         },
+  //         { new: true },
+  //         function(err, resp) {
+  //           if (err) throw err;
+  //           console.log('HERE 1')
+  //           res.json({
+  //             track: { ...resp.value, timestamp: resp.value._id.getTimestamp() }
+  //           });
+  //           // res.sendStatus(204);
+  //           db.close();
+  //         }
+  //       );
+  //   });
+  // }
 };
 
 // export const decreaseVote = (req, res, next) => {
@@ -141,6 +174,7 @@ export const getTracks = (req, res, next) => {
         });
     });
   } else {
+    console.log('GET TRACKS')
     MongoClient.connect(url, function(err, db) {
       if (err) throw err;
 
@@ -148,7 +182,8 @@ export const getTracks = (req, res, next) => {
       var mysort = { votes: -1 };
       dbo
         .collection('tracks')
-        .find({removed: false, locked: false })
+        // .find({removed: false, locked: false })
+        .find({removed: false })
         .sort(mysort)
         .toArray(function(err, result) {
           if (err) throw err;

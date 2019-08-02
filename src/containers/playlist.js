@@ -42,7 +42,10 @@ class Playlist extends React.Component {
       updateTrack
     } = this.props;
 
+    
+    
     if (sessionStarted) {
+      console.log('session started', sessionStarted)
       getCurrentlyPlayingTrack();
       // const topTrack = playlist.newPlalist[0].uri;
       // if (currentTrack.uri && currentTrack.uri !== topTrack) {
@@ -61,16 +64,16 @@ class Playlist extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    Object.entries(this.props).forEach(([key, val]) => {
-      prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-    }
+  // componentDidUpdate(prevProps, prevState) {
+  //   Object.entries(this.props).forEach(([key, val]) => {
+  //     prevProps[key] !== val && console.log(`Prop '${key}' changed`)
+  //   }
 
-    );
+  //   );
     // Object.entries(this.state).forEach(([key, val]) =>
     //   prevState[key] !== val && console.log(`State '${key}' changed`)
     // );
-  }
+  // }
 
   renderCurrentlyPlaying(playing, track) {
     const { artist, name, uri } = track;
@@ -99,10 +102,13 @@ class Playlist extends React.Component {
       // currentTrack
     } = this.props;
 
+
     let position = -1;
     return playlist.map(el => {
-      position += 1;
 
+
+      position += 1;
+      console.log(el)
       const { artist, name, votes, uri, updatedAt } = el;
 
       const fiveSecondsAgo = () => {
@@ -136,8 +142,13 @@ class Playlist extends React.Component {
     });
   }
 
+// if session hasn't started
+// play first track
+// 
+
+
   render() {
-    console.log('render');
+    // console.log('render');
     const { playlist, playing, resumePlayback, pausePlayback } = this.props;
 
     // if currently playing
@@ -156,6 +167,16 @@ class Playlist extends React.Component {
     //   return null;
     // }
 
+    // check if locked and create two sepearate arrays
+    // for now just split from first index
+
+
+    const lockedOne = playlist.newPlalist.filter(el => el.locked)
+    const restOfList = playlist.newPlalist.filter(el => !el.locked)
+
+    console.log('lockedOne', lockedOne)
+    console.log('restOfList', restOfList)
+
     return (
       <ContentContainer>
         <Heading
@@ -165,7 +186,10 @@ class Playlist extends React.Component {
         />
         {/* render only if changed uri */}
         {/* {this.props.currentTrack.uri && this.renderCurrentlyPlaying(playing, this.props.currentTrack)} */}
-        {this.renderTracks(playlist.newPlalist)}
+        {/* {this.renderTracks(playlist.newPlalist)} */}
+        {lockedOne.length !== 0 && this.renderCurrentlyPlaying(playing, lockedOne[0])}
+
+        {this.renderTracks(restOfList)}
       </ContentContainer>
     );
   }
@@ -179,7 +203,7 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     sessionStarted: state.session.sessionStarted,
     // currentlyPlaying: state.playback.currentPlayingTrack,
-    // currentTrack: state.playback.currentTrack,
+    currentTrack: state.playback.currentTrack,
     recentlyClickedTrack: state.recentlyClicked.recentlyClickedTrack
   };
 };

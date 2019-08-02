@@ -35,7 +35,7 @@ const configureStore = initialState => {
   // if (initialState && persistedState) {
   //   initialState.playlists.playlist = persistedState.playlist || [];
   // }
-  const middleware = [createMySocketMiddleware(), callAPIMiddleware]
+  const middleware = [thunkMiddleWare, createMySocketMiddleware(), callAPIMiddleware]
 
   const store = applyMiddleware(...middleware)(createStore)(
     reducer,

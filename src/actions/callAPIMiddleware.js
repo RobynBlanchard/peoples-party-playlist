@@ -41,7 +41,6 @@ export function callAPIMiddleware({ dispatch, getState }) {
 
     return callAPI(token)
       .then(response => {
-        debugger
         // console.log(response)
         // console.log(Object.assign({}, payload, {
         //   response: response.data,

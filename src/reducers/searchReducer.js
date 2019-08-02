@@ -20,7 +20,7 @@ const searchReducer = (state = defaultState, action) => {
       };
     case FETCH_SEARCH_RESULTS_SUCCESS:
       return {
-        results: action.payload.response.tracks.items,
+        results: action.payload.response.data.tracks.items,
         loading: false,
         error: null
       };

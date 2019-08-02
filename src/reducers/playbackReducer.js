@@ -50,3 +50,8 @@ const playBackReducer = (state = defaultState, action) => {
 };
 
 export default playBackReducer;
+
+// press play
+// remove first track from playlist
+// set currently lplaying
+// set track as locked
