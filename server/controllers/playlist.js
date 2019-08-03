@@ -6,6 +6,24 @@ var url =
   process.env.MONGODB_URI || 'mongodb://localhost/peoples-party-playlist';
 var dbase = process.env.DBASE || 'peoples-party-playlist';
 
+
+export const removeTrack = (req, res, next) => {
+  const uri = req.params.id
+  var myquery = { uri: uri };
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db(dbase);
+    var myobj = { uri, votes: 0, users: [], name, artist, updatedAt: new Date().toISOString(), removed: false, locked: false } ;
+    dbo.collection('tracks').deleteOne(myquery, function(err, obj) {
+      if (err) throw err;
+      console.log("1 document deleted");
+      db.close();
+    });
+  });
+
+
+};
+
 // https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/#db.collection.findAndModify
 export const addTrack = (req, res, next) => {
   const uri = req.body.uri;

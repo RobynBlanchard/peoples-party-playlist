@@ -15,7 +15,7 @@ import {
 import {
   invite
 } from './controllers/user';
-import { addTrack, patchTrack, getTracks, getPosition } from './controllers/playlist';
+import { addTrack, patchTrack, getTracks, getPosition, removeTrack } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess } from '../src/actions';
 
@@ -28,6 +28,8 @@ export default (app, store) => {
   app.get('/playlist/api/v1/tracks', getTracks);
   // app.get('/test-get-pos', getPosition);
   app.get('/invite', invite);
+  app.delete('/playlist/api/v1/tracks/:id', removeTrack);
+
 
 
   app.get('/*', (req, res) => {

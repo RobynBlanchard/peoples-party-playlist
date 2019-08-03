@@ -3,9 +3,13 @@ import { VotesContent, VotesText, Button, Icon } from './styles';
 
 
 
-const handleClick = (uri, position, handleVote, setRecentlyClicked, change, playlist, sessionStarted) => {
+const handleClick = (uri, position, handleVote, change, votes, removeTrack) => {
+  debugger;
+  if (votes + change === -5) {
+    removeTrack(uri)
+  }
   handleVote(uri, position, change);
-  setRecentlyClicked(uri);
+  // setRecentlyClicked(uri);
 };
 
 const VoteDetails = ({
@@ -14,6 +18,7 @@ const VoteDetails = ({
   votes,
   handleUpVote,
   handleDownVote,
+  removeTrack,
   setRecentlyClicked,
   shouldFocus,
   playlist,
@@ -23,7 +28,7 @@ const VoteDetails = ({
     <VotesContent>
       <Button
         onClick={() =>
-          handleClick(uri, position, handleDownVote, setRecentlyClicked, -1)
+          handleClick(uri, position, handleDownVote, -1, votes, removeTrack)
         }
       >
         <Icon src={`images/white-minus.svg`} />
@@ -31,7 +36,7 @@ const VoteDetails = ({
       <VotesText>{votes}</VotesText>
       <Button
         onClick={() =>
-          handleClick(uri, position, handleUpVote, setRecentlyClicked, 1)
+          handleClick(uri, position, handleUpVote, 1, votes, removeTrack)
         }
       >
         <Icon src={`images/white-plus.svg`} />

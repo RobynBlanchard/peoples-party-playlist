@@ -130,6 +130,7 @@ class Playlist extends React.Component {
             handleUpVote={updateTrackNumOfVotes}
             setRecentlyClicked={setRecentlyClicked}
             handleDownVote={updateTrackNumOfVotes}
+            removeTrack={removeTrack}
             votes={votes}
             shouldFocus={recentlyClickedTrack === uri}
             playlist={playlist}

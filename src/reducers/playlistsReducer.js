@@ -103,9 +103,10 @@ const playlistsReducer = (state = defaultState, action) => {
         return {
           ...state,
         }
-    case REMOVE_TRACK_SUCCESS:
+    case 'REMOVE_TRACK_FROM_DB_SUCCESS':
     console.log('remove track in first position')
-    playablePlaylist.splice(action.payload, 1);
+    debugger;
+    playablePlaylist.splice(action.payload.position, 1);
 
       return {
         ...state,

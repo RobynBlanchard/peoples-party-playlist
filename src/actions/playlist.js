@@ -271,25 +271,50 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
 //   payload: position
 // });
 
-// export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
-//   types: [REMOVE_TRACK, REMOVE_TRACK_SUCCESS, REMOVE_TRACK_FAILURE],
-//   callAPI: token =>
-//     spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
-//       data: {
-//         tracks: [{ uri }]
-//       }
-//     }),
-//   payload: { position }
-// });
+export const removeTrackFromDb = (uri, position) => ({
+  types: ['REMOVE_TRACK_FROM_DB', 'REMOVE_TRACK_FROM_DB_SUCCESS', 'REMOVE_TRACK_FROM_DB_FAILURE'],
+  callAPI: () =>
+    axios.delete(`/playlist/api/v1/tracks/${uri}`),
+    payload: { position, uri }
+});
 
-// export const removeTrack = (uri, position) => (dispatch, getState) => {
-//   dispatch(removeTrackFromSpotifyPlaylist(uri, position)).then(data => {
-//     if (data.type === REMOVE_TRACK_SUCCESS) {
-//       // To force refresh ?
-//       return dispatch(decreaseVote(uri));
-//     }
-//   });
-// };
+export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
+  types: [REMOVE_TRACK, REMOVE_TRACK_SUCCESS, REMOVE_TRACK_FAILURE],
+  callAPI: token =>
+    spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
+      data: {
+        tracks: [{ uri }]
+      }
+    }),
+  payload: { position }
+});
+
+export const removeTrack = (uri, position) => (dispatch, getState) => {
+  debugger;
+  // TODO - pass position instead of db look up
+  let posFromDb;
+  findPositionFromUri(uri)
+    .then(index => {
+      // TODO: add offset
+      // spotifyOffset()
+      posFromDb = index.index;
+
+      return spotifyOffset()
+    })
+    .then(offset => {
+      debugger;
+      dispatch(removeTrackFromSpotifyPlaylist(uri, offset + posFromDb)).then(data => {
+        if (data.type === REMOVE_TRACK_SUCCESS) {
+
+          removeTrackFromDb(uri, posFromDb) //will remove locally too on REMOVE_TRACK_FROM_DB_SUCCESS
+          // position === playble position
+        }
+      });
+    })
+
+
+
+};
 
 
 // export const removeTrack = (uri, position) => (dispatch, getState) => {
