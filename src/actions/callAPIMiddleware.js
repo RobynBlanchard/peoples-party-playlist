@@ -38,9 +38,11 @@ export function callAPIMiddleware({ dispatch, getState }) {
         response: { loading: true }
       })
     );
+    console.log('dispatched!')
 
     return callAPI(token)
       .then(response => {
+        console.log('response!')
         // console.log(response)
         // console.log(Object.assign({}, payload, {
         //   response: response.data,
@@ -55,20 +57,28 @@ export function callAPIMiddleware({ dispatch, getState }) {
         //     // handler: 'WS',
         //   })s
         // );
-        if (successType !== 'GET_CURRENTLY_PLAYING_SUCCESS') {
+        // if (successType !== 'GET_CURRENTLY_PLAYING_SUCCESS') {
           return dispatch({
             payload: { ...payload, response },
             type: successType,
             handler: 'WS'
           });
-        } else {
-          return dispatch({
-            payload: { ...payload, response },
-            type: successType
-          });
-        }
+        // } else {
+        //   return dispatch({
+        //     payload: { ...payload, response },
+        //     type: successType
+        //   });
+        // }
       })
       .catch(error => {
+        console.log('error!')
+
+        // return dispatch({
+        //   payload: { ...payload, error },
+        //   type: failureType,
+        //   handler: 'WS'
+        // });
+
         dispatch(
           Object.assign({}, payload, {
             error,

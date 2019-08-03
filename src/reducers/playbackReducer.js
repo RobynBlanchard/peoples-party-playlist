@@ -35,6 +35,8 @@ const playBackReducer = (state = defaultState, action) => {
 
       // dont want to send this all the time
     case GET_CURRENTLY_PLAYING_SUCCESS:
+    if (action.payload.response.data.item) {
+      
       return {
         ...state,
         progress_ms: action.payload.response.data.progress_ms,
@@ -43,6 +45,7 @@ const playBackReducer = (state = defaultState, action) => {
             artist: action.payload.response.data.item.artists[0].name,
             name: action.payload.response.data.item.name,
         }
+    }
     }
     default:
       return state;

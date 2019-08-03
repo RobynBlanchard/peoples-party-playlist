@@ -2,7 +2,6 @@ import thunkMiddleWare from 'redux-thunk';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import throttle from 'lodash/throttle';
 import reducer from './reducers';
-import { createMySocketMiddleware } from './actions/socketsMiddleware';
 
 const loadState = stateName => {
   try {
@@ -35,9 +34,8 @@ const configureStore = initialState => {
   // if (initialState && persistedState) {
   //   initialState.playlists.playlist = persistedState.playlist || [];
   // }
-  const middleware = [thunkMiddleWare, createMySocketMiddleware(), callAPIMiddleware]
 
-  const store = applyMiddleware(...middleware)(createStore)(
+  const store = applyMiddleware(callAPIMiddleware)(createStore)(
     reducer,
     initialState
   );
