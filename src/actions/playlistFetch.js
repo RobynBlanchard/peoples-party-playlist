@@ -17,7 +17,7 @@ import {
 // 1. send currently playing
 export const fetchPlaylist = () => (dispatch, getState) => {
   axios
-    .get('http://localhost:5000/playlist/api/v1/tracks')
+    .get('http://localhost:5000/playlist/api/v1/tracks', { params: { removed: false }})
     .then(resp => {
       if (resp.status === 200) {
         return dispatch({

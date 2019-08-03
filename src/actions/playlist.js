@@ -48,9 +48,11 @@ export const reOrderTrackSpotify = (range_start, insert_before) => ({
 
 const spotifyOffset = () => {
   return axios.get('/playlist/api/v1/tracks', { params:
-    { removed: true, locked: true} 
+    // all removed tracks will have been locked first
+    { locked: true} 
   }).then(res => {
-    const offset = res.data.res.length;
+    debugger;
+    const offset = res.data.tracks.length;
     return offset
   })
   //  count
@@ -67,7 +69,11 @@ const findPositionFromUri = uri => {
   // tell spotify to move track from old position + above count to new position + above count
 
 
-  return axios.get('/playlist/api/v1/tracks').then(resp => {
+  return axios.get('/playlist/api/v1/tracks',  { params:
+    { removed: false, locked: false} 
+  }).then(resp => {
+    debugger;
+
     if (resp.status === 200) {
       const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
       return {index, updatedAt: resp.data.tracks[index].updatedAt};
@@ -109,6 +115,7 @@ export const updateTrack = (uri, update) => (dispatch, getState) => {
 
 export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getState) => {
   let newPosition;
+  debugger;
   // could work out new position first - instead of from db
   // change should be 1 or -1
 
@@ -120,6 +127,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
   }))
     // get the new position of the track in the playlist
     .then(resp => {
+      debugger;
       // TODO: fix
       // if (resp.type === UPDATE_TRACK_IN_DB_SUCCESS) {
         // TODO: fix
@@ -129,6 +137,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
         // TODO: instead use find one and update
       // }
     }).then(data => {
+      debugger;
       newPosition = data.index;
 
       if (newPosition === position) {
@@ -141,6 +150,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
     })
     // update spotify playlist with new track position
     .then(offset => {
+      debugger;
 
       const range_start = offset + position;
 

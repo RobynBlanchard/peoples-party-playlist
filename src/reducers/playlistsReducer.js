@@ -30,6 +30,8 @@ import transformPlaylistData from './playlistsTransformer';
 const defaultState = {
   playlist: [],
   newPlalist: [],
+  playablePlaylist: [],
+  lockedTrack: [],
   error: null,
   loading: false
 };
@@ -38,6 +40,9 @@ const defaultState = {
 const playlistsReducer = (state = defaultState, action) => {
   let playlist = state.playlist;
   let newPlalist = state.newPlalist;
+  let playablePlaylist = state.playablePlaylist;
+  let lockedTrack = state.lockedTrack;
+
 
   switch (action.type) {
     case FETCH_PLAYLIST:
@@ -49,6 +54,8 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state,
         newPlalist: action.payload,
+        playablePlaylist: action.payload.filter(el => !el.locked), // TODO: 2 fetches to save mapping over?
+        lockedTrack: action.payload.filter(el => el.locked),
       }
     // case FETCH_PLAYLIST_SUCCESS:
     //   return {
@@ -64,15 +71,30 @@ const playlistsReducer = (state = defaultState, action) => {
     //   };
 
     case REORDER_TRACK:
-      newPlalist.splice(
+// TODO: maintian playlist with locked and unlocked track in state!!!!
+// ---------------
+
+// not re-ordering as locked track is included
+      // tracl
+    //   const item = newPlalist[action.payload.range_start]
+
+    // // remove track
+    // newPlalist.splice(action.payload.range_start,1)
+
+    // // insert track
+    // newPlalist.splice(action.payload.insert_before, 0, item);
+
+
+    // TODO: not working
+    playablePlaylist.splice(
         action.payload.insert_before,
         0,
-        newPlalist.splice(action.payload.range_start, 1)[0]
+        playablePlaylist.splice(action.payload.range_start, 1)[0]
       );
 
       return {
           ...state,
-          newPlalist,
+          playablePlaylist,
           loading: false,
           error: null,
         };
@@ -83,11 +105,11 @@ const playlistsReducer = (state = defaultState, action) => {
         }
     case REMOVE_TRACK_SUCCESS:
     console.log('remove track in first position')
-    newPlalist.splice(action.payload, 1);
+    playablePlaylist.splice(action.payload, 1);
 
       return {
         ...state,
-        newPlalist
+        playablePlaylist
       }
     case REMOVE_TRACK_FAILURE:
 
@@ -100,16 +122,16 @@ const playlistsReducer = (state = defaultState, action) => {
       // };
       // return newStatee;
     case UPDATE_VOTE:
-      if (newPlalist.length === 0) {
+      if (playablePlaylist.length === 0) {
         return {
           ...state,
         }
       }
-        newPlalist[action.payload.position].votes += action.payload.change;
-        newPlalist[action.payload.position].updatedAt = action.payload.updatedAt;
+        playablePlaylist[action.payload.position].votes += action.payload.change;
+        playablePlaylist[action.payload.position].updatedAt = action.payload.updatedAt;
         const res =  {
           ...state,
-          newPlalist
+          playablePlaylist
         }
         return res;
 
@@ -136,15 +158,15 @@ const playlistsReducer = (state = defaultState, action) => {
       // };
 
     case ADD_TO_PLAYLIST:
-      if (newPlalist.length === 0) {
+      if (playablePlaylist.length === 0) {
         return {
           ...state,
         }
       }
-      newPlalist.splice(action.payload.position, 0, action.payload.track)
+      playablePlaylist.splice(action.payload.position, 0, action.payload.track)
       return {
         ...state,
-        newPlalist: newPlalist
+        playablePlaylist: playablePlaylist
       }
     // TODO: handle these properly
     // could indicate on track just clicked when track has been added
@@ -173,17 +195,19 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state
       }
     case 'UPDATE_TRACK_IN_DB_SUCCESS':
-        newPlalist = newPlalist.map(el => {
+        playablePlaylist = playablePlaylist.map(el => {
         if (el.uri === action.payload.response.data.track.uri) {
           return action.payload.response.data.track
         }
         return el
       });
 
-      newPlalist = newPlalist.filter(el => !el.removed)
+      debugger;
+
+      playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
       return {
         ...state,
-        newPlalist: newPlalist
+        playablePlaylist: playablePlaylist
       }
     default:
       return state;

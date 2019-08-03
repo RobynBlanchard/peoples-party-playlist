@@ -173,7 +173,6 @@ export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
         const currentlyPlayingTrack = curPlaying.uri;
 
         if (previousCurrentlyPlayingTrack !== currentlyPlayingTrack) {
-          // or check session started
           if (previousCurrentlyPlayingTrack) {
             dispatch(updateTrack(previousCurrentlyPlayingTrack, { $set: {removed: true} }));
             dispatch(updateTrack(currentlyPlayingTrack,{$set: { locked: true }}))
@@ -188,4 +187,4 @@ export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
 
 
  
-};
+}; 

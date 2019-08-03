@@ -148,59 +148,124 @@ export const patchTrack = (req, res, next) => {
 
 //
 export const getTracks = (req, res, next) => {
-  const removed = req.query.removed;
-  const locked = req.query.locked;
+  const query = req.query || null;
+  console.log(req)
+  console.log('QUERY', query)
+
+  for (let i in query){
+    if (query[i] === "true" || query[i] === "false"){
+        query[i] = JSON.parse(query[i]);
+    }
+    else if (!isNaN(query[i])){
+        query[i] = parseInt(query[i]);
+    }
+}
+console.log('QUERY', query)
+
+
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+
+    var dbo = db.db(dbase);
+    var mysort = { votes: -1 };
+    dbo
+      .collection('tracks')
+      .find(query)
+      .sort(mysort)
+      .toArray(function(err, result) {
+        if (err) throw err;
+
+
+        res.json({ tracks: result });
+        db.close();
+        return;
+      });
+  });
+
+// TODO: one function takes params as find param - default to null
+
+  // const removed = req.query.removed;
+  // const locked = req.query.locked;
 
 
   // TODO: make apis better
 
-  if (removed && locked) {
-    MongoClient.connect(url, function(err, db) {
-      if (err) throw err;
+  // if (removed && locked) {
+  //   console.log('GET TRACKS (when fetching playlist to count spotify offset)')
 
-      var dbo = db.db(dbase);
-      var mysort = { votes: -1 };
-      dbo
-        .collection('tracks')
-        .find({removed: true, locked: true })
-        .sort(mysort)
-        .toArray(function(err, result) {
-          if (err) throw err;
+  //   MongoClient.connect(url, function(err, db) {
+  //     if (err) throw err;
+
+  //     var dbo = db.db(dbase);
+  //     var mysort = { votes: -1 };
+  //     dbo
+  //       .collection('tracks')
+  //       .find({removed: true, locked: true })
+  //       .sort(mysort)
+  //       .toArray(function(err, result) {
+  //         if (err) throw err;
 
 
-          res.status(200).json({ res: result });
-          db.close();
-          return;
-        });
-    });
-  } else {
-    console.log('GET TRACKS')
-    MongoClient.connect(url, function(err, db) {
-      if (err) throw err;
+  //         res.status(200).json({ res: result });
+  //         db.close();
+  //         return;
+  //       });
+  //   });
+  // } else if (req.query.removed === false && req.query.locked === false) {
+  //   console.log('GET TRACKS (when fetching playlist to count where new position of track is)')
+  //   MongoClient.connect(url, function(err, db) {
+  //     if (err) throw err;
 
-      var dbo = db.db(dbase);
-      var mysort = { votes: -1 };
-      dbo
-        .collection('tracks')
-        // .find({removed: false, locked: false })
-        .find({removed: false })
-        .sort(mysort)
-        .toArray(function(err, result) {
-          if (err) throw err;
+  //     var dbo = db.db(dbase);
+  //     var mysort = { votes: -1 };
+  //     dbo
+  //       .collection('tracks')
+  //       // .find({removed: false, locked: false })
+  //       .find({removed: false, locked: false })
+  //       .sort(mysort)
+  //       .toArray(function(err, result) {
+  //         if (err) throw err;
 
-          const tracksWithTimeStamps = result.map(track => {
-            return {
-              ...track,
-              timestamp: track._id.getTimestamp()
-            };
-          });
+  //         const tracksWithTimeStamps = result.map(track => {
+  //           return {
+  //             ...track,
+  //             timestamp: track._id.getTimestamp()
+  //           };
+  //         });
 
-          res.status(200).json({ tracks: tracksWithTimeStamps });
-          db.close();
-          return;
-        });
-    });
-  }
+  //         res.status(200).json({ tracks: tracksWithTimeStamps });
+  //         db.close();
+  //         return;
+  //       });
+  //   });
+  // } else {
+  //   console.log('GET TRACKS (when fetching playlist to render)')
+  //   MongoClient.connect(url, function(err, db) {
+  //     if (err) throw err;
+
+  //     var dbo = db.db(dbase);
+  //     var mysort = { votes: -1 };
+  //     dbo
+  //       .collection('tracks')
+  //       // .find({removed: false, locked: false })
+  //       .find({removed: false })
+  //       .sort(mysort)
+  //       .toArray(function(err, result) {
+  //         if (err) throw err;
+
+  //         const tracksWithTimeStamps = result.map(track => {
+  //           return {
+  //             ...track,
+  //             timestamp: track._id.getTimestamp()
+  //           };
+  //         });
+
+  //         res.status(200).json({ tracks: tracksWithTimeStamps });
+  //         db.close();
+  //         return;
+  //       });
+  //   });
+  // }
 
 };
 

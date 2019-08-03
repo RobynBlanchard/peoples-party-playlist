@@ -45,7 +45,6 @@ class Playlist extends React.Component {
     
     
     if (sessionStarted) {
-      console.log('session started', sessionStarted)
       getCurrentlyPlayingTrack();
       // const topTrack = playlist.newPlalist[0].uri;
       // if (currentTrack.uri && currentTrack.uri !== topTrack) {
@@ -171,11 +170,16 @@ class Playlist extends React.Component {
     // for now just split from first index
 
 
-    const lockedOne = playlist.newPlalist.filter(el => el.locked)
-    const restOfList = playlist.newPlalist.filter(el => !el.locked)
+    // do this more sensibly-- in reducer
+    // const lockedOne = playlist.newPlalist.filter(el => el.locked)
+    // const restOfList = playlist.newPlalist.filter(el => !el.locked)
 
-    console.log('lockedOne', lockedOne)
-    console.log('restOfList', restOfList)
+    // console.log('lockedOne', lockedOne)
+    // console.log('restOfList', restOfList)
+    console.log()
+        const lockedOne = playlist.lockedTrack
+    const restOfList = playlist.playablePlaylist
+
 
     return (
       <ContentContainer>

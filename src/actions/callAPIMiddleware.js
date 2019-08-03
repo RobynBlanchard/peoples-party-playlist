@@ -38,11 +38,9 @@ export function callAPIMiddleware({ dispatch, getState }) {
         response: { loading: true }
       })
     );
-    console.log('dispatched!')
 
     return callAPI(token)
       .then(response => {
-        console.log('response!')
         // console.log(response)
         // console.log(Object.assign({}, payload, {
         //   response: response.data,
