@@ -202,12 +202,17 @@ const playlistsReducer = (state = defaultState, action) => {
         return el
       });
 
-      debugger;
+      if (action.payload.response.data.track.locked) {
+        lockedTrack[0] = action.payload.response.data.track;
+      }
 
-      playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
+      
+      // playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
+      playablePlaylist = playablePlaylist.filter(el => !el.locked)
       return {
         ...state,
-        playablePlaylist: playablePlaylist
+        playablePlaylist: playablePlaylist,
+        lockedTrack:lockedTrack
       }
     default:
       return state;

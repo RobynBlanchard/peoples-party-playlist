@@ -107,7 +107,6 @@ class Playlist extends React.Component {
 
 
       position += 1;
-      console.log(el)
       const { artist, name, votes, uri, updatedAt } = el;
 
       const fiveSecondsAgo = () => {
@@ -176,8 +175,7 @@ class Playlist extends React.Component {
 
     // console.log('lockedOne', lockedOne)
     // console.log('restOfList', restOfList)
-    console.log()
-        const lockedOne = playlist.lockedTrack
+    const lockedOne = playlist.lockedTrack
     const restOfList = playlist.playablePlaylist
 
 

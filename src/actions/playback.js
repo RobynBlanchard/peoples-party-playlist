@@ -12,6 +12,7 @@ import {
 } from './types';
 import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
+import { spotifyOffset } from './playlist';
 
 export const startSession = () => {
   return {
@@ -27,12 +28,13 @@ function sendSocketMessage(action) {
   };
 }
 
-export const resumePlaybackSpotify = playbackPosition => ({
+
+export const resumePlaybackSpotify = (playbackPosition, playlistIndex) => ({
   types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
   callAPI: token =>
     spotifyApi(token).put('me/player/play', {
       context_uri: `spotify:playlist:${playlistId}`,
-      offset: { position: 0 },
+      offset: { position: playlistIndex },
       position_ms: playbackPosition
     }),
   // wsHandler: [RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE]
@@ -42,16 +44,23 @@ export const resumePlayback = () => (dispatch, getState) => {
   const playbackPosition = getState().playback.progress_ms;
   
   if (!getState().session.sessionStarted) {
-    const playlist = getState().playlists.newPlalist;
+    const playlist = getState().playlists.playablePlaylist;
 
     dispatch(sendSocketMessage(startSession()));
-    dispatch(resumePlaybackSpotify(playbackPosition)).then( res => {
-      dispatch(updateTrack(playlist[0].uri, {
-        $set: { locked: true }
-      }))
+
+    spotifyOffset().then(offset => {
+      dispatch(resumePlaybackSpotify(playbackPosition, offset)).then( res => {
+        dispatch(updateTrack(playlist[0].uri, {
+          $set: { locked: true }
+        }))
+      })
     })
+
   } else {
-    dispatch(resumePlaybackSpotify(playbackPosition))
+    spotifyOffset().then(offset => {
+      dispatch(resumePlaybackSpotify(playbackPosition, offset - 1))
+      // - 1 for locked track
+    })
   }
 
 

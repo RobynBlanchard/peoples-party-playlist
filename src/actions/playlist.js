@@ -46,12 +46,11 @@ export const reOrderTrackSpotify = (range_start, insert_before) => ({
   payload: { range_start, insert_before: insert_before + 1 }
 });
 
-const spotifyOffset = () => {
+export const spotifyOffset = () => {
   return axios.get('/playlist/api/v1/tracks', { params:
     // all removed tracks will have been locked first
     { locked: true} 
   }).then(res => {
-    debugger;
     const offset = res.data.tracks.length;
     return offset
   })
@@ -72,7 +71,6 @@ const findPositionFromUri = uri => {
   return axios.get('/playlist/api/v1/tracks',  { params:
     { removed: false, locked: false} 
   }).then(resp => {
-    debugger;
 
     if (resp.status === 200) {
       const index = resp.data.tracks.map(e => e.uri).indexOf(uri);
@@ -115,7 +113,6 @@ export const updateTrack = (uri, update) => (dispatch, getState) => {
 
 export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getState) => {
   let newPosition;
-  debugger;
   // could work out new position first - instead of from db
   // change should be 1 or -1
 
@@ -127,7 +124,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
   }))
     // get the new position of the track in the playlist
     .then(resp => {
-      debugger;
       // TODO: fix
       // if (resp.type === UPDATE_TRACK_IN_DB_SUCCESS) {
         // TODO: fix
@@ -137,7 +133,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
         // TODO: instead use find one and update
       // }
     }).then(data => {
-      debugger;
       newPosition = data.index;
 
       if (newPosition === position) {
@@ -150,15 +145,19 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
     })
     // update spotify playlist with new track position
     .then(offset => {
-      debugger;
 
       const range_start = offset + position;
 
       // insert before
-      const range_end = offset + newPosition;
 
+      // plus 1 if downvote?
+      let range_end = offset + newPosition;
 
-      // only call if position has changed!
+      // TODO: why?
+      if (change == -1) {
+        range_end = range_end + 1
+      }
+
       return dispatch(reOrderTrackSpotify(range_start, range_end));
     })
     // track was updated in spotify and db successfully
