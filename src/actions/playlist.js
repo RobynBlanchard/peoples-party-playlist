@@ -163,17 +163,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (dispatch, getSt
     // track was updated in spotify and db successfully
     // -> display increase vote to user
     .then(data => {
-      // if (data.type === 'REORDER_TRACK_SPOTIFY_SUCCESS') {
-        // const payload = {
-        //   position: position,
-        //   change: change,
-        //   updatedAt: newTS
-        // };
-
-        // return dispatch(
-        //   sendSocketMessage({ type: UPDATE_VOTE, payload: payload })
-        // );
-
         const payload = {
           insert_before: newPosition,
           range_start: position

@@ -20,7 +20,8 @@ class ErrorBoundary extends React.Component {
     const { children } = this.props;
 
     if (hasError) {
-      return null;
+      // return null;
+      return <h1>Something went wrong.</h1>;
     }
     return children;
   }

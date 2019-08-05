@@ -1,22 +1,19 @@
 import mongo from 'mongodb';
 
 var MongoClient = mongo.MongoClient;
-// var url = 'mongodb://localhost:27017/peoples-party-playlist';
 var url =
   process.env.MONGODB_URI || 'mongodb://localhost/peoples-party-playlist';
 var dbase = process.env.DBASE || 'peoples-party-playlist';
 
 export const removeTrack = (req, res, next) => {
   const uri = req.params.id;
-  console.log('URI==', uri);
-  console.log('req==', req);
+  const query = { uri: uri };
 
-  var myquery = { uri: uri };
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db(dbase);
-    // var myobj = { uri, votes: 0, users: [], name, artist, updatedAt: new Date().toISOString(), removed: false, locked: false } ;
-    dbo.collection('tracks').deleteOne(myquery, function(err, obj) {
+    const dbo = db.db(dbase);
+
+    dbo.collection('tracks').deleteOne(query, function(err, obj) {
       if (err) throw err;
       res.sendStatus(202);
       console.log('1 document deleted');
@@ -25,7 +22,6 @@ export const removeTrack = (req, res, next) => {
   });
 };
 
-// https://docs.mongodb.com/manual/reference/method/db.collection.findAndModify/#db.collection.findAndModify
 export const addTrack = (req, res, next) => {
   const uri = req.body.uri;
   const name = req.body.name;
@@ -33,8 +29,8 @@ export const addTrack = (req, res, next) => {
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db(dbase);
-    var myobj = {
+    const dbo = db.db(dbase);
+    const myobj = {
       uri,
       votes: 0,
       users: [],
@@ -59,12 +55,12 @@ export const patchTrack = (req, res, next) => {
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db(dbase);
+    const dbo = db.db(dbase);
 
-    var myquery = { uri: uri };
+    const query = { uri: uri };
     dbo
       .collection('tracks')
-      .findAndModify(myquery, [['_id', 'asc']], update, { new: true }, function(
+      .findAndModify(query, [['_id', 'asc']], update, { new: true }, function(
         err,
         resp
       ) {
@@ -72,7 +68,6 @@ export const patchTrack = (req, res, next) => {
         res.json({
           track: { ...resp.value }
         });
-        // res.sendStatus(204);
         db.close();
       });
   });
@@ -81,19 +76,11 @@ export const patchTrack = (req, res, next) => {
 export const getTracks = (req, res, next) => {
   const query = req.query || null;
 
-  for (let i in query) {
-    if (query[i] === 'true' || query[i] === 'false') {
-      query[i] = JSON.parse(query[i]);
-    } else if (!isNaN(query[i])) {
-      query[i] = parseInt(query[i]);
-    }
-  }
-
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
 
-    var dbo = db.db(dbase);
-    var mysort = { votes: -1 };
+    const dbo = db.db(dbase);
+    const mysort = { votes: -1 };
     dbo
       .collection('tracks')
       .find(query)

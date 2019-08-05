@@ -1,10 +1,10 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import bodyParser from 'body-parser';
+import boolParser from 'express-query-boolean';
 
 import createStore from '../src/store';
 import router from './router';
-
 const http = require('http')
 const socketIO = require('socket.io')
 
@@ -15,6 +15,8 @@ const server = http.createServer(app)
 app.use(bodyParser.urlencoded());
 // app.use(bodyParser.json());
 app.use(bodyParser.json({ type: '*/*' }))
+// app.use(bodyParser.json());
+app.use(boolParser());
 app.use(cookieParser());
 app.use(express.static('public'));
 

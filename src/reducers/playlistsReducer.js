@@ -5,7 +5,9 @@ import {
   REORDER_TRACK,
   REORDER_TRACK_SUCCESS,
   REORDER_TRACK_FAILURE,
-
+  FETCH_PLAYLIST_FROM_DB,
+  FETCH_PLAYLIST_FROM_DB_SUCCESS,
+  FETCH_PLAYLIST_FROM_DB_FAILURE,
   MOVE_UP_PlAYLIST,
   MOVE_DOWN_PlAYLIST,
   REMOVE_FROM_PLAYLIST,
@@ -45,30 +47,26 @@ const playlistsReducer = (state = defaultState, action) => {
 
 
   switch (action.type) {
-    case FETCH_PLAYLIST:
-      return {
-        newPlalist: action.payload,
-        // loading: true
-      };
-    case 'FETCH_PLAYLIST_FROM_DB_SUCCESS':
+    case FETCH_PLAYLIST_FROM_DB:
       return {
         ...state,
-        newPlalist: action.payload,
-        playablePlaylist: action.payload.filter(el => !el.locked), // TODO: 2 fetches to save mapping over?
-        lockedTrack: action.payload.filter(el => el.locked),
+        loading: true,
+      };
+    case FETCH_PLAYLIST_FROM_DB_SUCCESS:
+      const tracks = action.payload.response.data.tracks;
+
+      return {
+        ...state,
+        newPlalist: tracks,
+        playablePlaylist: tracks.filter(el => !el.locked),
+        lockedTrack: tracks.filter(el => el.locked),
       }
-    // case FETCH_PLAYLIST_SUCCESS:
-    //   return {
-    //     ...state,
-    //     playlist: transformPlaylistData(action.response), // could pass transformers to action and handle in middleware..
-    //     error: null
-    //   };
-    // case FETCH_PLAYLIST_FAILURE:
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //     error: action.error
-    //   };
+    case FETCH_PLAYLIST_FROM_DB_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.error
+      };
 
     case REORDER_TRACK:
 // TODO: maintian playlist with locked and unlocked track in state!!!!
@@ -111,51 +109,7 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist
       }
     case REMOVE_TRACK_FAILURE:
-
-    // case REMOVE_FROM_PLAYLIST:
-      // let currentPlaylist = state.playlist;
-      // currentPlaylist.splice(action.payload, 1);
-      // const newStatee = {
-      //   ...state,
-      //   playlist: currentPlaylist
-      // };
-      // return newStatee;
-    case UPDATE_VOTE:
-      if (playablePlaylist.length === 0) {
-        return {
-          ...state,
-        }
-      }
-        playablePlaylist[action.payload.position].votes += action.payload.change;
-        playablePlaylist[action.payload.position].updatedAt = action.payload.updatedAt;
-        const res =  {
-          ...state,
-          playablePlaylist
-        }
-        return res;
-
-      // const updatedPlaylist = state.playlist.map(el => {
-      //   if (el.uri.valueOf() === action.payload.valueOf()) {
-      //     return { ...el, votes: el.votes + 1 };
-      //   }
-      //   return el;
-      // });
-      // return {
-      //   ...state,
-      //   playlist: updatedPlaylist
-      // };
-    // case DECREASE_VOTE:
-      // const playlistWithVoteDescreased = state.playlist.map(el => {
-      //   if (el.uri.valueOf() === action.payload.valueOf()) {
-      //     return { ...el, votes: el.votes - 1 };
-      //   }
-      //   return el;
-      // });
-      // return {
-      //   ...state,
-      //   playlist: playlistWithVoteDescreased
-      // };
-
+      break;
     case ADD_TO_PLAYLIST:
       if (playablePlaylist.length === 0) {
         return {

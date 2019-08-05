@@ -75,9 +75,8 @@ export function callAPIMiddleware({ dispatch, getState }) {
       .catch(error => {
         console.log('error!', error)
 
-        if (successType === 'REMOVE_TRACK_FROM_DB_FAILURE') {
-          debugger;
-        }
+        console.log('error!', failureType)
+
 
 
         // return dispatch({

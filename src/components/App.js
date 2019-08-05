@@ -2,12 +2,10 @@ import { Switch, Route } from 'react-router-dom';
 import React from 'react';
 import styled from 'styled-components';
 
-import { colours, constants, fonts } from '../globalStyles';
-import Playlists from '../containers/playlists';
+import { colours, fonts } from '../globalStyles';
 import Playlist from '../containers/playlist';
 import Home from './Home';
 import Search from '../containers/search';
-import Test from './Test';
 import Nav from '../containers/nav';
 
 const AppContainer = styled.div`
@@ -29,11 +27,9 @@ class App extends React.Component {
       <div>
         <Nav />
         <Switch>
-          <Route path="/test" exact component={Test} />
           <Route path="/" exact component={Home} />
           <AppContainer>
             <Route path="/playlist" exact component={Playlist} />
-            <Route path="/playlists" exact component={Playlists} />
             <Route path="/search" exact component={Search} />
           </AppContainer>
         </Switch>
