@@ -1,17 +1,6 @@
 import React from 'react';
 import { VotesContent, VotesText, Button, Icon } from './styles';
 
-
-
-const handleClick = (uri, position, handleVote, change, votes, removeTrack) => {
-  debugger;
-  if (votes + change === -5) {
-    removeTrack(uri)
-  }
-  handleVote(uri, position, change);
-  // setRecentlyClicked(uri);
-};
-
 const VoteDetails = ({
   position,
   uri,
@@ -24,11 +13,20 @@ const VoteDetails = ({
   playlist,
   sessionStarted
 }) => {
+  const handleClick = (uri, position, handleVote, change) => {
+    if (votes + change === -5) {
+      removeTrack(uri, position)
+    } else {
+      handleVote(uri, position, change);
+    }
+    // setRecentlyClicked(uri);
+  };
+
   return (
     <VotesContent>
       <Button
         onClick={() =>
-          handleClick(uri, position, handleDownVote, -1, votes, removeTrack)
+          handleClick(uri, position, handleDownVote, -1)
         }
       >
         <Icon src={`images/white-minus.svg`} />
@@ -36,7 +34,7 @@ const VoteDetails = ({
       <VotesText>{votes}</VotesText>
       <Button
         onClick={() =>
-          handleClick(uri, position, handleUpVote, 1, votes, removeTrack)
+          handleClick(uri, position, handleUpVote, 1)
         }
       >
         <Icon src={`images/white-plus.svg`} />

@@ -32,6 +32,7 @@ export function callAPIMiddleware({ dispatch, getState }) {
       return;
     }
 
+
     dispatch(
       Object.assign({}, payload, {
         type: requestType,
@@ -41,6 +42,9 @@ export function callAPIMiddleware({ dispatch, getState }) {
 
     return callAPI(token)
       .then(response => {
+        if (successType === 'REMOVE_TRACK_FROM_DB_SUCCESS') {
+          debugger;
+        }
         // console.log(response)
         // console.log(Object.assign({}, payload, {
         //   response: response.data,
@@ -69,7 +73,12 @@ export function callAPIMiddleware({ dispatch, getState }) {
         // }
       })
       .catch(error => {
-        console.log('error!')
+        console.log('error!', error)
+
+        if (successType === 'REMOVE_TRACK_FROM_DB_FAILURE') {
+          debugger;
+        }
+
 
         // return dispatch({
         //   payload: { ...payload, error },

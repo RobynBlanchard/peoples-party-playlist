@@ -36,7 +36,9 @@ const configureStore = initialState => {
   //   initialState.playlists.playlist = persistedState.playlist || [];
   // }
 
-  const middlewares = [callAPIMiddleware, createMySocketMiddleware()]
+  // TODO: fix!!!
+  // const middlewares = [callAPIMiddleware, createMySocketMiddleware()]
+  const middlewares = [callAPIMiddleware]
 
   const store = applyMiddleware(...middlewares)(createStore)(
     reducer,

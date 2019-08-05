@@ -49,7 +49,7 @@ export const reOrderTrackSpotify = (range_start, insert_before) => ({
 export const spotifyOffset = () => {
   return axios.get('/playlist/api/v1/tracks', { params:
     // all removed tracks will have been locked first
-    { locked: true} 
+    { locked: true}
   }).then(res => {
     const offset = res.data.tracks.length;
     return offset
@@ -69,7 +69,7 @@ const findPositionFromUri = uri => {
 
 
   return axios.get('/playlist/api/v1/tracks',  { params:
-    { removed: false, locked: false} 
+    { removed: false, locked: false}
   }).then(resp => {
 
     if (resp.status === 200) {
@@ -272,11 +272,11 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
 // });
 
 export const removeTrackFromDb = (uri, position) => ({
-  types: ['REMOVE_TRACK_FROM_DB', 'REMOVE_TRACK_FROM_DB_SUCCESS', 'REMOVE_TRACK_FROM_DB_FAILURE'],
-  callAPI: () =>
-    axios.delete(`/playlist/api/v1/tracks/${uri}`),
-    payload: { position, uri }
-});
+    types: ['REMOVE_TRACK_FROM_DB', 'REMOVE_TRACK_FROM_DB_SUCCESS', 'REMOVE_TRACK_FROM_DB_FAILURE'],
+    callAPI: () =>
+      axios.delete(`/playlist/api/v1/tracks/${uri}`),
+      payload: { position, uri }
+  });
 
 export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
   types: [REMOVE_TRACK, REMOVE_TRACK_SUCCESS, REMOVE_TRACK_FAILURE],
@@ -290,7 +290,8 @@ export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
 });
 
 export const removeTrack = (uri, position) => (dispatch, getState) => {
-  debugger;
+  console.log('remove track 2')
+
   // TODO - pass position instead of db look up
   let posFromDb;
   findPositionFromUri(uri)
@@ -302,15 +303,17 @@ export const removeTrack = (uri, position) => (dispatch, getState) => {
       return spotifyOffset()
     })
     .then(offset => {
-      debugger;
-      dispatch(removeTrackFromSpotifyPlaylist(uri, offset + posFromDb)).then(data => {
-        if (data.type === REMOVE_TRACK_SUCCESS) {
+      return dispatch(removeTrackFromSpotifyPlaylist(uri, offset + posFromDb))
+    }).then(data => {
+      // TODO: fix - add back in when store working
+        // if (data.type === REMOVE_TRACK_SUCCESS) {
 
-          removeTrackFromDb(uri, posFromDb) //will remove locally too on REMOVE_TRACK_FROM_DB_SUCCESS
+
+        // TODO: not doing locally
+      return dispatch(removeTrackFromDb(uri, posFromDb)) //will remove locally too on REMOVE_TRACK_FROM_DB_SUCCESS
           // position === playble position
-        }
+        // }//
       });
-    })
 
 
 

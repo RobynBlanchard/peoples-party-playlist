@@ -26,9 +26,9 @@ export default (app, store) => {
   app.get('/LogInFailure', logInFailure(store));
   app.get('/callback', logInCallback);
   app.get('/playlist/api/v1/tracks', getTracks);
+  app.delete('/playlist/api/v1/tracks/:id', removeTrack);
   // app.get('/test-get-pos', getPosition);
   app.get('/invite', invite);
-  app.delete('/playlist/api/v1/tracks/:id', removeTrack);
 
 
 

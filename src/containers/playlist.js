@@ -42,8 +42,8 @@ class Playlist extends React.Component {
       updateTrack
     } = this.props;
 
-    
-    
+
+
     if (sessionStarted) {
       getCurrentlyPlayingTrack();
       // const topTrack = playlist.newPlalist[0].uri;
@@ -98,6 +98,7 @@ class Playlist extends React.Component {
       updateTrackNumOfVotes,
       setRecentlyClicked,
       lockTrack,
+      removeTrack
       // currentTrack
     } = this.props;
 
@@ -143,7 +144,7 @@ class Playlist extends React.Component {
 
 // if session hasn't started
 // play first track
-// 
+//
 
 
   render() {

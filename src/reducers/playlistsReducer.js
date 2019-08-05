@@ -104,8 +104,6 @@ const playlistsReducer = (state = defaultState, action) => {
           ...state,
         }
     case 'REMOVE_TRACK_FROM_DB_SUCCESS':
-    console.log('remove track in first position')
-    debugger;
     playablePlaylist.splice(action.payload.position, 1);
 
       return {
@@ -207,7 +205,7 @@ const playlistsReducer = (state = defaultState, action) => {
         lockedTrack[0] = action.payload.response.data.track;
       }
 
-      
+
       // playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
       playablePlaylist = playablePlaylist.filter(el => !el.locked)
       return {
