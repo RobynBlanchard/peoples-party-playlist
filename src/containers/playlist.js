@@ -22,7 +22,7 @@ class Playlist extends React.Component {
   componentDidMount() {
     const { playlist, fetchPlaylist } = this.props;
 
-    if (playlist.playlist.length === 0) {
+    if (playlist.playablePlaylist.length === 0) {
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
