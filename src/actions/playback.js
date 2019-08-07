@@ -36,7 +36,7 @@ export const resumePlaybackSpotify = (playbackPosition, playlistIndex) => ({
       context_uri: `spotify:playlist:${playlistId}`,
       offset: { position: playlistIndex },
       position_ms: playbackPosition
-    }),
+    })
 });
 
 export const resumePlayback = () => (dispatch, getState) => {
@@ -46,22 +46,24 @@ export const resumePlayback = () => (dispatch, getState) => {
     const playlist = getState().playlists.playablePlaylist;
 
     dispatch(sendSocketMessage(startSession()));
+    // const query = {locked: true}
+    const query = { removed: true };
 
-    spotifyOffset().then(offset => {
-      dispatch(resumePlaybackSpotify(playbackPosition, offset)).then( res => {
-        dispatch(updateTrack(playlist[0].uri, {
-          $set: { locked: true }
-        }))
-      })
-    })
-
+    spotifyOffset(query).then(offset => {
+      dispatch(resumePlaybackSpotify(playbackPosition, offset)).then(res => {
+        dispatch(
+          updateTrack(playlist[0].uri, {
+            $set: { locked: true }
+          })
+        );
+      });
+    });
   } else {
-    // can pass locked or not to spotify offset
-    // instead of minus 1 here
-    spotifyOffset().then(offset => {
-      dispatch(resumePlaybackSpotify(playbackPosition, offset - 1))
-      // - 1 for locked track
-    })
+    const query = { removed: true };
+
+    spotifyOffset(query).then(offset => {
+      dispatch(resumePlaybackSpotify(playbackPosition, offset));
+    });
   }
 };
 export const pausePlayback = () => ({
@@ -78,35 +80,30 @@ export const getCurrentlyPlayingTrackSpotify = () => ({
   callAPI: token => spotifyApi(token).get('me/player/currently-playing')
 });
 
-
-
 export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
-  const state = getState();
-  const previousCurrentlyPlayingTrack = state.playback.currentTrack.uri
-
-    dispatch(getCurrentlyPlayingTrackSpotify()).then( action => {
-      const curPlaying = action.payload.response.data.item;
-      if (action.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
-        // TODO: if item is null then alert / log
-        if (curPlaying) {
-
-
-        // const previousCurrentlyPlayvingTrack = state.playback.currentTrack.uri
+  dispatch(getCurrentlyPlayingTrackSpotify()).then(action => {
+    const curPlaying = action.payload.response.data.item;
+    if (action.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
+      // TODO: if item is null then alert / log
+      if (curPlaying) {
+        const state = getState();
         const currentlyPlayingTrack = curPlaying.uri;
+        const previousCurrentlyPlayingTrack = state.playback.currentTrack.uri;
 
-        if (previousCurrentlyPlayingTrack !== currentlyPlayingTrack) {
-          if (previousCurrentlyPlayingTrack) {
-            dispatch(updateTrack(previousCurrentlyPlayingTrack, { $set: {removed: true} }));
-            dispatch(updateTrack(currentlyPlayingTrack,{$set: { locked: true }}))
-
+        if (previousCurrentlyPlayingTrack) {
+          if (previousCurrentlyPlayingTrack !== currentlyPlayingTrack) {
+            dispatch(
+              updateTrack(previousCurrentlyPlayingTrack, {
+                $set: { removed: true }
+              })
+            );
+            dispatch(
+              updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
+            );
           }
           // TODO: remove locally
         }
       }
-      }
-    })
-
-
-
-
+    }
+  });
 };

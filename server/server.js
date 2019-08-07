@@ -13,7 +13,6 @@ const app = express();
 const server = http.createServer(app)
 
 app.use(bodyParser.urlencoded());
-// app.use(bodyParser.json());
 app.use(bodyParser.json({ type: '*/*' }))
 // app.use(bodyParser.json());
 app.use(boolParser());
