@@ -1,7 +1,4 @@
 import {
-  FETCH_PLAYLIST,
-  FETCH_PLAYLIST_SUCCESS,
-  FETCH_PLAYLIST_FAILURE,
   REORDER_TRACK,
   REORDER_TRACK_SUCCESS,
   REORDER_TRACK_FAILURE,
@@ -23,15 +20,14 @@ import {
   REORDER_TRACK_SPOTIFY,
   REORDER_TRACK_SPOTIFY_SUCCESS,
   REORDER_TRACK_SPOTIFY_FAILURE,
-  UPDATE_VOTE
+  UPDATE_VOTE,
+  REMOVE_TRACK_FROM_DB_SUCCESS
 } from '../actions/types';
 import transformPlaylistData from './playlistsTransformer';
 
 // could have an error attribute on each track object?
 
 const defaultState = {
-  playlist: [],
-  newPlalist: [],
   playablePlaylist: [],
   lockedTrack: [],
   error: null,
@@ -40,133 +36,111 @@ const defaultState = {
 
 // rename to playlist
 const playlistsReducer = (state = defaultState, action) => {
-  let playlist = state.playlist;
-  let newPlalist = state.newPlalist;
   let playablePlaylist = state.playablePlaylist;
   let lockedTrack = state.lockedTrack;
-
 
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
       return {
         ...state,
-        loading: true,
+        loading: true
       };
     case FETCH_PLAYLIST_FROM_DB_SUCCESS:
       const tracks = action.payload.response.data.tracks;
+      tracks.forEach(track => {
+        track.locked ? lockedTrack.push(track) : playablePlaylist.push(track);
+      });
 
       return {
         ...state,
-        newPlalist: tracks,
-        playablePlaylist: tracks.filter(el => !el.locked),
-        lockedTrack: tracks.filter(el => el.locked),
-      }
+        loading: false,
+        playablePlaylist,
+        lockedTrack
+      };
     case FETCH_PLAYLIST_FROM_DB_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.error
+        error: action.payload.error
       };
 
     case REORDER_TRACK:
-// TODO: maintian playlist with locked and unlocked track in state!!!!
-// ---------------
-
-// not re-ordering as locked track is included
-      // tracl
-    //   const item = newPlalist[action.payload.range_start]
-
-    // // remove track
-    // newPlalist.splice(action.payload.range_start,1)
-
-    // // insert track
-    // newPlalist.splice(action.payload.insert_before, 0, item);
-
-
-    // TODO: not working
-    playablePlaylist.splice(
+      playablePlaylist.splice(
         action.payload.insert_before,
         0,
         playablePlaylist.splice(action.payload.range_start, 1)[0]
       );
 
       return {
-          ...state,
-          playablePlaylist,
-          loading: false,
-          error: null,
-        };
-
-    case REMOVE_TRACK:
-        return {
-          ...state,
-        }
-    case 'REMOVE_TRACK_FROM_DB_SUCCESS':
-    playablePlaylist.splice(action.payload.position, 1);
+        ...state,
+        playablePlaylist,
+        loading: false,
+        error: null
+      };
+    case REMOVE_TRACK_FROM_DB_SUCCESS:
+      playablePlaylist.splice(action.payload.position, 1);
 
       return {
         ...state,
         playablePlaylist
-      }
+      };
     case REMOVE_TRACK_FAILURE:
       break;
     case ADD_TO_PLAYLIST:
       if (playablePlaylist.length === 0) {
         return {
-          ...state,
-        }
+          ...state
+        };
       }
-      playablePlaylist.splice(action.payload.position, 0, action.payload.track)
+      playablePlaylist.splice(action.payload.position, 0, action.payload.track);
       return {
         ...state,
         playablePlaylist: playablePlaylist
-      }
+      };
     // TODO: handle these properly
-    // could indicate on track just clicked when track has been added
     case ADD_TO_SPOTIFY_PLAYLIST:
       return {
-        ...state,
-      }
+        ...state
+      };
     case ADD_TO_SPOTIFY_PLAYLIST_SUCCESS:
       return {
         ...state
-      }
+      };
     case ADD_TO_SPOTIFY_PLAYLIST_FAILURE:
       return {
         ...state
-      }
+      };
     case REORDER_TRACK_SPOTIFY:
-        return {
-          ...state,
-        }
+      return {
+        ...state
+      };
     case REORDER_TRACK_SPOTIFY_SUCCESS:
       return {
         ...state
-      }
+      };
     case REORDER_TRACK_SPOTIFY_FAILURE:
       return {
         ...state
-      }
+      };
     case 'UPDATE_TRACK_IN_DB_SUCCESS':
-        playablePlaylist = playablePlaylist.map(el => {
+      playablePlaylist = playablePlaylist.map(el => {
         if (el.uri === action.payload.response.data.track.uri) {
-          return action.payload.response.data.track
+          return action.payload.response.data.track;
         }
-        return el
+        return el;
       });
 
       if (action.payload.response.data.track.locked) {
         lockedTrack[0] = action.payload.response.data.track;
       }
 
-
       // playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
-      playablePlaylist = playablePlaylist.filter(el => !el.locked)
+      playablePlaylist = playablePlaylist.filter(el => !el.locked);
       return {
         ...state,
         playablePlaylist: playablePlaylist,
-        lockedTrack:lockedTrack
-      }
+        lockedTrack: lockedTrack
+      };
     default:
       return state;
   }

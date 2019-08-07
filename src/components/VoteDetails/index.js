@@ -7,36 +7,23 @@ const VoteDetails = ({
   votes,
   handleUpVote,
   handleDownVote,
-  removeTrack,
-  setRecentlyClicked,
-  shouldFocus,
-  playlist,
-  sessionStarted
+  removeTrack
 }) => {
   const handleClick = (uri, position, handleVote, change) => {
     if (votes + change === -5) {
-      removeTrack(uri, position)
+      removeTrack(uri, position);
     } else {
       handleVote(uri, position, change);
     }
-    // setRecentlyClicked(uri);
   };
 
   return (
     <VotesContent>
-      <Button
-        onClick={() =>
-          handleClick(uri, position, handleDownVote, -1)
-        }
-      >
+      <Button onClick={() => handleClick(uri, position, handleDownVote, -1)}>
         <Icon src={`images/white-minus.svg`} />
       </Button>
       <VotesText>{votes}</VotesText>
-      <Button
-        onClick={() =>
-          handleClick(uri, position, handleUpVote, 1)
-        }
-      >
+      <Button onClick={() => handleClick(uri, position, handleUpVote, 1)}>
         <Icon src={`images/white-plus.svg`} />
       </Button>
     </VotesContent>

@@ -23,7 +23,7 @@ const user = (state = defaultState, action) => {
       return {
         ...state,
         loading: false,
-        error: action.payload,
+        error: action.payload.error.Error,
       };
     default:
       return state;

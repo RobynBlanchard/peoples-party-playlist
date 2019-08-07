@@ -7,7 +7,6 @@ import {
   resumePlayback,
   pausePlayback,
   getCurrentlyPlayingTrack,
-  setRecentlyClicked,
   removeTrack,
   updateTrack
 } from '../actions';
@@ -67,9 +66,7 @@ class Playlist extends React.Component {
   renderTracks(playlist) {
     const {
       sessionStarted,
-      recentlyClickedTrack,
       updateTrackNumOfVotes,
-      setRecentlyClicked,
       removeTrack
     } = this.props;
 
@@ -97,11 +94,9 @@ class Playlist extends React.Component {
             position={position}
             uri={uri}
             handleUpVote={updateTrackNumOfVotes}
-            setRecentlyClicked={setRecentlyClicked}
             handleDownVote={updateTrackNumOfVotes}
             removeTrack={removeTrack}
             votes={votes}
-            shouldFocus={recentlyClickedTrack === uri}
             playlist={playlist}
             sessionStarted={sessionStarted}
           />
@@ -147,7 +142,6 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     sessionStarted: state.session.sessionStarted,
     currentTrack: state.playback.currentTrack,
-    recentlyClickedTrack: state.recentlyClicked.recentlyClickedTrack
   };
 };
 
@@ -162,7 +156,6 @@ export default connect(
     resumePlayback,
     pausePlayback,
     getCurrentlyPlayingTrack,
-    setRecentlyClicked,
     updateTrack
   }
 )(Playlist);

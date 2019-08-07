@@ -57,3 +57,6 @@
  <!-- investogate specifying uris for playback - https://developer.spotify.com/documentation/web-api/reference/player/start-a-users-playback/ -->
  <!-- sockets -->
 <!-- add models -->
+
+
+<!-- fetch playlist from spotify and db every 5mins and check order matches -->
