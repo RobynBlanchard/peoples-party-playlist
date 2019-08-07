@@ -23,7 +23,6 @@ import {
   UPDATE_VOTE,
   REMOVE_TRACK_FROM_DB_SUCCESS
 } from '../actions/types';
-import transformPlaylistData from './playlistsTransformer';
 
 // could have an error attribute on each track object?
 
