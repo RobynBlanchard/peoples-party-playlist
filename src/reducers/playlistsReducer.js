@@ -38,8 +38,6 @@ const playlistsReducer = (state = defaultState, action) => {
   let playablePlaylist = state.playablePlaylist;
   let lockedTrack = state.lockedTrack;
 
-  console.log(action)
-
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
       return {
@@ -137,6 +135,7 @@ const playlistsReducer = (state = defaultState, action) => {
 
       // playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
       playablePlaylist = playablePlaylist.filter(el => !el.locked);
+
       return {
         ...state,
         playablePlaylist: playablePlaylist,

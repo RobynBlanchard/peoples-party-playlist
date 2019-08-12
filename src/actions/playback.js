@@ -40,32 +40,36 @@ export const resumePlaybackSpotify = (playbackPosition, playlistIndex) => ({
 });
 
 export const resumePlayback = () => (dispatch, getState) => {
-  const playbackPosition = getState().playback.progress_ms;
+  const state = getState();
+  const playbackPosition = state.playback.progress_ms;
+  const sessionStarted = state.session.sessionStarted;
 
-  if (!getState().session.sessionStarted) {
-    const playlist = getState().playlists.playablePlaylist;
-
-    dispatch(sendSocketMessage(startSession()));
-    // const query = {locked: true}
-    const query = { removed: true };
-
-    spotifyOffset(query).then(offset => {
-      dispatch(resumePlaybackSpotify(playbackPosition, offset)).then(res => {
-        dispatch(
-          updateTrack(playlist[0].uri, {
-            $set: { locked: true }
-          })
-        );
-      });
-    });
-  } else {
+  if (sessionStarted) {
     const query = { removed: true };
 
     spotifyOffset(query).then(offset => {
       dispatch(resumePlaybackSpotify(playbackPosition, offset));
     });
+  } else {
+    const playlist = state.playlists.playablePlaylist;
+
+    dispatch(sendSocketMessage(startSession()));
+    const query = { removed: true };
+
+    spotifyOffset(query).then(offset => {
+      dispatch(resumePlaybackSpotify(playbackPosition, offset)).then(res => {
+        if (res && res.type === 'RESUME_PLAYBACK_SUCCESS') {
+          dispatch(
+            updateTrack(playlist[0].uri, {
+              $set: { locked: true }
+            })
+          );
+        }
+      });
+    });
   }
 };
+
 export const pausePlayback = () => ({
   types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
   callAPI: token => spotifyApi(token).put('me/player/pause')
@@ -81,27 +85,23 @@ export const getCurrentlyPlayingTrackSpotify = () => ({
 });
 
 export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
-  dispatch(getCurrentlyPlayingTrackSpotify()).then(action => {
-    const curPlaying = action.payload.response.data.item;
-    if (action.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
-      // TODO: if item is null then alert / log
-      if (curPlaying) {
-        const state = getState();
-        const currentlyPlayingTrack = curPlaying.uri;
-        const previousCurrentlyPlayingTrack = state.playback.currentTrack.uri;
+  const state = getState();
+  const previouslyPlayingTrack = state.playback.currentTrack.uri;
 
-        if (previousCurrentlyPlayingTrack) {
-          if (previousCurrentlyPlayingTrack !== currentlyPlayingTrack) {
-            dispatch(
-              updateTrack(previousCurrentlyPlayingTrack, {
-                $set: { removed: true }
-              })
-            );
-            dispatch(
-              updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
-            );
-          }
-          // TODO: remove locally
+  dispatch(getCurrentlyPlayingTrackSpotify()).then(action => {
+    if (action.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
+      const currentlyPlayingTrack = action.payload.response.data.item.uri;
+
+      if (currentlyPlayingTrack && previouslyPlayingTrack) {
+        if (previouslyPlayingTrack !== currentlyPlayingTrack) {
+          dispatch(
+            updateTrack(previouslyPlayingTrack, {
+              $set: { removed: true }
+            })
+          );
+          dispatch(
+            updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
+          );
         }
       }
     }

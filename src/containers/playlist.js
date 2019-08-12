@@ -30,6 +30,7 @@ class Playlist extends React.Component {
 
   getCurrentlyPlaying() {
     const { sessionStarted, getCurrentlyPlayingTrack } = this.props;
+    console.log('session started', sessionStarted)
 
     if (sessionStarted) {
       getCurrentlyPlayingTrack();
@@ -106,12 +107,12 @@ class Playlist extends React.Component {
   }
 
   render() {
-    const { playlist, playing, resumePlayback, pausePlayback } = this.props;
+    const { playlist, playing, resumePlayback, pausePlayback, playbackError } = this.props;
     const { playablePlaylist, error, lockedTrack} = playlist;
 
-    if (error) return <ErrorIndicator />;
+    if (error || playbackError) return <ErrorIndicator />;
 
-    if (playablePlaylist.length === 0) {
+    if ((playablePlaylist.length === 0) && (lockedTrack.length === 0)) {
       return null;
     }
 
@@ -142,6 +143,7 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     sessionStarted: state.session.sessionStarted,
     currentTrack: state.playback.currentTrack,
+    playbackError: state.playback.error,
   };
 };
 

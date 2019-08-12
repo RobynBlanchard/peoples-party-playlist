@@ -9,6 +9,8 @@ import {
 } from '../actions/types';
 
 const defaultState = {
+  loading: false,
+  error: null,
   playing: false,
   currentPlayingTrack: '',
   currentTrack: {
@@ -22,11 +24,27 @@ const defaultState = {
 
 const playBackReducer = (state = defaultState, action) => {
   switch (action.type) {
+    case RESUME_PLAYBACK:
+      return {
+        ...state,
+        loading: true,
+      }
     case RESUME_PLAYBACK_SUCCESS:
       return {
         ...state,
-        playing: true
+        playing: true,
+        loading: false,
+        error: null,
       };
+    case RESUME_PLAYBACK_FAILURE:
+      return {
+        loading: false,
+        playing: false,
+        error: {
+          status: action.payload.error.response.data.error.status,
+          message: action.payload.error.response.data.error.message,
+        }
+      }
     case PAUSE_PLAYBACK_SUCCESS:
       return {
         ...state,
@@ -36,7 +54,7 @@ const playBackReducer = (state = defaultState, action) => {
       // dont want to send this all the time
     case GET_CURRENTLY_PLAYING_SUCCESS:
     if (action.payload.response.data.item) {
-      
+
       return {
         ...state,
         progress_ms: action.payload.response.data.progress_ms,
