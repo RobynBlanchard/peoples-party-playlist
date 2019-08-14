@@ -27,6 +27,7 @@ import {
 // could have an error attribute on each track object?
 
 const defaultState = {
+  removedPlaylist: [],
   playablePlaylist: [],
   lockedTrack: [],
   error: null,
@@ -37,6 +38,7 @@ const defaultState = {
 const playlistsReducer = (state = defaultState, action) => {
   let playablePlaylist = state.playablePlaylist;
   let lockedTrack = state.lockedTrack;
+  let removedPlaylist = state.removedPlaylist;
 
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
@@ -77,11 +79,14 @@ const playlistsReducer = (state = defaultState, action) => {
         error: null
       };
     case REMOVE_TRACK_FROM_DB_SUCCESS:
+      playablePlaylist[action.payload.position].removed = true;
+      removedPlaylist.push(playablePlaylist[action.payload.position]);
       playablePlaylist.splice(action.payload.position, 1);
 
       return {
         ...state,
-        playablePlaylist
+        playablePlaylist,
+        removedPlaylist
       };
     case REMOVE_TRACK_FAILURE:
       break;

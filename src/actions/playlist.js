@@ -80,12 +80,101 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
 ) => {
-  let newPosition;
+
+  // either store position in db
+  // or hope that :
+  // db.tracks.find({})
+  //  .projection({})
+  //  .sort({votes:-1, updatedAt: 1})
+  //  .limit(100)
+  // will return same results
+
+  let currentPlaylist = getState().playlists.playablePlaylist;
+  currentPlaylist[position].votes + change;
+  const sortedPlaylist = currentPlaylist.sort((a,b) =>  a.votes - b.votes || a.updatedAt - b.updatedAt);
+
+  const newPosition = sortedPlaylist.map(e => e.uri).indexOf(uri);
+
+  if (newPosition === position) {
+    dispatch(
+      updateTrack(uri, {
+        //TODO: $push: { users: userId },
+        $inc: { votes: change },
+        $set: { updatedAt: new Date().toISOString() }
+      })
+    )
+    // and maybe position ?
+  } else {
+    const removedPlaylist = getState().playlists.removedPlaylist;
+    const lockedTrack = getState().playlists.lockedTrack;
+
+    const spotifyOffset = removedPlaylist.length + lockedTrack.length;
+
+    const range_start = spotifyOffset + position;
+
+    let range_end = spotifyOffset + newPosition;
+
+    if (change == -1) {
+      range_end = range_end + 1;
+    }
+
+    return dispatch(reOrderTrackSpotify(range_start, range_end)).then(res => {
+      if (res.type === 'REORDER_TRACK_SPOTIFY_SUCCESS') {
+        dispatch(
+          updateTrack(uri, {
+            //TODO: $push: { users: userId },
+            $inc: { votes: change },
+            $set: { updatedAt: new Date().toISOString() }
+          })
+        ).then(res => {
+          const payload = {
+            insert_before: newPosition,
+            range_start: position
+          };
+          return dispatch(
+            sendSocketMessage({ type: 'REORDER_TRACK', payload: payload })
+          );
+        })
+      }
+    })
+  }
+
+  // 1. post new playlist? - https://developer.spotify.com/documentation/web-api/reference/playlists/replace-playlists-tracks/
+  // 2. get offset and move in spotify
+  // 2. get offset via db ? or store removed locally ?
+  // for now get via db but todo - get locally - if quicker?
+
+
+
+
+
+
+
+
+
+  // could add position to mongo
+  // or fetch from spotify
+
+  // need to fetch playlist from db to get votes
+
+  // store position in db - fetch playlist, sort by position
+  // find out if can sort by votes and updated at
+  // or fetch playlist from spotify and map on votes
+
+  // sort locally
+
+
+
   // could work out new position first - instead of from db
   // change should be 1 or -1
 
   // will send socket to update vote
   return (
+    // work out locally
+    // update spotify
+    // update mongo
+
+
     dispatch(
       updateTrack(uri, {
         //TODO: $push: { users: userId },
