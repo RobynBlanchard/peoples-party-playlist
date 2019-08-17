@@ -63,9 +63,16 @@ const playlistsReducer = (state = defaultState, action) => {
         } else if (track.locked && !track.removed) {
           lockedTrack.push(track);
         } else {
+          // Note - need to maintain original order. otherwise require sort after here
           playablePlaylist.push(track);
         }
       });
+
+
+      // TODO:
+      // playablePlaylist.sort(
+      //   (a, b) => b.votes - a.votes || a.updatedAt - b.updatedAt
+      // );
 
       return {
         ...state,
@@ -145,6 +152,19 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state
       };
+    case 'UPDATE_TRACK':
+      playablePlaylist.splice(action.payload.position, 1)
+
+      playablePlaylist.splice(
+        action.payload.newPosition,
+        0,
+        action.payload.track
+      );
+
+      return {
+        ...state,
+        playablePlaylist
+      };
     // playablePlaylist = playablePlaylist.map(el => {
     //   if (el.uri === action.payload.response.data.track.uri) {
     //     return action.payload.response.data.track;
@@ -171,27 +191,27 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist: action.payload
       };
     case 'LOCK_FIRST_TRACK':
-        if (lockedTrack.length > 0) {
-          lockedTrack[0].removed = true;
-          removedPlaylist.push(lockedTrack[0])
-        };
-        lockedTrack = [playablePlaylist[0]];
-        if (lockedTrack.length > 0) {
-          lockedTrack[0].locked = true;
-        }
+      if (lockedTrack.length > 0) {
+        lockedTrack[0].removed = true;
+        removedPlaylist.push(lockedTrack[0]);
+      }
+      lockedTrack = [playablePlaylist[0]];
+      if (lockedTrack.length > 0) {
+        lockedTrack[0].locked = true;
+      }
 
-        playablePlaylist.shift();
+      playablePlaylist.shift();
 
-        console.log('lockedTrack', lockedTrack)
-        console.log('playablePlaylist', playablePlaylist)
-        console.log('removedPlaylist', removedPlaylist)
+      console.log('lockedTrack', lockedTrack);
+      console.log('playablePlaylist', playablePlaylist);
+      console.log('removedPlaylist', removedPlaylist);
 
-        return {
-          ...state,
-          lockedTrack,
-          playablePlaylist,
-          removedPlaylist
-        }
+      return {
+        ...state,
+        lockedTrack,
+        playablePlaylist,
+        removedPlaylist
+      };
     default:
       return state;
   }

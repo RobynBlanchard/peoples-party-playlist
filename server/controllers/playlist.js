@@ -83,7 +83,7 @@ export const getTracks = (req, res, next) => {
     if (err) throw err;
 
     const dbo = db.db(dbase);
-    const mysort = { votes: -1 };
+    const mysort = { votes: -1, updatedAt: 1 };
     dbo
       .collection('tracks')
       .find(query)

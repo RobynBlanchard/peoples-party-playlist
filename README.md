@@ -67,3 +67,9 @@
 <!-- Persist session started! -->
 
 <!-- if order outof date then fetch from db, sort then post whole playlist to spotify -->
+
+
+<!-- TO MAKE it eay to fetch from db and sort -->
+<!-- tracks updated earlier - will be higher up playlist -->
+<!-- to make tracks downvoted be prioritised in the opposite way -->
+<!-- would require position to be stored in the database instead -->

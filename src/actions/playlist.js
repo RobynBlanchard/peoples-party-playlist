@@ -40,14 +40,14 @@ function sendSocketMessage(action) {
 }
 
 // should remove
-const getSortedPlaylist = (track, position, playlist) => {
-  const clonedPlaylist = JSON.parse(JSON.stringify(playlist));
-  clonedPlaylist.splice(position, 1, track);
+// const getSortedPlaylist = (track, position, playlist) => {
+//   const clonedPlaylist = JSON.parse(JSON.stringify(playlist));
+//   clonedPlaylist.splice(position, 1, track);
 
-  return clonedPlaylist.sort(
-    (a, b) => b.votes - a.votes || b.updatedAt - a.updatedAt
-  );
-};
+//   return clonedPlaylist.sort(
+//     (a, b) => b.votes - a.votes || b.updatedAt - a.updatedAt
+//   );
+// };
 
 // either sort playlist here or in reducer
 // need to sort in order to find out new position for spotify
@@ -75,13 +75,47 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     updatedAt: updatedAt
   };
 
-  const sortedPlaylist = getSortedPlaylist(
-    updatedTrack,
-    position,
-    currentPlaylist
-  );
+  // OPTION 1
+  // const clonedPlaylist = JSON.parse(JSON.stringify(currentPlaylist));
+  // clonedPlaylist.splice(position, 1);
 
-  const newPosition = sortedPlaylist.map(e => e.uri).indexOf(uri);
+  // let newPosition = clonedPlaylist.findIndex(el => {
+  //   // adding so updated at will always be later ?
+  //   // TODO: - work out what to use
+  //   return (el.votes === updatedTrack.votes && el.updatedAt > updatedTrack.updatedAt) || el.votes < updatedTrack.votes
+  //   // return el.votes <= updatedTrack.votes;
+  // })
+
+  // OPTION 2
+
+  // at the moment if +
+  // older tracks will keep priority
+  // but -
+  // newer tracks will move closer to bottom
+  // can't sort by updated at toerhwise
+  // spo always oldest track at top - whether up or down
+
+  let newPosition = currentPlaylist.findIndex(el => {
+    // adding so updated at will always be later ?
+    // TODO: - work out what to use
+    return (el.votes === updatedTrack.votes && el.updatedAt > updatedTrack.updatedAt) || el.votes < updatedTrack.votes
+    // return el.votes <= updatedTrack.votes;
+  })
+
+  // if (change === -1 ) {
+  //   newPosition + 1
+  // }
+
+  if (newPosition === -1) {
+    newPosition = currentPlaylist.length - 1
+  }
+  // const sortedPlaylist = getSortedPlaylist(
+  //   updatedTrack,
+  //   position,
+  //   currentPlaylist
+  // );
+
+  // const newPosition = sortedPlaylist.map(e => e.uri).indexOf(uri);
 
   if (newPosition === position) {
     return dispatch(
@@ -92,8 +126,12 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     ).then(res => {
       if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
         dispatch({
-          type: 'UPDATE_PLAYLIST',
-          payload: sortedPlaylist
+          type: 'UPDATE_TRACK',
+          payload: {
+            position,
+            newPosition,
+            track: updatedTrack,
+          }
         });
       }
     });
@@ -123,8 +161,12 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
       .then(res => {
         if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
           dispatch({
-            type: 'UPDATE_PLAYLIST',
-            payload: sortedPlaylist
+            type: 'UPDATE_TRACK',
+            payload: {
+              position,
+              newPosition,
+              track: updatedTrack,
+            }
           });
         }
       });
@@ -179,7 +221,6 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   if (newPosition === -1) {
     newPosition = currentPlaylist.length
   }
-  debugger
 
   // const getNewPosition = (playlist, track) => {
   //   playlist.push(track);
