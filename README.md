@@ -60,3 +60,10 @@
 
 
 <!-- fetch playlist from spotify and db every 5mins and check order matches -->
+
+<!-- if network error -> sho oops somethign ent wrong , try logging in again -->
+
+
+<!-- Persist session started! -->
+
+<!-- if order outof date then fetch from db, sort then post whole playlist to spotify -->

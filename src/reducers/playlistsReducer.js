@@ -42,14 +42,29 @@ const playlistsReducer = (state = defaultState, action) => {
 
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
+      console.log('fetch!');
+
       return {
         ...state,
         loading: true
       };
     case FETCH_PLAYLIST_FROM_DB_SUCCESS:
+      // TODO: get removed too
+
       const tracks = action.payload.response.data.tracks;
+      // TODO: - fix
+      playablePlaylist = [];
+      lockedTrack = [];
+      removedPlaylist = [];
+
       tracks.forEach(track => {
-        track.locked ? lockedTrack.push(track) : playablePlaylist.push(track);
+        if (track.removed) {
+          removedPlaylist.push(track);
+        } else if (track.locked && !track.removed) {
+          lockedTrack.push(track);
+        } else {
+          playablePlaylist.push(track);
+        }
       });
 
       return {
@@ -91,11 +106,11 @@ const playlistsReducer = (state = defaultState, action) => {
     case REMOVE_TRACK_FAILURE:
       break;
     case ADD_TO_PLAYLIST:
-      if (playablePlaylist.length === 0) {
-        return {
-          ...state
-        };
-      }
+      // if (playablePlaylist.length === 0) {
+      //   return {
+      //     ...state
+      //   };
+      // }
       playablePlaylist.splice(action.payload.position, 0, action.payload.track);
       return {
         ...state,
@@ -127,25 +142,56 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state
       };
     case 'UPDATE_TRACK_IN_DB_SUCCESS':
-      playablePlaylist = playablePlaylist.map(el => {
-        if (el.uri === action.payload.response.data.track.uri) {
-          return action.payload.response.data.track;
-        }
-        return el;
-      });
+      return {
+        ...state
+      };
+    // playablePlaylist = playablePlaylist.map(el => {
+    //   if (el.uri === action.payload.response.data.track.uri) {
+    //     return action.payload.response.data.track;
+    //   }
+    //   return el;
+    // });
 
-      if (action.payload.response.data.track.locked) {
-        lockedTrack[0] = action.payload.response.data.track;
-      }
+    // if (action.payload.response.data.track.locked) {
+    //   lockedTrack[0] = action.payload.response.data.track;
+    // }
 
-      // playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
-      playablePlaylist = playablePlaylist.filter(el => !el.locked);
+    // // playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
+    // playablePlaylist = playablePlaylist.filter(el => !el.locked);
 
+    // return {
+    //   ...state,
+    //   playablePlaylist: playablePlaylist,
+    //   lockedTrack: lockedTrack
+    // };
+    case 'UPDATE_PLAYLIST':
+      debugger;
       return {
         ...state,
-        playablePlaylist: playablePlaylist,
-        lockedTrack: lockedTrack
+        playablePlaylist: action.payload
       };
+    case 'LOCK_FIRST_TRACK':
+        if (lockedTrack.length > 0) {
+          lockedTrack[0].removed = true;
+          removedPlaylist.push(lockedTrack[0])
+        };
+        lockedTrack = [playablePlaylist[0]];
+        if (lockedTrack.length > 0) {
+          lockedTrack[0].locked = true;
+        }
+
+        playablePlaylist.shift();
+
+        console.log('lockedTrack', lockedTrack)
+        console.log('playablePlaylist', playablePlaylist)
+        console.log('removedPlaylist', removedPlaylist)
+
+        return {
+          ...state,
+          lockedTrack,
+          playablePlaylist,
+          removedPlaylist
+        }
     default:
       return state;
   }

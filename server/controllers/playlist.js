@@ -26,6 +26,7 @@ export const addTrack = (req, res, next) => {
   const uri = req.body.uri;
   const name = req.body.name;
   const artist = req.body.artist;
+  const updatedAt = req.body.updatedAt;
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
@@ -36,13 +37,15 @@ export const addTrack = (req, res, next) => {
       users: [],
       name,
       artist,
-      updatedAt: new Date().toISOString(),
+      updatedAt: updatedAt || new Date().toISOString(),
+      // updatedAt: new Date().toISOString(),
       removed: false,
       locked: false
     };
     dbo.collection('tracks').insertOne(myobj, function(err, resp) {
       if (err) throw err;
       res.sendStatus(201);
+      // could return new track
       console.log('1 document inserted');
       db.close();
     });

@@ -45,6 +45,7 @@ const configureStore = initialState => {
     initialState
   );
 
+  // still needed?
   store.subscribe(
     throttle(() => {
       saveState(

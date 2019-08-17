@@ -13,10 +13,13 @@ export const fetchPlaylist = () => ({
     FETCH_PLAYLIST_FROM_DB_SUCCESS,
     FETCH_PLAYLIST_FROM_DB_FAILURE
   ],
+  // callAPI: () =>
+  //   axios.get('http://localhost:5000/playlist/api/v1/tracks', {
+  //     params: { removed: false }
+  //   }),
   callAPI: () =>
-    axios.get('http://localhost:5000/playlist/api/v1/tracks', {
-      params: { removed: false }
-    }),
+  axios.get('http://localhost:5000/playlist/api/v1/tracks'),
+
 });
 
 // export const fetchPlaylist = () => (dispatch, getState) => {

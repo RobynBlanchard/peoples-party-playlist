@@ -39,6 +39,7 @@ export function callAPIMiddleware({ dispatch, getState }) {
 
     return callAPI(token)
       .then(response => {
+
         return dispatch({
           payload: { ...payload, response },
           type: successType
@@ -46,7 +47,7 @@ export function callAPIMiddleware({ dispatch, getState }) {
         });
       })
       .catch(error => {
-        dispatch({
+        return dispatch({
           payload: { ...payload, error },
           type: failureType
         });
