@@ -109,11 +109,8 @@ class Playlist extends React.Component {
   render() {
     const { playlist, playing, resumePlayback, pausePlayback, playbackError } = this.props;
     const { playablePlaylist, error, lockedTrack} = playlist;
-    console.log('error', error)
 
     if (error || playbackError) return <ErrorIndicator />;
-
-    console.log('locked', lockedTrack)
 
     if ((playablePlaylist.length === 0) && (lockedTrack.length === 0)) {
       return null;

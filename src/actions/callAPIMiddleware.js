@@ -1,8 +1,10 @@
-export function callAPIMiddleware({ dispatch, getState }) {
+const socketTypes = [
+  'RESUME_PLAYBACK_SUCCESS',
+  'PAUSE_PLAYBACK_SUCCESS'
+]
+
+export const callAPIMiddleware = ({ dispatch, getState }) => {
   return next => action => {
-    if (typeof action === 'function') {
-      return action(dispatch, getState);
-    }
     const { types, callAPI, shouldCallAPI = () => true, payload = {} } = action;
 
     if (!types) {
@@ -39,11 +41,17 @@ export function callAPIMiddleware({ dispatch, getState }) {
 
     return callAPI(token)
       .then(response => {
+        if (socketTypes.includes(successType)) {
+          return dispatch({
+            payload: { ...payload, response },
+            type: successType,
+            handler: 'WS'
+          });
+        }
 
         return dispatch({
           payload: { ...payload, response },
           type: successType
-          // handler: 'WS'
         });
       })
       .catch(error => {

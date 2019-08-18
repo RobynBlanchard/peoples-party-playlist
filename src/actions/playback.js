@@ -12,8 +12,6 @@ import {
 } from './types';
 import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
-import { spotifyOffset } from './playlist';
-// import { updateTrack } from './playlist';
 import { updateTrack } from './apiDb';
 
 export const startSession = () => {
@@ -23,12 +21,12 @@ export const startSession = () => {
   };
 };
 
-function sendSocketMessage(action) {
+const sendSocketMessage = action => {
   return {
     handler: 'WS',
     ...action
   };
-}
+};
 
 export const resumePlaybackSpotify = (playbackPosition, playlistIndex) => ({
   types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
@@ -54,35 +52,20 @@ export const resumePlayback = () => (dispatch, getState) => {
     dispatch(sendSocketMessage(startSession()));
   }
 
-  // if (sessionStarted) {
-    debugger;
   if (lockedTrack.length > 0) {
-    console.log('session tarted');
-    console.log('resume playback - session  started');
-
-    // const query = { removed: true };
-
-    // spotifyOffset(query).then(offset => {
-    dispatch(resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10)));
-    // });
+    dispatch(
+      resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10))
+    );
   } else {
-    console.log('session not started');
-
     const playlist = state.playlists.playablePlaylist;
-    console.log('resume playback spotify 1')
-
-    // TODO save session in db
-
-    // dispatch(sendSocketMessage(startSession()));
-
-    // const query = { removed: true };
-
-    // spotifyOffset(query).then(offset => {
-    dispatch(resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10)))
+    dispatch(
+      resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10))
+    )
       .then(res => {
-        if (res && res.type === 'RESUME_PLAYBACK_SUCCESS') {
-    console.log('resume playback spotify success -> update track: ', playlist[0].uri)
+        debugger
 
+        if (res && res.type === 'RESUME_PLAYBACK_SUCCESS') {
+          debugger
           return dispatch(
             updateTrack(playlist[0].uri, {
               $set: { locked: true }
@@ -92,17 +75,13 @@ export const resumePlayback = () => (dispatch, getState) => {
       })
       .then(res => {
         if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-          console.log('resume playback - session not started so starting');
-
-          // playlist[0].locked = true;
-          // TODO: NOT MAKE THIS SO SPECIFIC
-          dispatch({
-            type: 'LOCK_FIRST_TRACK'
-            // payload: playlist
-          });
+          dispatch(
+            sendSocketMessage({
+              type: 'LOCK_FIRST_TRACK'
+            })
+          );
         }
       });
-    // });
   }
 };
 
@@ -131,7 +110,6 @@ export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
 
       if (currentlyPlayingTrack && previouslyPlayingTrack) {
         if (previouslyPlayingTrack !== currentlyPlayingTrack) {
-          console.log('new playing track')
           dispatch(
             updateTrack(previouslyPlayingTrack, {
               $set: { removed: true }
@@ -140,17 +118,14 @@ export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
           dispatch(
             updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
           ).then(res => {
-            console.log('get currently playing action -> new track playing');
             if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-              // playlist[0].locked = true;
-              // TODO: NOT MAKE THIS SO SPECIFIC
-              dispatch({
-                type: 'LOCK_FIRST_TRACK'
-                // payload: playlist
-              });
+              dispatch(
+                sendSocketMessage({
+                  type: 'LOCK_FIRST_TRACK'
+                })
+              );
             }
           });
-          // TODO: .then and check success
         }
       }
     }

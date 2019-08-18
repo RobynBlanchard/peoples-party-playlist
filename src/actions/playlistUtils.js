@@ -3,6 +3,8 @@ export const spotifyOffSet = (removedPlaylist, lockedTrack) => {
 };
 
 export const updatedTrackPosition = (playlist, track, change) => {
+  if (playlist.length === 0) return 0;
+
   let newPosition = playlist.findIndex(el => {
     return el.votes < track.votes;
   });

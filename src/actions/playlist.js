@@ -32,12 +32,12 @@ import {
 import { updateTrack, addTrackToDb } from './apiDb';
 import { spotifyOffSet, updatedTrackPosition } from './playlistUtils';
 
-function sendSocketMessage(action) {
+const sendSocketMessage = action => {
   return {
     handler: 'WS',
     ...action
   };
-}
+};
 
 // const updateTrackInDbAndLocally = () => {
 
@@ -63,22 +63,29 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   );
 
   if (newPosition === position) {
+    console.log('1');
     return dispatch(
       updateTrack(uri, {
         $inc: { votes: change },
         $set: { updatedAt: updatedTrack.updatedAt }
       })
     ).then(res => {
+      console.log('2');
+
       // move to reducer?
       if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-        dispatch({
-          type: 'UPDATE_TRACK',
-          payload: {
-            position,
-            newPosition,
-            track: updatedTrack
-          }
-        });
+        console.log('3');
+
+        dispatch(
+          sendSocketMessage({
+            type: 'UPDATE_TRACK',
+            payload: {
+              position,
+              newPosition,
+              track: updatedTrack
+            }
+          })
+        );
       }
     });
   } else {
@@ -95,25 +102,28 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
             })
           );
         } else {
-          throw new Error('REORDER_TRACK_SPOTIFY_FAILURE')
+          throw new Error('REORDER_TRACK_SPOTIFY_FAILURE');
         }
       })
       .then(res => {
         if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-          dispatch({
-            type: 'UPDATE_TRACK',
-            payload: {
-              position,
-              newPosition,
-              track: updatedTrack
-            }
-          });
+          dispatch(
+            sendSocketMessage({
+              type: 'UPDATE_TRACK',
+              payload: {
+                position,
+                newPosition,
+                track: updatedTrack
+              }
+            })
+          );
         } else {
-          throw new Error('UPDATE_TRACK_IN_DB_FAILURE')
+          throw new Error('UPDATE_TRACK_IN_DB_FAILURE');
         }
-      }).catch(err => {
-        console.log('updateTrackNumOfVotes failure: ', err)
       })
+      .catch(err => {
+        console.log('updateTrackNumOfVotes failure: ', err);
+      });
   }
 };
 
@@ -134,9 +144,10 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   };
 
   const newPosition = updatedTrackPosition(playablePlaylist, track, 1);
+
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
-  dispatch({type: 'ADD_TO_SPOTIFY_PLAYLIST_FAILURE', payload: track})
+  dispatch({ type: 'ADD_TO_SPOTIFY_PLAYLIST_FAILURE', payload: track });
 
   dispatch(addToSpotifyPlaylist(uri, newPosition + offset))
     .then(res => {
