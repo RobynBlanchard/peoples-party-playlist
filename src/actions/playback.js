@@ -13,7 +13,8 @@ import {
 import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import { spotifyOffset } from './playlist';
-import { updateTrack } from './playlist';
+// import { updateTrack } from './playlist';
+import { updateTrack } from './apiDb';
 
 export const startSession = () => {
   return {
@@ -68,6 +69,7 @@ export const resumePlayback = () => (dispatch, getState) => {
     console.log('session not started');
 
     const playlist = state.playlists.playablePlaylist;
+    console.log('resume playback spotify 1')
 
     // TODO save session in db
 
@@ -79,6 +81,8 @@ export const resumePlayback = () => (dispatch, getState) => {
     dispatch(resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10)))
       .then(res => {
         if (res && res.type === 'RESUME_PLAYBACK_SUCCESS') {
+    console.log('resume playback spotify success -> update track: ', playlist[0].uri)
+
           return dispatch(
             updateTrack(playlist[0].uri, {
               $set: { locked: true }

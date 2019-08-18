@@ -73,3 +73,16 @@
 <!-- tracks updated earlier - will be higher up playlist -->
 <!-- to make tracks downvoted be prioritised in the opposite way -->
 <!-- would require position to be stored in the database instead -->
+
+<!-- fix highlight not working when vote on track twice -->
+
+
+<!-- not needed -->
+<!--   let newPosition = currentPlaylist.findIndex(el => {
+    // (el.votes === track.votes && el.updatedAt < track.updatedAt) || el.votes < track.votes
+    el.votes < track.votes;
+  }) -->
+  <!-- let newPosition = currentPlaylist.findIndex(el => {
+    // return (el.votes === updatedTrack.votes && el.updatedAt > updatedTrack.updatedAt) || el.votes < updatedTrack.votes
+    return el.votes < updatedTrack.votes
+  }) -->

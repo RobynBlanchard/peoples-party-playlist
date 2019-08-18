@@ -39,26 +39,10 @@ function sendSocketMessage(action) {
   };
 }
 
-// should remove
-// const getSortedPlaylist = (track, position, playlist) => {
-//   const clonedPlaylist = JSON.parse(JSON.stringify(playlist));
-//   clonedPlaylist.splice(position, 1, track);
-
-//   return clonedPlaylist.sort(
-//     (a, b) => b.votes - a.votes || b.updatedAt - a.updatedAt
-//   );
-// };
-
-// either sort playlist here or in reducer
-// need to sort in order to find out new position for spotify
-// so makes sense to sort here and return sorted playlist
-// to save sorting the array twice
-
-// this would also allow posting whole playlist to spotify
-
 const spotifyOffSet = (removedPlaylist, lockedTrack) => {
   return removedPlaylist.length + lockedTrack.length;
 };
+
 
 export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
@@ -75,47 +59,18 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     updatedAt: updatedAt
   };
 
-  // OPTION 1
-  // const clonedPlaylist = JSON.parse(JSON.stringify(currentPlaylist));
-  // clonedPlaylist.splice(position, 1);
-
-  // let newPosition = clonedPlaylist.findIndex(el => {
-  //   // adding so updated at will always be later ?
-  //   // TODO: - work out what to use
-  //   return (el.votes === updatedTrack.votes && el.updatedAt > updatedTrack.updatedAt) || el.votes < updatedTrack.votes
-  //   // return el.votes <= updatedTrack.votes;
-  // })
-
-  // OPTION 2
-
-  // at the moment if +
-  // older tracks will keep priority
-  // but -
-  // newer tracks will move closer to bottom
-  // can't sort by updated at toerhwise
-  // spo always oldest track at top - whether up or down
-
   let newPosition = currentPlaylist.findIndex(el => {
-    // adding so updated at will always be later ?
-    // TODO: - work out what to use
-    return (el.votes === updatedTrack.votes && el.updatedAt > updatedTrack.updatedAt) || el.votes < updatedTrack.votes
-    // return el.votes <= updatedTrack.votes;
+    return el.votes < updatedTrack.votes
   })
-
-  // if (change === -1 ) {
-  //   newPosition + 1
-  // }
 
   if (newPosition === -1) {
     newPosition = currentPlaylist.length - 1
+  } else  {
+    if (change === -1) {
+      // don't include track itself when working out position
+      newPosition -= 1
+    }
   }
-  // const sortedPlaylist = getSortedPlaylist(
-  //   updatedTrack,
-  //   position,
-  //   currentPlaylist
-  // );
-
-  // const newPosition = sortedPlaylist.map(e => e.uri).indexOf(uri);
 
   if (newPosition === position) {
     return dispatch(
@@ -173,18 +128,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   }
 };
 
-// const addToAndgetSortedPlaylist = (track, position, playlist) => {
-//   const clonedPlaylist = JSON.parse(JSON.stringify(playlist));
-//   clonedPlaylist.push(track);
-//   // clonedPlaylist.splice(position, 1, track);
-
-//   return clonedPlaylist.sort(
-//     (a, b) => b.votes - a.votes || b.updatedAt - a.updatedAt
-//   );
-// };
-
-
-
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   let currentPlaylist = getState().playlists.playablePlaylist;
 
@@ -197,43 +140,13 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     updatedAt
   };
 
-  // Option 1
-  // const sortedPlaylist = addToAndgetSortedPlaylist(
-  //   updatedTrack,
-  //   position,
-  //   currentPlaylist
-  // );
-
-  // const newPosition = sortedPlaylist.map(e => e.uri).indexOf(uri);
-
-  // Option 2
-  // use findIndex instead
-// arr.findIndex(el => {
-//   (el.votes === track.votes && el.updatedAt < track.updatedAt) || el.votes < track.votes
-//   })
-
   let newPosition = currentPlaylist.findIndex(el => {
-    // adding so updated at will always be later ?
-    // (el.votes === track.votes && el.updatedAt < track.updatedAt) || el.votes < track.votes
     el.votes < track.votes;
   })
 
   if (newPosition === -1) {
     newPosition = currentPlaylist.length
   }
-
-  // const getNewPosition = (playlist, track) => {
-  //   playlist.push(track);
-  //   const sortedPlaylist = playlist.sort(
-  //     (a, b) => b.votes - a.votes || b.updatedAt - a.updatedAt
-  //   );
-  //   debugger;
-
-  //   return sortedPlaylist.map(e => e.uri).indexOf(track.uri);
-  // };
-
-  // const clonedArray = JSON.parse(JSON.stringify(currentPlaylist));
-  // const newPosition = getNewPosition(clonedArray, track);
 
   const removedPlaylist = getState().playlists.removedPlaylist;
   const lockedTrack = getState().playlists.lockedTrack;
@@ -260,29 +173,29 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     });
 };
 
-export const removeTrack = (uri, position) => (dispatch, getState) => {
-  console.log('remove track 2');
+// export const removeTrack = (uri, position) => (dispatch, getState) => {
+//   console.log('remove track 2');
 
-  // TODO - pass position instead of db look up
-  let posFromDb;
-  findPositionFromUri(uri)
-    .then(index => {
-      // TODO: add offset
-      // spotifyOffset()
-      posFromDb = index.index;
+//   // TODO - pass position instead of db look up
+//   let posFromDb;
+//   findPositionFromUri(uri)
+//     .then(index => {
+//       // TODO: add offset
+//       // spotifyOffset()
+//       posFromDb = index.index;
 
-      return spotifyOffset({ locked: true });
-    })
-    .then(offset => {
-      return dispatch(removeTrackFromSpotifyPlaylist(uri, offset + posFromDb));
-    })
-    .then(data => {
-      // TODO: fix - add back in when store working
-      // if (data.type === REMOVE_TRACK_SUCCESS) {
+//       return spotifyOffset({ locked: true });
+//     })
+//     .then(offset => {
+//       return dispatch(removeTrackFromSpotifyPlaylist(uri, offset + posFromDb));
+//     })
+//     .then(data => {
+//       // TODO: fix - add back in when store working
+//       // if (data.type === REMOVE_TRACK_SUCCESS) {
 
-      // TODO: not doing locally
-      return dispatch(removeTrackFromDb(uri, posFromDb)); //will remove locally too on REMOVE_TRACK_FROM_DB_SUCCESS
-      // position === playble position
-      // }//
-    });
-};
+//       // TODO: not doing locally
+//       return dispatch(removeTrackFromDb(uri, posFromDb)); //will remove locally too on REMOVE_TRACK_FROM_DB_SUCCESS
+//       // position === playble position
+//       // }//
+//     });
+// };
