@@ -5,7 +5,8 @@ import { socketMiddleware } from './actions/socketsMiddleware';
 import { callAPIMiddleware } from './actions/callAPIMiddleware';
 
 const configureStore = initialState => {
-  const middlewares = [thunk, socketMiddleware, callAPIMiddleware];
+  const middlewares = [thunk, callAPIMiddleware, socketMiddleware];
+
 
   const store = applyMiddleware(...middlewares)(createStore)(
     reducer,

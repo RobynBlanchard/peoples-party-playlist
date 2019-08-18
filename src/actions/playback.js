@@ -29,7 +29,7 @@ const sendSocketMessage = action => {
 };
 
 export const resumePlaybackSpotify = (playbackPosition, playlistIndex) => ({
-  types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
+  types: ['RESUME', 'RESUME_SUCCESS', 'RESUME_FAILURE'],
   callAPI: token =>
     spotifyApi(token).put('me/player/play', {
       context_uri: `spotify:playlist:${playlistId}`,
@@ -48,24 +48,29 @@ export const resumePlayback = () => (dispatch, getState) => {
 
   const spotifyOffset = removedPlaylist.length;
 
-  if (!sessionStarted) {
-    dispatch(sendSocketMessage(startSession()));
-  }
+  // if (!sessionStarted) {
+  //   dispatch(sendSocketMessage(startSession()));
+  // }
 
   if (lockedTrack.length > 0) {
     dispatch(
       resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10))
-    );
+    ).then(res => {
+      if (res.type === 'RESUME_SUCCESS') {
+        dispatch(
+          sendSocketMessage({
+            type: 'RESUME_PLAYBACK_SUCCESS'
+          })
+        );
+      }
+    });
   } else {
     const playlist = state.playlists.playablePlaylist;
-    dispatch(
+    return dispatch(
       resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10))
     )
       .then(res => {
-        debugger
-
-        if (res && res.type === 'RESUME_PLAYBACK_SUCCESS') {
-          debugger
+        if (res.type === 'RESUME_SUCCESS') {
           return dispatch(
             updateTrack(playlist[0].uri, {
               $set: { locked: true }
@@ -75,6 +80,13 @@ export const resumePlayback = () => (dispatch, getState) => {
       })
       .then(res => {
         if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
+          // debugger
+          dispatch(
+            sendSocketMessage({
+              type: 'RESUME_PLAYBACK_SUCCESS'
+            })
+          );
+
           dispatch(
             sendSocketMessage({
               type: 'LOCK_FIRST_TRACK'
@@ -119,6 +131,7 @@ export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
             updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
           ).then(res => {
             if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
+              // debugger
               dispatch(
                 sendSocketMessage({
                   type: 'LOCK_FIRST_TRACK'

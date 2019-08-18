@@ -5,7 +5,18 @@ const socketTypes = [
 
 export const callAPIMiddleware = ({ dispatch, getState }) => {
   return next => action => {
+    // if (typeof action === 'function') {
+    //   return action(dispatch, getState);
+    // }
+
     const { types, callAPI, shouldCallAPI = () => true, payload = {} } = action;
+    // debugger;
+    // if (action && action.handler === 'WS') {
+    //   console.log('socket sends action', action)
+    //   // socket.send(action);
+    //   socket.send({ type: action.type, payload: action.payload });
+    //   return;
+    // }
 
     if (!types) {
       return next(action);
@@ -41,17 +52,21 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
 
     return callAPI(token)
       .then(response => {
+
         if (socketTypes.includes(successType)) {
+          console.log('disparching with WS')
           return dispatch({
             payload: { ...payload, response },
             type: successType,
-            handler: 'WS'
+            // handler: 'WS'
           });
         }
+
 
         return dispatch({
           payload: { ...payload, response },
           type: successType
+          // handler: 'WS'
         });
       })
       .catch(error => {

@@ -75,6 +75,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
       // move to reducer?
       if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
         console.log('3');
+        console.log('res', res);
 
         dispatch(
           sendSocketMessage({
@@ -147,7 +148,6 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
 
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
-  dispatch({ type: 'ADD_TO_SPOTIFY_PLAYLIST_FAILURE', payload: track });
 
   dispatch(addToSpotifyPlaylist(uri, newPosition + offset))
     .then(res => {

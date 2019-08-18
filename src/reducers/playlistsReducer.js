@@ -150,6 +150,8 @@ const playlistsReducer = (state = defaultState, action) => {
       };
 
     case 'LOCK_FIRST_TRACK':
+        debugger
+
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;
         removedPlaylist.push(lockedTrack[0]);

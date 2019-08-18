@@ -38,6 +38,7 @@ const playBackReducer = (state = defaultState, action) => {
       };
     case RESUME_PLAYBACK_FAILURE:
       return {
+        ...state,
         loading: false,
         playing: false,
         error: {

@@ -31,10 +31,10 @@ class Playlist extends React.Component {
   getCurrentlyPlaying() {
     const { sessionStarted, getCurrentlyPlayingTrack } = this.props;
 
-    if (sessionStarted) {
+    // if (sessionStarted) {
       console.log('session started', sessionStarted)
       getCurrentlyPlayingTrack();
-    }
+    // }
   }
 
   // componentDidUpdate(prevProps, prevState) {
