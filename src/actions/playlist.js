@@ -30,7 +30,7 @@ import {
   removeTrackFromSpotifyPlaylist
 } from './apiSpotify';
 import { updateTrack, addTrackToDb } from './apiDb';
-import { debug } from 'util';
+import { spotifyOffSet, updatedTrackPosition } from './playlistUtils';
 
 function sendSocketMessage(action) {
   return {
@@ -39,62 +39,51 @@ function sendSocketMessage(action) {
   };
 }
 
-const spotifyOffSet = (removedPlaylist, lockedTrack) => {
-  return removedPlaylist.length + lockedTrack.length;
-};
+// const updateTrackInDbAndLocally = () => {
 
+// }
 
 export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
 ) => {
-  const playlists = getState().playlists;
-  const currentPlaylist = playlists.playablePlaylist;
-  const selectedTrack = currentPlaylist[position];
+  const { playablePlaylist } = getState().playlists;
+  const selectedTrack = playablePlaylist[position];
 
-  const updatedAt = new Date().toISOString();
   const updatedTrack = {
     ...selectedTrack,
     votes: selectedTrack.votes + change,
-    updatedAt: updatedAt
+    updatedAt: new Date().toISOString()
   };
 
-  let newPosition = currentPlaylist.findIndex(el => {
-    return el.votes < updatedTrack.votes
-  })
-
-  if (newPosition === -1) {
-    newPosition = currentPlaylist.length - 1
-  } else  {
-    if (change === -1) {
-      // don't include track itself when working out position
-      newPosition -= 1
-    }
-  }
+  const newPosition = updatedTrackPosition(
+    playablePlaylist,
+    updatedTrack,
+    change
+  );
 
   if (newPosition === position) {
     return dispatch(
       updateTrack(uri, {
         $inc: { votes: change },
-        $set: { updatedAt: updatedAt }
+        $set: { updatedAt: updatedTrack.updatedAt }
       })
     ).then(res => {
+      // move to reducer?
       if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
         dispatch({
           type: 'UPDATE_TRACK',
           payload: {
             position,
             newPosition,
-            track: updatedTrack,
+            track: updatedTrack
           }
         });
       }
     });
   } else {
-    const offset = spotifyOffSet(
-      playlists.removedPlaylist,
-      playlists.lockedTrack
-    );
+    const { removedPlaylist, lockedTrack } = getState().playlists;
+    const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
     const range_start = offset + position;
     let insert_before = offset + newPosition;
@@ -108,7 +97,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
           return dispatch(
             updateTrack(uri, {
               $inc: { votes: change },
-              $set: { updatedAt: updatedAt }
+              $set: { updatedAt: updatedTrack.updatedAt }
             })
           );
         }
@@ -120,7 +109,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
             payload: {
               position,
               newPosition,
-              track: updatedTrack,
+              track: updatedTrack
             }
           });
         }
@@ -140,19 +129,12 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     updatedAt
   };
 
-  let newPosition = currentPlaylist.findIndex(el => {
-    el.votes < track.votes;
-  })
-
-  if (newPosition === -1) {
-    newPosition = currentPlaylist.length
-  }
+  let newPosition = updatedTrackPosition(currentPlaylist, updatedTrack, 1);
 
   const removedPlaylist = getState().playlists.removedPlaylist;
   const lockedTrack = getState().playlists.lockedTrack;
 
   const spotifyOffset = removedPlaylist.length + lockedTrack.length;
-
 
   dispatch(addToSpotifyPlaylist(uri, newPosition + spotifyOffset))
     .then(res => {
