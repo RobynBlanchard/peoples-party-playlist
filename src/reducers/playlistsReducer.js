@@ -42,17 +42,12 @@ const playlistsReducer = (state = defaultState, action) => {
 
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
-      console.log('fetch!');
-
       return {
         ...state,
         loading: true
       };
     case FETCH_PLAYLIST_FROM_DB_SUCCESS:
-      // TODO: get removed too
-
       const tracks = action.payload.response.data.tracks;
-      // TODO: - fix
       playablePlaylist = [];
       lockedTrack = [];
       removedPlaylist = [];
@@ -63,16 +58,9 @@ const playlistsReducer = (state = defaultState, action) => {
         } else if (track.locked && !track.removed) {
           lockedTrack.push(track);
         } else {
-          // Note - need to maintain original order. otherwise require sort after here
           playablePlaylist.push(track);
         }
       });
-
-
-      // TODO:
-      // playablePlaylist.sort(
-      //   (a, b) => b.votes - a.votes || a.updatedAt - b.updatedAt
-      // );
 
       return {
         ...state,
@@ -113,11 +101,6 @@ const playlistsReducer = (state = defaultState, action) => {
     case REMOVE_TRACK_FAILURE:
       break;
     case ADD_TO_PLAYLIST:
-      // if (playablePlaylist.length === 0) {
-      //   return {
-      //     ...state
-      //   };
-      // }
       playablePlaylist.splice(action.payload.position, 0, action.payload.track);
       return {
         ...state,
@@ -165,31 +148,7 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         playablePlaylist
       };
-    // playablePlaylist = playablePlaylist.map(el => {
-    //   if (el.uri === action.payload.response.data.track.uri) {
-    //     return action.payload.response.data.track;
-    //   }
-    //   return el;
-    // });
 
-    // if (action.payload.response.data.track.locked) {
-    //   lockedTrack[0] = action.payload.response.data.track;
-    // }
-
-    // // playablePlaylist = playablePlaylist.filter(el => !el.removed || !el.locked)
-    // playablePlaylist = playablePlaylist.filter(el => !el.locked);
-
-    // return {
-    //   ...state,
-    //   playablePlaylist: playablePlaylist,
-    //   lockedTrack: lockedTrack
-    // };
-    case 'UPDATE_PLAYLIST':
-      debugger;
-      return {
-        ...state,
-        playablePlaylist: action.payload
-      };
     case 'LOCK_FIRST_TRACK':
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;

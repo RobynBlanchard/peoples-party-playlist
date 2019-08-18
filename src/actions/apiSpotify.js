@@ -9,11 +9,10 @@ import {
   ADD_TO_SPOTIFY_PLAYLIST_FAILURE,
   REORDER_TRACK_SPOTIFY,
   REORDER_TRACK_SPOTIFY_SUCCESS,
-  REORDER_TRACK_SPOTIFY_FAILURE,
+  REORDER_TRACK_SPOTIFY_FAILURE
 } from './types';
 
-
-export const reOrderTrackSpotify = (range_start, insert_before) => ({
+const reOrderTrack = (range_start, insert_before) => ({
   types: [
     REORDER_TRACK_SPOTIFY,
     REORDER_TRACK_SPOTIFY_SUCCESS,
@@ -26,6 +25,14 @@ export const reOrderTrackSpotify = (range_start, insert_before) => ({
     }),
   payload: { range_start, insert_before: insert_before + 1 }
 });
+
+export const reOrderTrackSpotify = (position, newPosition, offset, change) => {
+  const range_start = offset + position;
+  const insert_before =
+    change === 1 ? offset + newPosition : offset + newPosition - 1;
+
+  return reOrderTrack(range_start, insert_before);
+};
 
 export const addToSpotifyPlaylist = (uri, position) => ({
   types: [

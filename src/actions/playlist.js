@@ -85,13 +85,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     const { removedPlaylist, lockedTrack } = getState().playlists;
     const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
-    const range_start = offset + position;
-    let insert_before = offset + newPosition;
-    if (change == -1) {
-      insert_before = insert_before + 1;
-    }
-
-    return dispatch(reOrderTrackSpotify(range_start, insert_before))
+    return dispatch(reOrderTrackSpotify(position, newPosition, offset, change))
       .then(res => {
         if (res.type === 'REORDER_TRACK_SPOTIFY_SUCCESS') {
           return dispatch(
@@ -100,6 +94,8 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
               $set: { updatedAt: updatedTrack.updatedAt }
             })
           );
+        } else {
+          throw new Error('REORDER_TRACK_SPOTIFY_FAILURE')
         }
       })
       .then(res => {
@@ -112,13 +108,21 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
               track: updatedTrack
             }
           });
+        } else {
+          throw new Error('UPDATE_TRACK_IN_DB_FAILURE')
         }
-      });
+      }).catch(err => {
+        console.log('updateTrackNumOfVotes failure: ', err)
+      })
   }
 };
 
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
-  let currentPlaylist = getState().playlists.playablePlaylist;
+  const {
+    playablePlaylist,
+    removedPlaylist,
+    lockedTrack
+  } = getState().playlists;
 
   const updatedAt = new Date().toISOString();
   const track = {
@@ -129,14 +133,12 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     updatedAt
   };
 
-  let newPosition = updatedTrackPosition(currentPlaylist, updatedTrack, 1);
+  const newPosition = updatedTrackPosition(playablePlaylist, track, 1);
+  const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
-  const removedPlaylist = getState().playlists.removedPlaylist;
-  const lockedTrack = getState().playlists.lockedTrack;
+  dispatch({type: 'ADD_TO_SPOTIFY_PLAYLIST_FAILURE', payload: track})
 
-  const spotifyOffset = removedPlaylist.length + lockedTrack.length;
-
-  dispatch(addToSpotifyPlaylist(uri, newPosition + spotifyOffset))
+  dispatch(addToSpotifyPlaylist(uri, newPosition + offset))
     .then(res => {
       if (res.type === ADD_TO_SPOTIFY_PLAYLIST_SUCCESS) {
         return dispatch(addTrackToDb(uri, name, artist, updatedAt));
@@ -144,6 +146,8 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     })
     .then(res => {
       if (res.type === 'ADD_TRACK_TO_DB_SUCCESS') {
+        // get track from response
+        // move to reducer
         const payload = {
           position: newPosition,
           track: track
