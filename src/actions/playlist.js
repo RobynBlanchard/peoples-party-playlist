@@ -39,10 +39,6 @@ const sendSocketMessage = action => {
   };
 };
 
-// const updateTrackInDbAndLocally = () => {
-
-// }
-
 export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
@@ -63,20 +59,13 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   );
 
   if (newPosition === position) {
-    console.log('1');
     return dispatch(
       updateTrack(uri, {
         $inc: { votes: change },
         $set: { updatedAt: updatedTrack.updatedAt }
       })
     ).then(res => {
-      console.log('2');
-
-      // move to reducer?
       if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-        console.log('3');
-        console.log('res', res);
-
         dispatch(
           sendSocketMessage({
             type: 'UPDATE_TRACK',
@@ -145,9 +134,7 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   };
 
   const newPosition = updatedTrackPosition(playablePlaylist, track, 1);
-
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
-
 
   dispatch(addToSpotifyPlaylist(uri, newPosition + offset))
     .then(res => {
@@ -157,12 +144,11 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     })
     .then(res => {
       if (res.type === 'ADD_TRACK_TO_DB_SUCCESS') {
-        // get track from response
-        // move to reducer
         const payload = {
           position: newPosition,
           track: track
         };
+
         return dispatch(
           sendSocketMessage({ type: ADD_TO_PLAYLIST, payload: payload })
         );

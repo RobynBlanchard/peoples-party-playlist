@@ -52,21 +52,9 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
 
     return callAPI(token)
       .then(response => {
-
-        if (socketTypes.includes(successType)) {
-          console.log('disparching with WS')
-          return dispatch({
-            payload: { ...payload, response },
-            type: successType,
-            // handler: 'WS'
-          });
-        }
-
-
         return dispatch({
           payload: { ...payload, response },
           type: successType
-          // handler: 'WS'
         });
       })
       .catch(error => {
