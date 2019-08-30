@@ -38,7 +38,6 @@ export const addTrack = (req, res, next) => {
       name,
       artist,
       updatedAt: updatedAt || new Date().toISOString(),
-      // updatedAt: new Date().toISOString(),
       removed: false,
       locked: false
     };
