@@ -74,18 +74,18 @@ const playlistsReducer = (state = defaultState, action) => {
     //   };
     // case REMOVE_TRACK_FAILURE:
     //   break;
-    case ADD_TO_PLAYLIST:
-      // TODO: add loading spinner to track in search
-      break;
+    // case ADD_TO_PLAYLIST:
+    //   // TODO: add loading spinner to track in search
+    //   break;
     case ADD_TO_PLAYLIST_SUCCESS:
       playablePlaylist.splice(action.payload.position, 0, action.payload.track);
       return {
         ...state,
         playablePlaylist: playablePlaylist
       };
-    case ADD_TO_PLAYLIST_FAILURE:
-      // TODO: alert user
-      break;
+    // case ADD_TO_PLAYLIST_FAILURE:
+    //   // TODO: alert user
+    //   break;
     case 'UPDATE_TRACK_SUCCESS':
       playablePlaylist.splice(action.payload.position, 1)
 
@@ -124,6 +124,25 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist,
         removedPlaylist
       };
+      case 'START_SESSION_SUCCESS':
+
+          if (lockedTrack.length > 0) {
+            lockedTrack[0].removed = true;
+            removedPlaylist.push(lockedTrack[0]);
+          }
+          lockedTrack = [playablePlaylist[0]];
+          if (lockedTrack.length > 0) {
+            lockedTrack[0].locked = true;
+          }
+
+          playablePlaylist.shift();
+
+          return {
+            ...state,
+            lockedTrack,
+            playablePlaylist,
+            removedPlaylist
+          };
     default:
       return state;
   }

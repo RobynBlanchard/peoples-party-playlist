@@ -57,15 +57,15 @@ export const startSession = () => (dispatch, getState) => {
 
   dispatch({
     types: [
-      UPDATE_CURRENT_TRACK,
-      UPDATE_CURRENT_TRACK_SUCCESS,
-      UPDATE_CURRENT_TRACK_FAILURE
+      'START_SESSION',
+      'START_SESSION_SUCCESS',
+      'START_SESSION_FAILURE'
     ],
     callAPI: () =>
       axios.patch(`/playlist/api/v1/tracks/${playablePlaylist[0].uri}`, {
         update: { $set: { locked: true } }
       })
-  });
+  })
 };
 
 export const pausePlayback = () => ({

@@ -1,7 +1,4 @@
-const socketTypes = [
-  'RESUME_PLAYBACK_SUCCESS',
-  'PAUSE_PLAYBACK_SUCCESS'
-]
+import { socketTypes } from './types';
 
 export const callAPIMiddleware = ({ dispatch, getState }) => {
   return next => action => {
@@ -57,6 +54,13 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
 
     return callAPI(token)
       .then(response => {
+        if (socketTypes.includes(successType)) {
+          return dispatch({
+            payload: { ...payload, response },
+            type: successType,
+            handler: 'WS'
+          });
+        }
 
         return dispatch({
           payload: { ...payload, response },

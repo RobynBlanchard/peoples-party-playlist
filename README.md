@@ -86,3 +86,7 @@
     // return (el.votes === updatedTrack.votes && el.updatedAt > updatedTrack.updatedAt) || el.votes < updatedTrack.votes
     return el.votes < updatedTrack.votes
   }) -->
+
+
+  <!-- cant add song already on -->
+  <!-- limit 5 per person -->
