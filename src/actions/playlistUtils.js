@@ -6,16 +6,15 @@ export const updatedTrackPosition = (playlist, track, change) => {
   if (playlist.length === 0) return 0;
 
   let newPosition = playlist.findIndex(el => {
-    return el.votes < track.votes;
+    return el.votes < track.votes || el.updatedAt > track.updatedAt;
   });
 
   if (newPosition === -1) {
-    return playlist.length - 1;
-  } else {
-    if (change === -1) {
-      // don't include track itself when working out position
-      return (newPosition -= 1);
-    }
-    return newPosition;
+    newPosition = playlist.length
   }
+  if (change === -1) {
+    newPosition -= 1
+  }
+
+  return newPosition;
 };

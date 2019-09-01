@@ -1,26 +1,12 @@
 import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import {
-  REORDER_TRACK,
-  REMOVE_FROM_PLAYLIST,
-  REMOVE_TRACK,
-  REMOVE_TRACK_SUCCESS,
-  REMOVE_TRACK_FAILURE,
+  UPDATE_TRACK,
+  UPDATE_TRACK_SUCCESS,
+  UPDATE_TRACK_FAILURE,
   ADD_TO_PLAYLIST,
-  RESUME_PLAYBACK,
-  ADD_TO_SPOTIFY_PLAYLIST,
-  ADD_TO_SPOTIFY_PLAYLIST_SUCCESS,
-  ADD_TO_SPOTIFY_PLAYLIST_FAILURE,
-  REORDER_TRACK_SPOTIFY,
-  REORDER_TRACK_SPOTIFY_SUCCESS,
-  REORDER_TRACK_SPOTIFY_FAILURE,
-  UPDATE_TRACK_IN_DB,
-  UPDATE_TRACK_IN_DB_SUCCESS,
-  UPDATE_TRACK_IN_DB_FAILURE,
-  ADD_TRACK_TO_DB,
-  ADD_TRACK_TO_DB_SUCCESS,
-  ADD_TRACK_TO_DB_FAILURE,
-  UPDATE_VOTE
+  ADD_TO_PLAYLIST_SUCCESS,
+  ADD_TO_PLAYLIST_FAILURE
 } from './types';
 
 import axios from 'axios';
@@ -29,7 +15,7 @@ import {
   addToSpotifyPlaylist,
   removeTrackFromSpotifyPlaylist
 } from './apiSpotify';
-import { updateTrack, addTrackToDb } from './apiDb';
+import { updateTrack as updateTrackDb, addTrackToDb } from './apiDb';
 import { spotifyOffSet, updatedTrackPosition } from './playlistUtils';
 
 const sendSocketMessage = action => {
@@ -58,63 +44,36 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     change
   );
 
-  if (newPosition === position) {
-    return dispatch(
-      updateTrack(uri, {
+  const callAPI = token => {
+    if (newPosition === position) {
+      return updateTrackDb(uri, {
         $inc: { votes: change },
         $set: { updatedAt: updatedTrack.updatedAt }
-      })
-    ).then(res => {
-      if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-        dispatch(
-          sendSocketMessage({
-            type: 'UPDATE_TRACK',
-            payload: {
-              position,
-              newPosition,
-              track: updatedTrack
-            }
-          })
-        );
-      }
-    });
-  } else {
-    const { removedPlaylist, lockedTrack } = getState().playlists;
-    const offset = spotifyOffSet(removedPlaylist, lockedTrack);
-
-    return dispatch(reOrderTrackSpotify(position, newPosition, offset, change))
-      .then(res => {
-        if (res.type === 'REORDER_TRACK_SPOTIFY_SUCCESS') {
-          return dispatch(
-            updateTrack(uri, {
-              $inc: { votes: change },
-              $set: { updatedAt: updatedTrack.updatedAt }
-            })
-          );
-        } else {
-          throw new Error('REORDER_TRACK_SPOTIFY_FAILURE');
-        }
-      })
-      .then(res => {
-        if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-          dispatch(
-            sendSocketMessage({
-              type: 'UPDATE_TRACK',
-              payload: {
-                position,
-                newPosition,
-                track: updatedTrack
-              }
-            })
-          );
-        } else {
-          throw new Error('UPDATE_TRACK_IN_DB_FAILURE');
-        }
-      })
-      .catch(err => {
-        console.log('updateTrackNumOfVotes failure: ', err);
       });
-  }
+    } else {
+      const { removedPlaylist, lockedTrack } = getState().playlists;
+      const offset = spotifyOffSet(removedPlaylist, lockedTrack);
+
+      return Promise.all([
+        reOrderTrackSpotify(position, newPosition, offset, change, token),
+        updateTrackDb(uri, {
+          $inc: { votes: change },
+          $set: { updatedAt: updatedTrack.updatedAt }
+        })
+      ]);
+    }
+  };
+
+  return dispatch({
+    types: [UPDATE_TRACK, UPDATE_TRACK_SUCCESS, UPDATE_TRACK_FAILURE],
+    requiresAuth: true,
+    callAPI: token => callAPI(token),
+    payload: {
+      position,
+      newPosition,
+      track: updatedTrack
+    }
+  });
 };
 
 export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
@@ -136,24 +95,22 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   const newPosition = updatedTrackPosition(playablePlaylist, track, 1);
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
-  dispatch(addToSpotifyPlaylist(uri, newPosition + offset))
-    .then(res => {
-      if (res.type === ADD_TO_SPOTIFY_PLAYLIST_SUCCESS) {
-        return dispatch(addTrackToDb(uri, name, artist, updatedAt));
-      }
-    })
-    .then(res => {
-      if (res.type === 'ADD_TRACK_TO_DB_SUCCESS') {
-        const payload = {
-          position: newPosition,
-          track: track
-        };
+  const callAPI = token => {
+    return Promise.all([
+      addToSpotifyPlaylist(uri, newPosition + offset, token),
+      addTrackToDb(uri, name, artist, updatedAt)
+    ]);
+  };
 
-        return dispatch(
-          sendSocketMessage({ type: ADD_TO_PLAYLIST, payload: payload })
-        );
-      }
-    });
+  return dispatch({
+    types: [ADD_TO_PLAYLIST, ADD_TO_PLAYLIST_SUCCESS, ADD_TO_PLAYLIST_FAILURE],
+    requiresAuth: true,
+    callAPI: token => callAPI(token),
+    payload: {
+      position: newPosition,
+      track: track
+    }
+  });
 };
 
 // export const removeTrack = (uri, position) => (dispatch, getState) => {

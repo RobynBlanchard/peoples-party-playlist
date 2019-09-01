@@ -50,7 +50,6 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
       token = getState().auth.token;
     }
 
-    console.log('1')
     dispatch({
       type: requestType,
       payload: { ...payload, response: { loading: true } }
@@ -58,7 +57,6 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
 
     return callAPI(token)
       .then(response => {
-    console.log('2')
 
         return dispatch({
           payload: { ...payload, response },
@@ -66,7 +64,6 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
         });
       })
       .catch(error => {
-    console.log('3')
 
         return dispatch({
           payload: { ...payload, error },

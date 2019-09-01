@@ -12,7 +12,8 @@ export const dispatchFetchSearchResults = query => ({
     FETCH_SEARCH_RESULTS_SUCCESS,
     FETCH_SEARCH_RESULTS_FAILURE
   ],
-  callAPI: token => spotifyApi(token).get(`search${query}`)
+  callAPI: token => spotifyApi(token).get(`search${query}`),
+  requiresAuth: true,
 });
 
 export const fetchSearchResults = searchTerm => (dispatch, getState) => {
