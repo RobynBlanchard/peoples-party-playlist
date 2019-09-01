@@ -91,3 +91,5 @@
   <!-- cant add song already on -->
   <!-- limit 5 per person -->
   <!-- every 5 mins check db aligns with spotify -->
+  <!-- production build -->
+  <!-- tests -->
