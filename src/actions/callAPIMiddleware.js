@@ -2,18 +2,8 @@ import { socketTypes } from './types';
 
 export const callAPIMiddleware = ({ dispatch, getState }) => {
   return next => action => {
-    // if (typeof action === 'function') {
-    //   return action(dispatch, getState);
-    // }
 
     const { types, callAPI, shouldCallAPI = () => true, payload = {}, requiresAuth = false } = action;
-    // debugger;
-    // if (action && action.handler === 'WS') {
-    //   console.log('socket sends action', action)
-    //   // socket.send(action);
-    //   socket.send({ type: action.type, payload: action.payload });
-    //   return;
-    // }
 
     if (!types) {
       return next(action);
@@ -35,12 +25,6 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
     }
 
     const [requestType, successType, failureType] = types;
-
-    // TODO: CHANGE - MAKE NOT JUST FOR SPOTIFY CALLS
-    // const token = getState().auth.token;
-    // if (!token) {
-    //   return;
-    // }
 
     let token;
     if (requiresAuth) {

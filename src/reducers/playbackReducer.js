@@ -54,7 +54,6 @@ const playBackReducer = (state = defaultState, action) => {
 
       // dont want to send this all the time
     case GET_CURRENTLY_PLAYING_SUCCESS:
-      console.log('HERERERERERERERE')
     if (action.payload.response.data.item) {
 
       return {

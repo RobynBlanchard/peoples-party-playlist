@@ -56,16 +56,12 @@ export const startSession = () => (dispatch, getState) => {
   const { playablePlaylist } = state.playlists;
 
   dispatch({
-    types: [
-      'START_SESSION',
-      'START_SESSION_SUCCESS',
-      'START_SESSION_FAILURE'
-    ],
+    types: [START_SESSION, START_SESSION_SUCCESS, START_SESSION_FAILURE],
     callAPI: () =>
       axios.patch(`/playlist/api/v1/tracks/${playablePlaylist[0].uri}`, {
         update: { $set: { locked: true } }
       })
-  })
+  });
 };
 
 export const pausePlayback = () => ({

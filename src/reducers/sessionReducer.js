@@ -2,6 +2,8 @@ import { START_SESSION } from '../actions/types';
 
 const defaultState = {
   sessionStarted: false
+  // sessionStarted: true // TODO: store in db
+
 };
 
 const sessionReducer = (state = defaultState, action) => {
