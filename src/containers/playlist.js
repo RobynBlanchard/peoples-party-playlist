@@ -8,7 +8,9 @@ import {
   pausePlayback,
   getCurrentlyPlayingTrack,
   removeTrack,
-  updateTrack
+  updateTrack,
+  startSession,
+  updateCurrentTrack
 } from '../actions';
 import Heading from '../components/Heading';
 import Track from '../components/Track';
@@ -20,7 +22,13 @@ import ErrorIndicator from '../components/ErrorIndicator';
 
 class Playlist extends React.Component {
   componentDidMount() {
-    const { playlist, fetchPlaylist } = this.props;
+    const {
+      playlist,
+      fetchPlaylist,
+      sessionStarted,
+      playing,
+      startSession
+    } = this.props;
 
     if (playlist.playablePlaylist.length === 0) {
       fetchPlaylist();
@@ -31,22 +39,25 @@ class Playlist extends React.Component {
   getCurrentlyPlaying() {
     const { sessionStarted, getCurrentlyPlayingTrack } = this.props;
 
-    // if (sessionStarted) {
-      console.log('session started', sessionStarted)
+    if (sessionStarted) {
       getCurrentlyPlayingTrack();
-    // }
+    }
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   Object.entries(this.props).forEach(([key, val]) => {
-  //     prevProps[key] !== val && console.log(`Prop '${key}' changed`)
-  //   }
+  componentDidUpdate(prevProps, prevState) {
+    const { sessionStarted, playing, startSession, currentTrack } = this.props;
 
-  //   );
-  // Object.entries(this.state).forEach(([key, val]) =>
-  //   prevState[key] !== val && console.log(`State '${key}' changed`)
-  // );
-  // }
+    // do this in action instead?
+    if (playing && !sessionStarted) startSession();
+
+    // check for sessionStarted / lockedTrack.length > 0
+    if (
+      prevProps.currentTrack.uri &&
+      prevProps.currentTrack.uri !== currentTrack.uri
+    ) {
+      this.props.updateCurrentTrack();
+    }
+  }
 
   renderCurrentlyPlaying(playing, track) {
     const { artist, name, uri } = track;
@@ -65,11 +76,7 @@ class Playlist extends React.Component {
   }
 
   renderTracks(playlist) {
-    const {
-      sessionStarted,
-      updateTrackNumOfVotes,
-      removeTrack
-    } = this.props;
+    const { sessionStarted, updateTrackNumOfVotes, removeTrack } = this.props;
 
     let position = -1;
     return playlist.map(el => {
@@ -107,17 +114,20 @@ class Playlist extends React.Component {
   }
 
   render() {
-    const { playlist, playing, resumePlayback, pausePlayback, playbackError } = this.props;
-    const { playablePlaylist, error, lockedTrack} = playlist;
+    const {
+      playlist,
+      playing,
+      resumePlayback,
+      pausePlayback,
+      playbackError
+    } = this.props;
+    const { playablePlaylist, error, lockedTrack } = playlist;
 
     if (error || playbackError) return <ErrorIndicator />;
 
-    if ((playablePlaylist.length === 0) && (lockedTrack.length === 0)) {
+    if (playablePlaylist.length === 0 && lockedTrack.length === 0) {
       return null;
     }
-
-    const lockedOne = lockedTrack;
-    const restOfList = playablePlaylist;
 
     return (
       <ContentContainer>
@@ -126,10 +136,10 @@ class Playlist extends React.Component {
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           handleClick={playing ? pausePlayback : resumePlayback}
         />
-        {lockedOne.length !== 0 &&
-          this.renderCurrentlyPlaying(playing, lockedOne[0])}
+        {lockedTrack.length !== 0 &&
+          this.renderCurrentlyPlaying(playing, lockedTrack[0])}
 
-        {this.renderTracks(restOfList)}
+        {this.renderTracks(playablePlaylist)}
       </ContentContainer>
     );
   }
@@ -143,7 +153,7 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     sessionStarted: state.session.sessionStarted,
     currentTrack: state.playback.currentTrack,
-    playbackError: state.playback.error,
+    playbackError: state.playback.error
   };
 };
 
@@ -158,6 +168,8 @@ export default connect(
     resumePlayback,
     pausePlayback,
     getCurrentlyPlayingTrack,
-    updateTrack
+    updateTrack,
+    startSession,
+    updateCurrentTrack
   }
 )(Playlist);

@@ -9,7 +9,7 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
     //   return action(dispatch, getState);
     // }
 
-    const { types, callAPI, shouldCallAPI = () => true, payload = {} } = action;
+    const { types, callAPI, shouldCallAPI = () => true, payload = {}, requiresAuth = false } = action;
     // debugger;
     // if (action && action.handler === 'WS') {
     //   console.log('socket sends action', action)
@@ -40,11 +40,17 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
     const [requestType, successType, failureType] = types;
 
     // TODO: CHANGE - MAKE NOT JUST FOR SPOTIFY CALLS
-    const token = getState().auth.token;
-    if (!token) {
-      return;
+    // const token = getState().auth.token;
+    // if (!token) {
+    //   return;
+    // }
+
+    let token;
+    if (requiresAuth) {
+      token = getState().auth.token;
     }
 
+    console.log('1')
     dispatch({
       type: requestType,
       payload: { ...payload, response: { loading: true } }
@@ -52,12 +58,16 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
 
     return callAPI(token)
       .then(response => {
+    console.log('2')
+
         return dispatch({
           payload: { ...payload, response },
           type: successType
         });
       })
       .catch(error => {
+    console.log('3')
+
         return dispatch({
           payload: { ...payload, error },
           type: failureType

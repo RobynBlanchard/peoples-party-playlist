@@ -6,7 +6,7 @@ const defaultState = {
 
 const sessionReducer = (state = defaultState, action) => {
   switch (action.type) {
-    case START_SESSION:
+    case 'START_SESSION_SUCCESS':
       return {
         sessionStarted: true
       };

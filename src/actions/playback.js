@@ -13,13 +13,7 @@ import {
 import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import { updateTrack } from './apiDb';
-
-export const startSession = () => {
-  return {
-    type: START_SESSION,
-    payload: true
-  };
-};
+import axios from 'axios';
 
 const sendSocketMessage = action => {
   return {
@@ -28,119 +22,86 @@ const sendSocketMessage = action => {
   };
 };
 
-export const resumePlaybackSpotify = (playbackPosition, playlistIndex) => ({
-  types: ['RESUME', 'RESUME_SUCCESS', 'RESUME_FAILURE'],
-  callAPI: token =>
-    spotifyApi(token).put('me/player/play', {
-      context_uri: `spotify:playlist:${playlistId}`,
-      offset: { position: playlistIndex },
-      position_ms: playbackPosition
-    })
-});
+const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
+  return spotifyApi(token).put('me/player/play', {
+    context_uri: `spotify:playlist:${playlistId}`,
+    offset: { position: playlistIndex },
+    position_ms: playbackPosition
+  });
+};
 
+// TODO: with socket
 export const resumePlayback = () => (dispatch, getState) => {
   const state = getState();
-  const playbackPosition = state.playback.progress_ms;
-  const sessionStarted = state.session.sessionStarted;
-
-  const removedPlaylist = getState().playlists.removedPlaylist;
-  const lockedTrack = getState().playlists.lockedTrack;
-
+  const { progress_ms } = state.playback;
+  const { removedPlaylist } = state.playlists;
   const spotifyOffset = removedPlaylist.length;
 
-  // if (!sessionStarted) {
-  //   dispatch(sendSocketMessage(startSession()));
-  // }
+  dispatch({
+    types: [
+      'RESUME_PLAYBACK',
+      'RESUME_PLAYBACK_SUCCESS',
+      'RESUME_PLAYBACK_FAILURE'
+    ],
+    callAPI: token =>
+      resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token),
+    requiresAuth: true
+  });
+};
 
-  if (lockedTrack.length > 0) {
-    dispatch(
-      resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10))
-    ).then(res => {
-      if (res.type === 'RESUME_SUCCESS') {
-        dispatch(
-          sendSocketMessage({
-            type: 'RESUME_PLAYBACK_SUCCESS'
-          })
-        );
-      }
-    });
-  } else {
-    const playlist = state.playlists.playablePlaylist;
-    return dispatch(
-      resumePlaybackSpotify(playbackPosition, parseInt(spotifyOffset, 10))
-    )
-      .then(res => {
-        if (res.type === 'RESUME_SUCCESS') {
-          return dispatch(
-            updateTrack(playlist[0].uri, {
-              $set: { locked: true }
-            })
-          );
-        }
+// TODO: with socket
+export const startSession = () => (dispatch, getState) => {
+  const state = getState();
+  const { playablePlaylist } = state.playlists;
+
+  dispatch({
+    types: ['START_SESSION', 'START_SESSION_SUCCESS', 'START_SESSION_FAILURE'],
+    callAPI: () =>
+      axios.patch(`/playlist/api/v1/tracks/${playablePlaylist[0].uri}`, {
+        update: { $set: { locked: true } }
       })
-      .then(res => {
-        if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-          // debugger
-          dispatch(
-            sendSocketMessage({
-              type: 'RESUME_PLAYBACK_SUCCESS'
-            })
-          );
-
-          dispatch(
-            sendSocketMessage({
-              type: 'LOCK_FIRST_TRACK'
-            })
-          );
-        }
-      });
-  }
+  });
 };
 
 export const pausePlayback = () => ({
   types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
-  callAPI: token => spotifyApi(token).put('me/player/pause')
+  callAPI: token => spotifyApi(token).put('me/player/pause'),
+  requiresAuth: true
 });
 
-export const getCurrentlyPlayingTrackSpotify = () => ({
+export const getCurrentlyPlayingTrack = () => ({
   types: [
-    GET_CURRENTLY_PLAYING,
-    GET_CURRENTLY_PLAYING_SUCCESS,
-    GET_CURRENTLY_PLAYING_FAILURE
+    'GET_CURRENTLY_PLAYING',
+    'GET_CURRENTLY_PLAYING_SUCCESS',
+    'GET_CURRENTLY_PLAYING_FAILURE'
   ],
-  callAPI: token => spotifyApi(token).get('me/player/currently-playing')
+  callAPI: token => spotifyApi(token).get('me/player/currently-playing'),
+  requiresAuth: true
 });
 
-export const getCurrentlyPlayingTrack = () => (dispatch, getState) => {
+const updateCurrentTrackInDb = (
+  previouslyPlayingTrack,
+  currentlyPlayingTrack
+) =>
+  Promise.all([
+    updateTrack(previouslyPlayingTrack, {
+      $set: { removed: true }
+    }),
+    updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
+  ]);
+
+export const updateCurrentTrack = () => (dispatch, getState) => {
   const state = getState();
-  const previouslyPlayingTrack =
-    state.playback.currentTrack && state.playback.currentTrack.uri;
+  const currentlyPlayingTrack = state.playback.currentTrack.uri;
+  const previouslyPlayingTrack = state.playlists.lockedTrack[0];
 
-  dispatch(getCurrentlyPlayingTrackSpotify()).then(action => {
-    if (action.type === 'GET_CURRENTLY_PLAYING_SUCCESS') {
-      const currentlyPlayingTrack = action.payload.response.data.item.uri;
-
-      if (currentlyPlayingTrack && previouslyPlayingTrack) {
-        if (previouslyPlayingTrack !== currentlyPlayingTrack) {
-          dispatch(
-            updateTrack(previouslyPlayingTrack, {
-              $set: { removed: true }
-            })
-          );
-          dispatch(
-            updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
-          ).then(res => {
-            if (res.type === 'UPDATE_TRACK_IN_DB_SUCCESS') {
-              // debugger
-              dispatch(
-                sendSocketMessage({
-                  type: 'LOCK_FIRST_TRACK'
-                })
-              );
-            }
-          });
-        }
-      }
-    }
+  dispatch({
+    types: [
+      'UPDATE_CURRENT_TRACK',
+      'UPDATE_CURRENT_TRACK_SUCCESS',
+      'UPDATE_CURRENT_TRACK_FAILURE'
+    ],
+    callAPI: () =>
+      updateCurrentTrackInDb(previouslyPlayingTrack, currentlyPlayingTrack)
   });
 };

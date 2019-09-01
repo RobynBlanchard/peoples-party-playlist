@@ -149,8 +149,8 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist
       };
 
-    case 'LOCK_FIRST_TRACK':
-        debugger
+    case 'START_SESSION_SUCCESS':
+        // debugger
 
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;
@@ -173,6 +173,29 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist,
         removedPlaylist
       };
+      case 'UPDATE_CURRENT_TRACK_SUCCESS':
+
+        if (lockedTrack.length > 0) {
+          lockedTrack[0].removed = true;
+          removedPlaylist.push(lockedTrack[0]);
+        }
+        lockedTrack = [playablePlaylist[0]];
+        if (lockedTrack.length > 0) {
+          lockedTrack[0].locked = true;
+        }
+
+        playablePlaylist.shift();
+
+        console.log('lockedTrack', lockedTrack);
+        console.log('playablePlaylist', playablePlaylist);
+        console.log('removedPlaylist', removedPlaylist);
+
+        return {
+          ...state,
+          lockedTrack,
+          playablePlaylist,
+          removedPlaylist
+        };
     default:
       return state;
   }
