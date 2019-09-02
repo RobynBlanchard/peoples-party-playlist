@@ -15,7 +15,7 @@ import {
   addToSpotifyPlaylist,
   removeTrackFromSpotifyPlaylist
 } from './apiSpotify';
-import { updateTrack as updateTrackDb, addTrackToDb } from './apiDb';
+import { updateTrack as updateTrackDb, addTrackToDb, removeTrackFromDb } from './apiDb';
 import { spotifyOffSet, updatedTrackPosition } from './playlistUtils';
 
 const sendSocketMessage = action => {
@@ -113,29 +113,20 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   });
 };
 
-// export const removeTrack = (uri, position) => (dispatch, getState) => {
-//   console.log('remove track 2');
-
-//   // TODO - pass position instead of db look up
-//   let posFromDb;
-//   findPositionFromUri(uri)
-//     .then(index => {
-//       // TODO: add offset
-//       // spotifyOffset()
-//       posFromDb = index.index;
-
-//       return spotifyOffset({ locked: true });
-//     })
-//     .then(offset => {
-//       return dispatch(removeTrackFromSpotifyPlaylist(uri, offset + posFromDb));
-//     })
-//     .then(data => {
-//       // TODO: fix - add back in when store working
-//       // if (data.type === REMOVE_TRACK_SUCCESS) {
-
-//       // TODO: not doing locally
-//       return dispatch(removeTrackFromDb(uri, posFromDb)); //will remove locally too on REMOVE_TRACK_FROM_DB_SUCCESS
-//       // position === playble position
-//       // }//
-//     });
-// };
+export const removeTrack = (uri, position) => (dispatch, getState) => {
+  const callAPI = (token) => {
+    return Promise.all([
+      removeTrackFromSpotifyPlaylist(uri, token),
+      removeTrackFromDb(uri)
+    ])
+  }
+  return dispatch({
+    types: ['DELETE_TRACK', 'DELETE_TRACK_SUCCESS', 'DELETE_TRACK_FAILURE'],
+    requiresAuth: true,
+    callAPI: token => callAPI(token),
+    payload: {
+      position: position,
+      uri: uri
+    }
+  });
+};

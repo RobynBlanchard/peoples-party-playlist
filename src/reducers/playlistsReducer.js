@@ -62,7 +62,16 @@ const playlistsReducer = (state = defaultState, action) => {
         loading: false,
         error: action.payload.error
       };
+    case 'DELETE_TRACK_SUCCESS':
+      playablePlaylist = playablePlaylist.filter(track => track.uri !== action.payload.uri)
+      // or
+      // playablePlaylist.splice(action.payload.position, 1)
+      return {
+        ...state,
+        playablePlaylist
+      }
     // case REMOVE_TRACK_FROM_DB_SUCCESS:
+
     //   playablePlaylist[action.payload.position].removed = true;
     //   removedPlaylist.push(playablePlaylist[action.payload.position]);
     //   playablePlaylist.splice(action.payload.position, 1);
