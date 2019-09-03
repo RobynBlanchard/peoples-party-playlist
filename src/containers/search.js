@@ -12,7 +12,12 @@ import requireAuth from './requireAuth';
 
 class Search extends React.Component {
   renderSearchResults() {
-    const { loading, results, fetchSearchResultsError } = this.props;
+    const {
+      loading,
+      results,
+      fetchSearchResultsError,
+      addToPlaylist
+    } = this.props;
 
     if (fetchSearchResultsError) return <ErrorIndicator />;
 
@@ -21,17 +26,14 @@ class Search extends React.Component {
     return (
       results &&
       results.map(result => {
+        const { name, artists, uri } = result;
         return (
-          <Track
-            name={result.name}
-            artist={result.artists[0].name}
-            key={result.uri}
-          >
+          <Track name={name} artist={artists[0].name} key={uri}>
             <CTAButton
-              handleClick={this.props.addToPlaylist}
-              name={result.name}
-              artist={result.artists[0].name}
-              uri={result.uri}
+              handleClick={addToPlaylist}
+              name={name}
+              artist={artists[0].name}
+              uri={uri}
               img={'add'}
             />
           </Track>
@@ -41,9 +43,11 @@ class Search extends React.Component {
   }
 
   render() {
+    const { fetchSearchResults } = this.props;
+
     return (
       <ContentContainer>
-        <SearchBar onSubmit={this.props.fetchSearchResults} />
+        <SearchBar onSubmit={fetchSearchResults} />
         {this.renderSearchResults()}
       </ContentContainer>
     );
