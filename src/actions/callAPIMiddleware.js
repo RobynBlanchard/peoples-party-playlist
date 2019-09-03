@@ -30,7 +30,6 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
     if (requiresAuth) {
       token = getState().auth.token;
     }
-
     dispatch({
       type: requestType,
       payload: { ...payload, response: { loading: true } }

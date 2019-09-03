@@ -81,7 +81,7 @@ class Playlist extends React.Component {
     let position = -1;
     return playlist.map(el => {
       position += 1;
-      const { artist, name, votes, uri, updatedAt } = el;
+      const { artist, name, votes, uri, updatedAt, error } = el;
 
       const fiveSecondsAgo = () => {
         const d = new Date();
@@ -89,6 +89,10 @@ class Playlist extends React.Component {
 
         return d.toISOString();
       };
+
+      if (error) {
+        console.log('==track error==', el.error);
+      }
 
       return (
         <Track

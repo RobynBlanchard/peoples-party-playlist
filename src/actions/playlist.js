@@ -6,7 +6,10 @@ import {
   UPDATE_TRACK_FAILURE,
   ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_SUCCESS,
-  ADD_TO_PLAYLIST_FAILURE
+  ADD_TO_PLAYLIST_FAILURE,
+  DELETE_TRACK,
+  DELETE_TRACK_SUCCESS,
+  DELETE_TRACK_FAILURE
 } from './types';
 
 import axios from 'axios';
@@ -15,7 +18,11 @@ import {
   addToSpotifyPlaylist,
   removeTrackFromSpotifyPlaylist
 } from './apiSpotify';
-import { updateTrack as updateTrackDb, addTrackToDb, removeTrackFromDb } from './apiDb';
+import {
+  updateTrack as updateTrackDb,
+  addTrackToDb,
+  removeTrackFromDb
+} from './apiDb';
 import { spotifyOffSet, updatedTrackPosition } from './playlistUtils';
 
 const sendSocketMessage = action => {
@@ -96,10 +103,9 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
   const callAPI = token => {
-    return Promise.all([
-      addToSpotifyPlaylist(uri, newPosition + offset, token),
+    return addToSpotifyPlaylist(uri, newPosition + offset, token).then(res =>
       addTrackToDb(uri, name, artist, updatedAt)
-    ]);
+    );
   };
 
   return dispatch({
@@ -114,14 +120,13 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
 };
 
 export const removeTrack = (uri, position) => (dispatch, getState) => {
-  const callAPI = (token) => {
-    return Promise.all([
-      removeTrackFromSpotifyPlaylist(uri, token),
+  const callAPI = token => {
+    return removeTrackFromSpotifyPlaylist(uri, token).then(res =>
       removeTrackFromDb(uri)
-    ])
-  }
+    );
+  };
   return dispatch({
-    types: ['DELETE_TRACK', 'DELETE_TRACK_SUCCESS', 'DELETE_TRACK_FAILURE'],
+    types: [DELETE_TRACK, DELETE_TRACK_SUCCESS, DELETE_TRACK_FAILURE],
     requiresAuth: true,
     callAPI: token => callAPI(token),
     payload: {

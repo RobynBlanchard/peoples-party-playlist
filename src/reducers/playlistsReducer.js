@@ -6,10 +6,9 @@ import {
   ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_SUCCESS,
   ADD_TO_PLAYLIST_FAILURE,
-  REMOVE_TRACK,
-  REMOVE_TRACK_SUCCESS,
-  REMOVE_TRACK_FAILURE,
-  REMOVE_TRACK_FROM_DB_SUCCESS
+  DELETE_TRACK,
+  DELETE_TRACK_SUCCESS,
+  DELETE_TRACK_FAILURE
 } from '../actions/types';
 
 // could have an error attribute on each track object?
@@ -62,30 +61,34 @@ const playlistsReducer = (state = defaultState, action) => {
         loading: false,
         error: action.payload.error
       };
-    case 'DELETE_TRACK_SUCCESS':
-      playablePlaylist = playablePlaylist.filter(track => track.uri !== action.payload.uri)
-      // or
-      // playablePlaylist.splice(action.payload.position, 1)
+    case DELETE_TRACK:
+      playablePlaylist[action.payload.position].loading = true;
+
       return {
         ...state,
         playablePlaylist
-      }
-    // case REMOVE_TRACK_FROM_DB_SUCCESS:
+      };
 
-    //   playablePlaylist[action.payload.position].removed = true;
-    //   removedPlaylist.push(playablePlaylist[action.payload.position]);
-    //   playablePlaylist.splice(action.payload.position, 1);
+    case DELETE_TRACK_SUCCESS:
+      playablePlaylist[action.payload.position].loading = false;
+      playablePlaylist[action.payload.position].error = null;
+      playablePlaylist.splice(action.payload.position, 1)
+      // playablePlaylist = playablePlaylist.filter(
+      //   track => track.uri !== action.payload.uri
+      // );
+      return {
+        ...state,
+        playablePlaylist
+      };
+    case DELETE_TRACK_FAILURE:
+      playablePlaylist[action.payload.position].loading = false;
+      playablePlaylist[action.payload.position].error =
+        'could not delete track at this time';
 
-    //   return {
-    //     ...state,
-    //     playablePlaylist,
-    //     removedPlaylist
-    //   };
-    // case REMOVE_TRACK_FAILURE:
-    //   break;
-    // case ADD_TO_PLAYLIST:
-    //   // TODO: add loading spinner to track in search
-    //   break;
+      return {
+        ...state,
+        playablePlaylist
+      };
     case ADD_TO_PLAYLIST_SUCCESS:
       playablePlaylist.splice(action.payload.position, 0, action.payload.track);
       return {
@@ -96,7 +99,7 @@ const playlistsReducer = (state = defaultState, action) => {
     //   // TODO: alert user
     //   break;
     case 'UPDATE_TRACK_SUCCESS':
-      playablePlaylist.splice(action.payload.position, 1)
+      playablePlaylist.splice(action.payload.position, 1);
 
       playablePlaylist.splice(
         action.payload.newPosition,
@@ -115,7 +118,6 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist
       };
     case 'UPDATE_CURRENT_TRACK_SUCCESS':
-
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;
         removedPlaylist.push(lockedTrack[0]);
@@ -133,25 +135,24 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist,
         removedPlaylist
       };
-      case 'START_SESSION_SUCCESS':
+    case 'START_SESSION_SUCCESS':
+      if (lockedTrack.length > 0) {
+        lockedTrack[0].removed = true;
+        removedPlaylist.push(lockedTrack[0]);
+      }
+      lockedTrack = [playablePlaylist[0]];
+      if (lockedTrack.length > 0) {
+        lockedTrack[0].locked = true;
+      }
 
-          if (lockedTrack.length > 0) {
-            lockedTrack[0].removed = true;
-            removedPlaylist.push(lockedTrack[0]);
-          }
-          lockedTrack = [playablePlaylist[0]];
-          if (lockedTrack.length > 0) {
-            lockedTrack[0].locked = true;
-          }
+      playablePlaylist.shift();
 
-          playablePlaylist.shift();
-
-          return {
-            ...state,
-            lockedTrack,
-            playablePlaylist,
-            removedPlaylist
-          };
+      return {
+        ...state,
+        lockedTrack,
+        playablePlaylist,
+        removedPlaylist
+      };
     default:
       return state;
   }

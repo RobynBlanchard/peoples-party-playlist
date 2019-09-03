@@ -31,14 +31,3 @@ export const removeTrackFromSpotifyPlaylist = (uri, token) =>
   spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
     data: { tracks: [{ uri }] }
   });
-
-// export const removeTrackFromSpotifyPlaylist = (uri, position) => ({
-//   types: [REMOVE_TRACK, REMOVE_TRACK_SUCCESS, REMOVE_TRACK_FAILURE],
-//   callAPI: token =>
-//     spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
-//       data: {
-//         tracks: [{ uri }]
-//       }
-//     }),
-//   payload: { position }
-// });
