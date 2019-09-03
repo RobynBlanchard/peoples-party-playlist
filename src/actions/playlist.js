@@ -61,13 +61,18 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
       const { removedPlaylist, lockedTrack } = getState().playlists;
       const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
-      return Promise.all([
-        reOrderTrackSpotify(position, newPosition, offset, change, token),
+      return reOrderTrackSpotify(
+        position,
+        newPosition,
+        offset,
+        change,
+        token
+      ).then(res =>
         updateTrackDb(uri, {
           $inc: { votes: change },
           $set: { updatedAt: updatedTrack.updatedAt }
         })
-      ]);
+      );
     }
   };
 
