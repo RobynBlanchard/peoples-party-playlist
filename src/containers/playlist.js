@@ -22,13 +22,7 @@ import ErrorIndicator from '../components/ErrorIndicator';
 
 class Playlist extends React.Component {
   componentDidMount() {
-    const {
-      playlist,
-      fetchPlaylist,
-      sessionStarted,
-      playing,
-      startSession
-    } = this.props;
+    const { playlist, fetchPlaylist } = this.props;
 
     if (playlist.playablePlaylist.length === 0) {
       fetchPlaylist();
@@ -78,9 +72,7 @@ class Playlist extends React.Component {
   renderTracks(playlist) {
     const { sessionStarted, updateTrackNumOfVotes, removeTrack } = this.props;
 
-    let position = -1;
-    return playlist.map(el => {
-      position += 1;
+    return playlist.map((el, index) => {
       const { artist, name, votes, uri, updatedAt, error } = el;
 
       const fiveSecondsAgo = () => {
@@ -100,10 +92,10 @@ class Playlist extends React.Component {
           artist={artist}
           isLocked={false}
           shouldFocus={updatedAt > fiveSecondsAgo()}
-          key={`${uri}-${position}`}
+          key={`${uri}-${index}`}
         >
           <VoteDetails
-            position={position}
+            position={index}
             uri={uri}
             handleUpVote={updateTrackNumOfVotes}
             handleDownVote={updateTrackNumOfVotes}
