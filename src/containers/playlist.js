@@ -90,8 +90,8 @@ class Playlist extends React.Component {
         return d.toISOString();
       };
 
-      if (error) {
-        console.log('==track error==', el.error);
+      if (error && error.displayMessage) {
+        console.log('==track error==', error.displayMessage);
       }
 
       return (

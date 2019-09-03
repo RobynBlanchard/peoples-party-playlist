@@ -8,7 +8,10 @@ import {
   ADD_TO_PLAYLIST_FAILURE,
   DELETE_TRACK,
   DELETE_TRACK_SUCCESS,
-  DELETE_TRACK_FAILURE
+  DELETE_TRACK_FAILURE,
+  UPDATE_TRACK,
+  UPDATE_TRACK_SUCCESS,
+  UPDATE_TRACK_FAILURE
 } from '../actions/types';
 
 // could have an error attribute on each track object?
@@ -72,7 +75,7 @@ const playlistsReducer = (state = defaultState, action) => {
     case DELETE_TRACK_SUCCESS:
       playablePlaylist[action.payload.position].loading = false;
       playablePlaylist[action.payload.position].error = null;
-      playablePlaylist.splice(action.payload.position, 1)
+      playablePlaylist.splice(action.payload.position, 1);
       // playablePlaylist = playablePlaylist.filter(
       //   track => track.uri !== action.payload.uri
       // );
@@ -82,9 +85,11 @@ const playlistsReducer = (state = defaultState, action) => {
       };
     case DELETE_TRACK_FAILURE:
       playablePlaylist[action.payload.position].loading = false;
-      playablePlaylist[action.payload.position].error =
-        'could not delete track at this time';
-
+      playablePlaylist[action.payload.position].error = {
+        status: action.payload.error.response.data.error.status,
+        message: action.payload.error.response.data.error.message,
+        displayMessage: 'could not update track at this time'
+      }
       return {
         ...state,
         playablePlaylist
@@ -98,7 +103,15 @@ const playlistsReducer = (state = defaultState, action) => {
     // case ADD_TO_PLAYLIST_FAILURE:
     //   // TODO: alert user
     //   break;
-    case 'UPDATE_TRACK_SUCCESS':
+    case UPDATE_TRACK:
+      playablePlaylist[action.payload.position].loading = true;
+      return {
+        ...state,
+        playablePlaylist: playablePlaylist,
+      };
+
+    case UPDATE_TRACK_SUCCESS:
+      playablePlaylist[action.payload.position].loading = false;
       playablePlaylist.splice(action.payload.position, 1);
 
       playablePlaylist.splice(
@@ -116,6 +129,17 @@ const playlistsReducer = (state = defaultState, action) => {
       return {
         ...state,
         playablePlaylist
+      };
+    case UPDATE_TRACK_FAILURE:
+      playablePlaylist[action.payload.position].loading = false;
+      playablePlaylist[action.payload.position].error = {
+        status: action.payload.error.response.data.error.status,
+        message: action.payload.error.response.data.error.message,
+        displayMessage: 'could not update track at this time'
+      }
+
+      return {
+        ...state
       };
     case 'UPDATE_CURRENT_TRACK_SUCCESS':
       if (lockedTrack.length > 0) {
