@@ -31,18 +31,18 @@ class Playlist extends React.Component {
   }
 
   getCurrentlyPlaying() {
-    const { sessionStarted, getCurrentlyPlayingTrack } = this.props;
+    const { session, getCurrentlyPlayingTrack } = this.props;
 
-    if (sessionStarted) {
+    if (session.sessionStarted) {
       getCurrentlyPlayingTrack();
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { sessionStarted, playing, startSession, currentTrack } = this.props;
+    const { session, playing, startSession, currentTrack } = this.props;
 
     // do this in action instead?
-    if (playing && !sessionStarted) startSession();
+    if (playing && !session.sessionStarted) startSession();
 
     // check for sessionStarted / lockedTrack.length > 0
     if (
@@ -70,7 +70,7 @@ class Playlist extends React.Component {
   }
 
   renderTracks(playlist) {
-    const { sessionStarted, updateTrackNumOfVotes, removeTrack } = this.props;
+    const { session, updateTrackNumOfVotes, removeTrack } = this.props;
 
     return playlist.map((el, index) => {
       const { artist, name, votes, uri, updatedAt, error } = el;
@@ -102,7 +102,7 @@ class Playlist extends React.Component {
             removeTrack={removeTrack}
             votes={votes}
             playlist={playlist}
-            sessionStarted={sessionStarted}
+            sessionStarted={session.sessionStarted}
           />
         </Track>
       );
@@ -115,11 +115,15 @@ class Playlist extends React.Component {
       playing,
       resumePlayback,
       pausePlayback,
-      playbackError
+      playbackError,
+      session
     } = this.props;
-    const { playablePlaylist, error, lockedTrack } = playlist;
+    const { playablePlaylist, lockedTrack, error: playlistError } = playlist;
+    const { error: sessionError } = session.sessionStarted;
 
-    if (error || playbackError) return <ErrorIndicator />;
+    let error = playlistError || playbackError || sessionError;
+
+    if (error) return <ErrorIndicator message={error.displayMessage} />;
 
     if (playablePlaylist.length === 0 && lockedTrack.length === 0) {
       return null;
@@ -147,7 +151,7 @@ const mapStateToProps = state => {
   return {
     playlist: state.playlists,
     playing: state.playback.playing,
-    sessionStarted: state.session.sessionStarted,
+    session: state.session,
     currentTrack: state.playback.currentTrack,
     playbackError: state.playback.error
   };

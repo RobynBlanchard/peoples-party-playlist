@@ -2,7 +2,6 @@ import {
   FETCH_PLAYLIST_FROM_DB,
   FETCH_PLAYLIST_FROM_DB_SUCCESS,
   FETCH_PLAYLIST_FROM_DB_FAILURE,
-  REMOVE_FROM_PLAYLIST,
   ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_SUCCESS,
   ADD_TO_PLAYLIST_FAILURE,
@@ -13,8 +12,6 @@ import {
   UPDATE_TRACK_SUCCESS,
   UPDATE_TRACK_FAILURE
 } from '../actions/types';
-
-// could have an error attribute on each track object?
 
 const defaultState = {
   removedPlaylist: [],

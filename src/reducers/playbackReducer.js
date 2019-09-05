@@ -44,6 +44,7 @@ const playBackReducer = (state = defaultState, action) => {
         error: {
           status: action.payload.error.response.data.error.status,
           message: action.payload.error.response.data.error.message,
+          displayMessage: "Couldn't find active device, make sure you have spotify open"
         }
       }
     case PAUSE_PLAYBACK_SUCCESS:

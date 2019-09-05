@@ -11,13 +11,13 @@ const Wrapper = styled.div`
   }
 `;
 
-const ErrorIndicator = () => {
+const ErrorIndicator = ({message}) => {
   return (
     <Wrapper>
       <p>
-        Oops, something went wrong.
+        Oops, something went wrong...
         <br />
-        Try logging in again.
+        {message ? message : 'Try logging in again.'}
       </p>
     </Wrapper>
   );

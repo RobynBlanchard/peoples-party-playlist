@@ -50,20 +50,6 @@ export const resumePlayback = () => (dispatch, getState) => {
   });
 };
 
-// TODO: with socket
-export const startSession = () => (dispatch, getState) => {
-  const state = getState();
-  const { playablePlaylist } = state.playlists;
-
-  dispatch({
-    types: [START_SESSION, START_SESSION_SUCCESS, START_SESSION_FAILURE],
-    callAPI: () =>
-      axios.patch(`/playlist/api/v1/tracks/${playablePlaylist[0].uri}`, {
-        update: { $set: { locked: true } }
-      })
-  });
-};
-
 export const pausePlayback = () => ({
   types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
   callAPI: token => spotifyApi(token).put('me/player/pause'),

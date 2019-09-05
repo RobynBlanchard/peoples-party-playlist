@@ -2,7 +2,8 @@
   FETCH_SEARCH_RESULTS,
   FETCH_SEARCH_RESULTS_SUCCESS,
   FETCH_SEARCH_RESULTS_FAILURE,
-  CLEAR_RESULTS
+  CLEAR_RESULTS,
+  ADD_TO_PLAYLIST_FAILURE
 } from '../actions/types';
 
 const defaultState = {
@@ -36,6 +37,10 @@ const searchReducer = (state = defaultState, action) => {
         loading: false,
         error: null
       };
+    // case ADD_TO_PLAYLIST:
+    // case ADD_TO_PLAYLIST_FAILURE:
+    // case ADD_TO_PLAYLIST_SUCCESS:
+
     default:
       return state;
   }
