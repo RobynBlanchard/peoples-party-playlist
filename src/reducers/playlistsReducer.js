@@ -12,6 +12,7 @@ import {
   UPDATE_TRACK_SUCCESS,
   UPDATE_TRACK_FAILURE
 } from '../actions/types';
+import { cloneDeep } from 'lodash';
 
 const defaultState = {
   removedPlaylist: [],
@@ -23,9 +24,9 @@ const defaultState = {
 
 // rename to playlist
 const playlistsReducer = (state = defaultState, action) => {
-  let playablePlaylist = state.playablePlaylist;
-  let lockedTrack = state.lockedTrack;
-  let removedPlaylist = state.removedPlaylist;
+  let playablePlaylist = cloneDeep(state.playablePlaylist);
+  let lockedTrack = cloneDeep(state.lockedTrack);
+  let removedPlaylist = cloneDeep(state.removedPlaylist);
 
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
@@ -97,6 +98,7 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         playablePlaylist: playablePlaylist
       };
+
     // case ADD_TO_PLAYLIST_FAILURE:
     //   // TODO: alert user
     //   break;
@@ -112,7 +114,6 @@ const playlistsReducer = (state = defaultState, action) => {
 
       playablePlaylist[action.payload.position].loading = false;
       playablePlaylist.splice(action.payload.position, 1);
-
       playablePlaylist.splice(
         action.payload.newPosition,
         0,
@@ -145,14 +146,15 @@ const playlistsReducer = (state = defaultState, action) => {
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;
         removedPlaylist.push(lockedTrack[0]);
+        lockedTrack.pop()
       }
-      lockedTrack = [playablePlaylist[0]];
+      if (playablePlaylist.length > 0) {
+        lockedTrack = [playablePlaylist[0]];
+        playablePlaylist.shift();
+      }
       if (lockedTrack.length > 0) {
         lockedTrack[0].locked = true;
       }
-
-      playablePlaylist.shift();
-
       return {
         ...state,
         lockedTrack,
@@ -160,7 +162,6 @@ const playlistsReducer = (state = defaultState, action) => {
         removedPlaylist
       };
     case 'START_SESSION_SUCCESS':
-
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;
         removedPlaylist.push(lockedTrack[0]);
@@ -171,7 +172,6 @@ const playlistsReducer = (state = defaultState, action) => {
       }
 
       playablePlaylist.shift();
-
       return {
         ...state,
         lockedTrack,

@@ -66,6 +66,10 @@ const playBackReducer = (state = defaultState, action) => {
             name: action.payload.response.data.item.name,
         }
     }
+    } else {
+      return {
+        ...state
+      }
     }
     default:
       return state;

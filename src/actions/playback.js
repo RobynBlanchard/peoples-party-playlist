@@ -5,9 +5,6 @@ import {
   GET_CURRENTLY_PLAYING,
   GET_CURRENTLY_PLAYING_SUCCESS,
   GET_CURRENTLY_PLAYING_FAILURE,
-  START_SESSION,
-  START_SESSION_SUCCESS,
-  START_SESSION_FAILURE,
   RESUME_PLAYBACK,
   RESUME_PLAYBACK_SUCCESS,
   RESUME_PLAYBACK_FAILURE,
@@ -19,13 +16,6 @@ import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import { updateTrack } from './apiDb';
 import { startSession } from './index';
-
-const sendSocketMessage = action => {
-  return {
-    handler: 'WS',
-    ...action
-  };
-};
 
 const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
   return spotifyApi(token).put('me/player/play', {
@@ -82,7 +72,7 @@ const updateCurrentTrackInDb = (
 export const updateCurrentTrack = () => (dispatch, getState) => {
   const state = getState();
   const currentlyPlayingTrack = state.playback.currentTrack.uri;
-  const previouslyPlayingTrack = state.playlists.lockedTrack[0];
+  const previouslyPlayingTrack = state.playlists.lockedTrack[0].uri;
 
   dispatch({
     types: [

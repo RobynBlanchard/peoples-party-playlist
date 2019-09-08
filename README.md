@@ -93,3 +93,4 @@
   <!-- every 5 mins check db aligns with spotify -->
   <!-- production build -->
   <!-- tests -->
+  <!-- end session and pause playback when end of playlist -->

@@ -25,13 +25,6 @@ import {
 } from './apiDb';
 import { spotifyOffSet, updatedTrackPosition } from './playlistUtils';
 
-const sendSocketMessage = action => {
-  return {
-    handler: 'WS',
-    ...action
-  };
-};
-
 export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState

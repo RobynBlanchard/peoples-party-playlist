@@ -38,16 +38,18 @@ class Playlist extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const { currentTrack, updateCurrentTrack } = this.props;
+  componentWillReceiveProps(nextProps) {
+    const { currentTrack, updateCurrentTrack, session } = this.props;
 
     if (
-      prevProps.currentTrack.uri &&
-      prevProps.currentTrack.uri !== currentTrack.uri
+      session.sessionStarted &&
+      currentTrack.uri &&
+      nextProps.currentTrack.uri !== currentTrack.uri
     ) {
       updateCurrentTrack();
     }
   }
+
 
   renderCurrentlyPlaying(playing, track) {
     const { artist, name, uri } = track;
