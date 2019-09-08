@@ -20,15 +20,16 @@ const sessionReducer = (state = defaultState, action) => {
     case START_SESSION_SUCCESS:
       return {
         loading: false,
-        sessionStarted: true
+        sessionStarted: true,
+        error: null,
       };
     case START_SESSION_FAILURE:
       return {
         ...state,
         loading: false,
         error: {
-          status: action.payload.error.response.data.error.status,
-          message: action.payload.error.response.data.error.message,
+          status: action.payload.error.response.status,
+          message: action.payload.error.message,
           displayMessage: 'could not start session at this time'
         }
       };

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   START_SESSION,
   START_SESSION_SUCCESS,

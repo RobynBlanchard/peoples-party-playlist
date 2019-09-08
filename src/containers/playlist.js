@@ -39,17 +39,13 @@ class Playlist extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { session, playing, startSession, currentTrack } = this.props;
+    const { currentTrack, updateCurrentTrack } = this.props;
 
-    // do this in action instead?
-    if (playing && !session.sessionStarted) startSession();
-
-    // check for sessionStarted / lockedTrack.length > 0
     if (
       prevProps.currentTrack.uri &&
       prevProps.currentTrack.uri !== currentTrack.uri
     ) {
-      this.props.updateCurrentTrack();
+      updateCurrentTrack();
     }
   }
 

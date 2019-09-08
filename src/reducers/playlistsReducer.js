@@ -101,6 +101,7 @@ const playlistsReducer = (state = defaultState, action) => {
     //   // TODO: alert user
     //   break;
     case UPDATE_TRACK:
+
       playablePlaylist[action.payload.position].loading = true;
       return {
         ...state,
@@ -108,6 +109,7 @@ const playlistsReducer = (state = defaultState, action) => {
       };
 
     case UPDATE_TRACK_SUCCESS:
+
       playablePlaylist[action.payload.position].loading = false;
       playablePlaylist.splice(action.payload.position, 1);
 
@@ -128,6 +130,7 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist
       };
     case UPDATE_TRACK_FAILURE:
+
       playablePlaylist[action.payload.position].loading = false;
       playablePlaylist[action.payload.position].error = {
         status: action.payload.error.response.data.error.status,
@@ -157,6 +160,7 @@ const playlistsReducer = (state = defaultState, action) => {
         removedPlaylist
       };
     case 'START_SESSION_SUCCESS':
+
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;
         removedPlaylist.push(lockedTrack[0]);

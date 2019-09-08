@@ -18,7 +18,7 @@ import {
 import spotifyApi from '../api';
 import { playlistId } from '../utils/constants';
 import { updateTrack } from './apiDb';
-import axios from 'axios';
+import { startSession } from './index';
 
 const sendSocketMessage = action => {
   return {
@@ -35,19 +35,21 @@ const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
   });
 };
 
-// TODO: with socket
 export const resumePlayback = () => (dispatch, getState) => {
   const state = getState();
   const { progress_ms } = state.playback;
   const { removedPlaylist } = state.playlists;
   const spotifyOffset = removedPlaylist.length;
+  const { sessionStarted } = state.session;
+  const callAPI = token => resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token).then(res => {
+    if (!sessionStarted) dispatch(startSession())
+  })
 
   dispatch({
     types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
-    callAPI: token =>
-      resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token),
+    callAPI: callAPI,
     requiresAuth: true
-  });
+  })
 };
 
 export const pausePlayback = () => ({
