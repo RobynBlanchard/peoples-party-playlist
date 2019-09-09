@@ -33,7 +33,11 @@ const searchReducer = (state = defaultState, action) => {
       return {
         ...state,
         loading: false,
-        error: action
+        error: {
+          status: action.payload.error.response.data.error.status,
+          message: action.payload.error.response.data.error.message,
+          displayMessage: 'Fetch search results failed. Try logging in again.'
+        }
       };
     case CLEAR_RESULTS:
       return {

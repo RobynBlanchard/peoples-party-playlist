@@ -19,7 +19,10 @@ class Search extends React.Component {
       addToPlaylist
     } = this.props;
 
-    if (fetchSearchResultsError) return <ErrorIndicator />;
+    if (fetchSearchResultsError)
+      return (
+        <ErrorIndicator message={fetchSearchResultsError.displayMessage} />
+      );
 
     if (loading && results.length === 0) return <LoadingIndicator />;
 
@@ -34,15 +37,17 @@ class Search extends React.Component {
 
         return (
           <Track name={name} artist={artists[0].name} key={uri}>
-            {!added && <CTAButton
-              handleClick={() =>
-                addToPlaylist(uri, name, artists[0].name, index)
-              }
-              name={name}
-              artist={artists[0].name}
-              uri={uri}
-              img={'add'}
-            />}
+            {!added && (
+              <CTAButton
+                handleClick={() =>
+                  addToPlaylist(uri, name, artists[0].name, index)
+                }
+                name={name}
+                artist={artists[0].name}
+                uri={uri}
+                img={'add'}
+              />
+            )}
           </Track>
         );
       })
