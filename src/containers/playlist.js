@@ -73,9 +73,9 @@ class Playlist extends React.Component {
     return playlist.map((el, index) => {
       const { artist, name, votes, uri, updatedAt, error } = el;
 
-      const fiveSecondsAgo = () => {
+      const oneSecondAgo = () => {
         const d = new Date();
-        d.setSeconds(d.getSeconds() - 2);
+        d.setSeconds(d.getSeconds() - 1);
 
         return d.toISOString();
       };
@@ -89,7 +89,7 @@ class Playlist extends React.Component {
           name={name}
           artist={artist}
           isLocked={false}
-          shouldFocus={updatedAt > fiveSecondsAgo()}
+          shouldFocus={updatedAt > oneSecondAgo()}
           key={`${uri}-${index}`}
         >
           <VoteDetails
