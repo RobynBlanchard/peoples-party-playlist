@@ -25,17 +25,24 @@ class Search extends React.Component {
 
     return (
       results &&
-      results.map(result => {
-        const { name, artists, uri } = result;
+      results.map((result, index) => {
+        const { name, artists, uri, error, loading, added } = result;
+        if (loading) console.log(`adding track ${artists[0].name} - ${name}`);
+        if (error) console.log(error.displayMessage);
+        if (added) console.log(`added ${artists[0].name} - ${name}`);
+        // TODO: if added - remove CTA Button
+
         return (
           <Track name={name} artist={artists[0].name} key={uri}>
-            <CTAButton
-              handleClick={addToPlaylist}
+            {!added && <CTAButton
+              handleClick={() =>
+                addToPlaylist(uri, name, artists[0].name, index)
+              }
               name={name}
               artist={artists[0].name}
               uri={uri}
               img={'add'}
-            />
+            />}
           </Track>
         );
       })

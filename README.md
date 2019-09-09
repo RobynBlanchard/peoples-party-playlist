@@ -94,3 +94,4 @@
   <!-- production build -->
   <!-- tests -->
   <!-- end session and pause playback when end of playlist -->
+  <!-- improve search -->

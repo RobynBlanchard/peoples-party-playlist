@@ -1,9 +1,12 @@
- import {
+import { cloneDeep } from 'lodash';
+import {
   FETCH_SEARCH_RESULTS,
   FETCH_SEARCH_RESULTS_SUCCESS,
   FETCH_SEARCH_RESULTS_FAILURE,
   CLEAR_RESULTS,
-  ADD_TO_PLAYLIST_FAILURE
+  ADD_TO_PLAYLIST,
+  ADD_TO_PLAYLIST_FAILURE,
+  ADD_TO_PLAYLIST_SUCCESS
 } from '../actions/types';
 
 const defaultState = {
@@ -13,6 +16,7 @@ const defaultState = {
 };
 
 const searchReducer = (state = defaultState, action) => {
+  let results = cloneDeep(state.results);
   switch (action.type) {
     case FETCH_SEARCH_RESULTS:
       return {
@@ -37,10 +41,39 @@ const searchReducer = (state = defaultState, action) => {
         loading: false,
         error: null
       };
-    // case ADD_TO_PLAYLIST:
-    // case ADD_TO_PLAYLIST_FAILURE:
-    // case ADD_TO_PLAYLIST_SUCCESS:
+    case ADD_TO_PLAYLIST:
+      results[action.payload.positionInSearch].loading = true;
+      return {
+        ...state,
+        results
+      };
+    case ADD_TO_PLAYLIST_FAILURE:
+      const track = action.payload.track;
 
+      if (results.length > 0) {
+        results[action.payload.positionInSearch].loading = false;
+        results[action.payload.positionInSearch].error = {
+          status: action.payload.error.response.data.error.status,
+          message: action.payload.error.response.data.error.message,
+          displayMessage: `Could not add track - ${track.artist} - ${track.name} to playlist at this time`
+        };
+      }
+
+      return {
+        ...state,
+        results
+      };
+    case ADD_TO_PLAYLIST_SUCCESS:
+      if (results.length > 0) {
+        results[action.payload.positionInSearch].loading = false;
+        results[action.payload.positionInSearch].error = null;
+        results[action.payload.positionInSearch].added = true;
+      }
+
+      return {
+        ...state,
+        results
+      };
     default:
       return state;
   }

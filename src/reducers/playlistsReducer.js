@@ -54,7 +54,8 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         loading: false,
         playablePlaylist,
-        lockedTrack
+        lockedTrack,
+        removedPlaylist
       };
     case FETCH_PLAYLIST_FROM_DB_FAILURE:
       return {
@@ -87,7 +88,7 @@ const playlistsReducer = (state = defaultState, action) => {
         status: action.payload.error.response.data.error.status,
         message: action.payload.error.response.data.error.message,
         displayMessage: 'could not update track at this time'
-      }
+      };
       return {
         ...state,
         playablePlaylist
@@ -103,15 +104,13 @@ const playlistsReducer = (state = defaultState, action) => {
     //   // TODO: alert user
     //   break;
     case UPDATE_TRACK:
-
       playablePlaylist[action.payload.position].loading = true;
       return {
         ...state,
-        playablePlaylist: playablePlaylist,
+        playablePlaylist: playablePlaylist
       };
 
     case UPDATE_TRACK_SUCCESS:
-
       playablePlaylist[action.payload.position].loading = false;
       playablePlaylist.splice(action.payload.position, 1);
       playablePlaylist.splice(
@@ -131,13 +130,12 @@ const playlistsReducer = (state = defaultState, action) => {
         playablePlaylist
       };
     case UPDATE_TRACK_FAILURE:
-
       playablePlaylist[action.payload.position].loading = false;
       playablePlaylist[action.payload.position].error = {
         status: action.payload.error.response.data.error.status,
         message: action.payload.error.response.data.error.message,
         displayMessage: 'could not update track at this time'
-      }
+      };
 
       return {
         ...state
@@ -146,7 +144,7 @@ const playlistsReducer = (state = defaultState, action) => {
       if (lockedTrack.length > 0) {
         lockedTrack[0].removed = true;
         removedPlaylist.push(lockedTrack[0]);
-        lockedTrack.pop()
+        lockedTrack.pop();
       }
       if (playablePlaylist.length > 0) {
         lockedTrack = [playablePlaylist[0]];

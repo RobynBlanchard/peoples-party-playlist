@@ -81,7 +81,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   });
 };
 
-export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
+export const addToPlaylist = (uri, name, artist, positionInSearch) => (dispatch, getState) => {
   const {
     playablePlaylist,
     removedPlaylist,
@@ -112,6 +112,7 @@ export const addToPlaylist = (uri, name, artist) => (dispatch, getState) => {
     callAPI: token => callAPI(token),
     payload: {
       position: newPosition,
+      positionInSearch: positionInSearch,
       track: track
     }
   });
