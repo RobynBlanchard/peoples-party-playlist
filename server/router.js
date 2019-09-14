@@ -20,7 +20,7 @@ import {
   removeTrack
 } from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
-import { logInSucess } from '../src/actions';
+import { logInSucess, assignUser } from '../src/actions';
 
 export default (app, store) => {
   app.get('/login', logIn);
@@ -40,6 +40,11 @@ export default (app, store) => {
     const token = req.cookies.spotifyAccessToken;
     if (token) {
       store.dispatch(logInSucess(token));
+    }
+
+    const userId = req.cookies.userId;
+    if (userId) {
+      store.dispatch(assignUser(userId));
     }
 
     const sheet = new ServerStyleSheet();

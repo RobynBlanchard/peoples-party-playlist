@@ -39,7 +39,9 @@ export const addTrack = (req, res, next) => {
       artist,
       updatedAt: updatedAt || new Date().toISOString(),
       removed: false,
-      locked: false
+      locked: false,
+      upVoters: {},
+      downVoters: {}
     };
     dbo.collection('tracks').insertOne(myobj, function(err, resp) {
       if (err) throw err;

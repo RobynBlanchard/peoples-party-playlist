@@ -5,10 +5,12 @@ import searchReducer from './searchReducer';
 import sessionReducer from './sessionReducer';
 import authentication from './authentication';
 import user from './user';
+import appUser from './appUser';
 
 const reducer = combineReducers({
   auth: authentication,
   user: user,
+  appUser: appUser,
   playlists: playlistsReducer,
   playback: playbackReducer,
   search: searchReducer,

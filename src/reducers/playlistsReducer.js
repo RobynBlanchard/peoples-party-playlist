@@ -19,11 +19,15 @@ const defaultState = {
   playablePlaylist: [],
   lockedTrack: [],
   error: null,
-  loading: false
+  loading: false,
+  trackError: null
 };
+// differentiate between error and message?
+
 
 // rename to playlist
 const playlistsReducer = (state = defaultState, action) => {
+  // console.log(action.type);
   let playablePlaylist = cloneDeep(state.playablePlaylist);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
@@ -97,27 +101,32 @@ const playlistsReducer = (state = defaultState, action) => {
       playablePlaylist.splice(action.payload.position, 0, action.payload.track);
       return {
         ...state,
-        playablePlaylist: playablePlaylist
+        playablePlaylist: playablePlaylist,
+        trackError: null
       };
-
-    // case ADD_TO_PLAYLIST_FAILURE:
-    //   // TODO: alert user
-    //   break;
     case UPDATE_TRACK:
       playablePlaylist[action.payload.position].loading = true;
+      // playablePlaylist[action.payload.position].error = null;
+      // playablePlaylist.map(el => (el.error = null));
+
       return {
         ...state,
-        playablePlaylist: playablePlaylist
+        playablePlaylist: playablePlaylist,
+        trackError: null
       };
 
     case UPDATE_TRACK_SUCCESS:
-      playablePlaylist[action.payload.position].loading = false;
       playablePlaylist.splice(action.payload.position, 1);
       playablePlaylist.splice(
         action.payload.newPosition,
         0,
         action.payload.track
       );
+      // or attach error to playlist instead ??
+
+      playablePlaylist[action.payload.newPosition].loading = false;
+      // playablePlaylist[action.payload.newPosition].error = null;
+      // playablePlaylist.map(el => (el.error = null));
 
       // playablePlaylist.splice(
       //   action.payload.newPosition,
@@ -127,18 +136,65 @@ const playlistsReducer = (state = defaultState, action) => {
 
       return {
         ...state,
-        playablePlaylist
+        playablePlaylist,
+        trackError: null
       };
     case UPDATE_TRACK_FAILURE:
       playablePlaylist[action.payload.position].loading = false;
-      playablePlaylist[action.payload.position].error = {
-        status: action.payload.error.response.data.error.status,
-        message: action.payload.error.response.data.error.message,
-        displayMessage: 'could not update track at this time'
-      };
+      // playablePlaylist[action.payload.position].error = {
+      //   status: action.payload.error.response.data.error.status,
+      //   message: action.payload.error.response.data.error.message,
+      //   displayMessage: 'could not update track at this time'
+      // };
 
       return {
-        ...state
+        ...state,
+        playablePlaylist,
+        trackError: {
+          position: action.payload.position,
+          error: {
+            status: action.payload.error.response.data.error.status,
+            message: action.payload.error.response.data.error.message,
+            displayMessage: 'could not update track at this time'
+          }
+        }
+      };
+    case 'UPVOTE_LIMIT_EXCEEDED':
+      // playablePlaylist[action.payload].error = {
+      //   status: '',
+      //   message: '',
+      //   displayMessage: 'cannot upvote more than 3 times on a track!'
+      // };
+
+      return {
+        ...state,
+        trackError: {
+          position: action.payload,
+          error: {
+            status: '',
+            message: '',
+            displayMessage: 'cannot upvote more than 3 times on a track!'
+          }
+        }
+        // playablePlaylist
+      };
+    case 'DOWNVOTE_LIMIT_EXCEEDED':
+      // playablePlaylist[action.payload].error = {
+      //   status: '',
+      //   message: '',
+      //   displayMessage: 'cannot downvote more than 2 times on a track!'
+      // };
+      const err = {
+        position: action.payload,
+        error: {
+          status: '',
+          message: '',
+          displayMessage: 'cannot downvote more than 2 times on a track!'
+        }
+      };
+      return {
+        ...state,
+        trackError: err
       };
     case 'UPDATE_CURRENT_TRACK_SUCCESS':
       if (lockedTrack.length > 0) {
@@ -157,7 +213,8 @@ const playlistsReducer = (state = defaultState, action) => {
         ...state,
         lockedTrack,
         playablePlaylist,
-        removedPlaylist
+        removedPlaylist,
+        trackError: null
       };
     case 'START_SESSION_SUCCESS':
       if (lockedTrack.length > 0) {

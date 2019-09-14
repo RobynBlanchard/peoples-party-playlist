@@ -9,7 +9,8 @@ import {
   removeTrack,
   updateTrack,
   startSession,
-  updateCurrentTrack
+  updateCurrentTrack,
+  clearError
 } from '../actions';
 import Heading from '../components/Heading';
 import Track from '../components/Track';
@@ -67,6 +68,8 @@ class Playlist extends React.Component {
 
   renderTracks(playlist) {
     const { session, updateTrackNumOfVotes, removeTrack } = this.props;
+    const { trackError } = this.props.playlist;
+
 
     return playlist.map((el, index) => {
       const { artist, name, votes, uri, updatedAt, error } = el;
@@ -78,8 +81,11 @@ class Playlist extends React.Component {
         return d.toISOString();
       };
 
-      if (error && error.displayMessage) {
-        console.log('==track error==', error.displayMessage);
+      // if (error && error.displayMessage) {
+      //   console.log('==track error==', error.displayMessage);
+      // }
+      if (trackError && (trackError.position === index)) {
+        console.log('==track error==', trackError.error.displayMessage);
       }
 
       return (
@@ -165,6 +171,7 @@ export default connect(
     getCurrentlyPlayingTrack,
     updateTrack,
     startSession,
-    updateCurrentTrack
+    updateCurrentTrack,
+    clearError
   }
 )(Playlist);

@@ -1,5 +1,3 @@
-import spotifyApi from '../api';
-import { playlistId } from '../utils/constants';
 import {
   UPDATE_TRACK,
   UPDATE_TRACK_SUCCESS,
@@ -12,7 +10,6 @@ import {
   DELETE_TRACK_FAILURE
 } from './types';
 
-import axios from 'axios';
 import {
   reOrderTrackSpotify,
   addToSpotifyPlaylist,
@@ -29,14 +26,40 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
 ) => {
-  const { playablePlaylist } = getState().playlists;
+  const state = getState();
+  const { userId } = state.appUser;
+  const { playablePlaylist } = state.playlists;
   const selectedTrack = playablePlaylist[position];
+
+  if (change === 1) {
+    if (selectedTrack.upVoters && selectedTrack.upVoters[userId] === 3) {
+      return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
+    }
+  } else {
+
+    if (selectedTrack.downVoters && selectedTrack.downVoters[userId] === 2) {
+      return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
+    }
+  }
 
   const updatedTrack = {
     ...selectedTrack,
     votes: selectedTrack.votes + change,
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
+    upVoters: {
+      ...selectedTrack.upVoters
+    },
+    downVoters: {
+      ...selectedTrack.downVoters
+    }
   };
+
+  if (change === 1) {
+    updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + 1;
+  } else {
+    updatedTrack.downVoters[userId] =
+      (updatedTrack.downVoters[userId] || 0) + 1;
+  }
 
   const newPosition = updatedTrackPosition(
     playablePlaylist,
@@ -48,7 +71,11 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     if (newPosition === position) {
       return updateTrackDb(uri, {
         $inc: { votes: change },
-        $set: { updatedAt: updatedTrack.updatedAt }
+        $set: {
+          updatedAt: updatedTrack.updatedAt,
+          upVoters: updatedTrack.upVoters,
+          downVoters: updatedTrack.downVoters
+        }
       });
     } else {
       const { removedPlaylist, lockedTrack } = getState().playlists;
@@ -81,7 +108,10 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   });
 };
 
-export const addToPlaylist = (uri, name, artist, positionInSearch) => (dispatch, getState) => {
+export const addToPlaylist = (uri, name, artist, positionInSearch) => (
+  dispatch,
+  getState
+) => {
   const {
     playablePlaylist,
     removedPlaylist,
