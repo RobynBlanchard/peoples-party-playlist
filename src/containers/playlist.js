@@ -153,19 +153,18 @@ const mapStateToProps = state => {
   };
 };
 
-export default requireAuth(
-  connect(
-    mapStateToProps,
-    {
-      fetchPlaylist,
-      removeTrack,
-      updateTrackNumOfVotes,
-      resumePlayback,
-      pausePlayback,
-      getCurrentlyPlayingTrack,
-      updateTrack,
-      startSession,
-      updateCurrentTrack
-    }
-  )(Playlist)
-);
+// export default requireAuth(
+export default connect(
+  mapStateToProps,
+  {
+    fetchPlaylist,
+    removeTrack,
+    updateTrackNumOfVotes,
+    resumePlayback,
+    pausePlayback,
+    getCurrentlyPlayingTrack,
+    updateTrack,
+    startSession,
+    updateCurrentTrack
+  }
+)(Playlist);
