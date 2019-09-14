@@ -5,10 +5,9 @@ import {
 } from '../actions/types';
 import api from '../api';
 
-export const fetchUser = () => {
-  console.log('fetch user action');
-  return ({
+export const fetchUser = () => ({
   types: [FETCH_USER_ID, FETCH_USER_ID_SUCCESS, FETCH_USER_ID_FAILURE],
   shouldCallAPI: state => !state.user.userId,
-  callAPI: token => api(token).get('me')
-})};
+  callAPI: token => api(123).get('me'),
+  requiresAuth: true
+});
