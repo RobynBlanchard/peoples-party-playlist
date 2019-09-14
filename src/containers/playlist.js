@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import {
   fetchPlaylist,
   updateTrackNumOfVotes,
@@ -49,7 +48,6 @@ class Playlist extends React.Component {
       updateCurrentTrack();
     }
   }
-
 
   renderCurrentlyPlaying(playing, track) {
     const { artist, name, uri } = track;
@@ -155,19 +153,19 @@ const mapStateToProps = state => {
   };
 };
 
-// TODO:- put back
-// export default requireAuth(connect(
-export default connect(
-  mapStateToProps,
-  {
-    fetchPlaylist,
-    removeTrack,
-    updateTrackNumOfVotes,
-    resumePlayback,
-    pausePlayback,
-    getCurrentlyPlayingTrack,
-    updateTrack,
-    startSession,
-    updateCurrentTrack
-  }
-)(Playlist);
+export default requireAuth(
+  connect(
+    mapStateToProps,
+    {
+      fetchPlaylist,
+      removeTrack,
+      updateTrackNumOfVotes,
+      resumePlayback,
+      pausePlayback,
+      getCurrentlyPlayingTrack,
+      updateTrack,
+      startSession,
+      updateCurrentTrack
+    }
+  )(Playlist)
+);
