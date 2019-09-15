@@ -1,31 +1,42 @@
 import React from 'react';
+import Truncate from 'react-truncate';
 import {
-  Container,
-  DesktopDetails,
-  SongDesktop,
-  ArtistDesktop,
-  MobileDetails,
-  SongMobile,
-  ArtistMobile
+  Cell,
+  MobileName,
+  MobileArtist,
+  MobileRow,
+  DesktopRow,
+  NameCell,
+  ArtistCell,
+  CTACell
 } from './styles';
 
-const trimText = (text, length) =>
-  text.length > length ? `${text.slice(0, length)}...` : text;
-
 const Track = ({ name, artist, children, isLocked, shouldFocus }) => {
-  return (
-    <Container lockedTrack={isLocked} shouldFocus={shouldFocus}>
-      <DesktopDetails>
-        <SongDesktop>{name}</SongDesktop>
-        <ArtistDesktop>{artist}</ArtistDesktop>
-      </DesktopDetails>
+  const truncate = text => (
+    <Truncate lines={1} ellipsis={'...'}>
+      {text}
+    </Truncate>
+  );
 
-      <MobileDetails>
-        <SongMobile>{name}</SongMobile>
-        <ArtistMobile>{artist}</ArtistMobile>
-      </MobileDetails>
-      {children}
-    </Container>
+  return (
+    <>
+      <MobileRow shouldFocus={shouldFocus}>
+        <Cell hasBorder={!isLocked}>
+          <MobileName>{truncate(name)}</MobileName>
+          <br />
+          <MobileArtist shouldFocus={shouldFocus}>
+            {truncate(artist)}
+          </MobileArtist>
+        </Cell>
+        <Cell hasBorder={!isLocked}>{children}</Cell>
+      </MobileRow>
+
+      <DesktopRow shouldFocus={shouldFocus}>
+        <NameCell hasBorder={!isLocked}>{truncate(name)}</NameCell>
+        <ArtistCell hasBorder={!isLocked}>{truncate(artist)}</ArtistCell>
+        <CTACell hasBorder={!isLocked}>{children}</CTACell>
+      </DesktopRow>
+    </>
   );
 };
 

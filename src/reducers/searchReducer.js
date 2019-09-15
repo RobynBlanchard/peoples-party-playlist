@@ -6,7 +6,8 @@ import {
   CLEAR_RESULTS,
   ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_FAILURE,
-  ADD_TO_PLAYLIST_SUCCESS
+  ADD_TO_PLAYLIST_SUCCESS,
+  ADD_TO_PLAYLIST_DISALLOWED,
 } from '../actions/types';
 
 const defaultState = {
@@ -60,6 +61,21 @@ const searchReducer = (state = defaultState, action) => {
           status: action.payload.error.response.data.error.status,
           message: action.payload.error.response.data.error.message,
           displayMessage: `Could not add track - ${track.artist} - ${track.name} to playlist at this time`
+        };
+      }
+
+      return {
+        ...state,
+        results
+      };
+    case ADD_TO_PLAYLIST_DISALLOWED:
+      if (results.length > 0) {
+        results[action.payload].added = false;
+        results[action.payload].loading = false;
+        results[action.payload].error = {
+          status: null,
+          message: null,
+          displayMessage: "Can't add a track that is already on the playlist!"
         };
       }
 

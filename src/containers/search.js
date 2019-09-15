@@ -9,6 +9,15 @@ import ContentContainer from '../components/ContentContainer';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorIndicator from '../components/ErrorIndicator';
 import requireAuth from './requireAuth';
+import styled from 'styled-components';
+
+const Table = styled.table`
+  width: 100%;
+`;
+
+const ButtonWrapper = styled.div`
+  text-align: center;
+`;
 
 class Search extends React.Component {
   renderSearchResults() {
@@ -27,30 +36,36 @@ class Search extends React.Component {
     if (loading && results.length === 0) return <LoadingIndicator />;
 
     return (
-      results &&
-      results.map((result, index) => {
-        const { name, artists, uri, error, loading, added } = result;
-        if (loading) console.log(`adding track ${artists[0].name} - ${name}`);
-        if (error) console.log(error.displayMessage);
-        if (added) console.log(`added ${artists[0].name} - ${name}`);
-        // TODO: if added - remove CTA Button
+      <Table>
+        <tbody>
+          {results &&
+            results.map((result, index) => {
+              const { name, artists, uri, error, loading, added } = result;
+              if (loading)
+                console.log(`adding track ${artists[0].name} - ${name}`);
+              if (error) console.log(error.displayMessage);
+              if (added) console.log(`added ${artists[0].name} - ${name}`);
 
-        return (
-          <Track name={name} artist={artists[0].name} key={uri}>
-            {!added && (
-              <CTAButton
-                handleClick={() =>
-                  addToPlaylist(uri, name, artists[0].name, index)
-                }
-                name={name}
-                artist={artists[0].name}
-                uri={uri}
-                img={'add'}
-              />
-            )}
-          </Track>
-        );
-      })
+              return (
+                <Track name={name} artist={artists[0].name} key={uri}>
+                  {!added && (
+                    <ButtonWrapper>
+                      <CTAButton
+                        handleClick={() =>
+                          addToPlaylist(uri, name, artists[0].name, index)
+                        }
+                        name={name}
+                        artist={artists[0].name}
+                        uri={uri}
+                        img={'add'}
+                      />
+                    </ButtonWrapper>
+                  )}
+                </Track>
+              );
+            })}
+        </tbody>
+      </Table>
     );
   }
 

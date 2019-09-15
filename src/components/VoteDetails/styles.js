@@ -1,15 +1,13 @@
-import styled, { keyframes, css } from 'styled-components';
+import styled from 'styled-components';
 import { media } from '../../globalStyles';
 
-export const VotesContent = styled.div`
-  ${media.tablet`width: 10%;padding: 0 32px;`}
-
-  width: 100px;
-  height: 100%;
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: 100%;
 `;
 
 export const VotesText = styled.p`

@@ -95,3 +95,14 @@
   <!-- tests -->
   <!-- end session and pause playback when end of playlist -->
   <!-- improve search -->
+  <!-- prop types -->
+
+  <!-- set up from scratch -->
+  <!-- need client id in dotenv -->
+  <!-- https://docs.mongodb.com/v3.2/tutorial/install-mongodb-on-os-x/ -->
+  <!-- mongo db connection -->
+  <!-- install mongo db -->
+  <!-- mongo db set up db -->
+
+  <!-- TODO: - handle db connection errors -->
+  <!-- if load search page first, fetch playlist once -->

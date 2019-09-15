@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components';
 
 export const colours = {
   spotifyGreen: '#1DB954',
+  darkGreen: '#106c31',
   spotifyBlack: '#191414',
   spotifyWhite: '#FFFFFF',
   grey: '#333',

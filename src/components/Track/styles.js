@@ -1,78 +1,64 @@
-import styled, { css, animation, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { media, colours } from '../../globalStyles';
 
-const highlight = keyframes`
+const lightHighlight = keyframes`
   50% {
-    color: green
+    color: ${colours.spotifyGreen};
   }
-
-  /* 100% {
-    border: 10px solid red
-  } */
-`
-
-export const Container = styled.li`
-  list-style: none;
-  border-bottom: solid 1px #424242;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding-right: 8px;
-  opacity: 0.9;
-
-  height: 50px;
-   line-height: 2px;
-  /* ${media.tablet`height: 80px;line-height: 1;`} */
-  animation: ${props => props.shouldFocus && highlight} 1s ease-in-out;
-
-
-  ${({ lockedTrack }) =>
-    lockedTrack &&
-    css`
-      border: 1px solid grey;
-      /* background-color: #87868614; */
-      background-color: ${colours.primaryDark};
-      border-radius: 24px;
-      box-shadow: white;
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 1);
-    `}}
 `;
 
-export const DesktopDetails = styled.div`
-  margin: 5px;
-  width: 100%;
-  display: block;
-  display: flex;
-  justify-content: space-between;
-  padding-top: 5px;
-
-  ${media.tablet`display: none;`}
-`;
-export const SongDesktop = styled.p`
-  padding: 0 10px;
+const darkHighlight = keyframes`
+  50% {
+    color: ${colours.darkGreen};
+  }
 `;
 
-export const ArtistDesktop = styled.p`
-  width: 30%;
-`;
-
-export const MobileDetails = styled.div`
-  width: 80%;
-  padding: 0 8px;
+export const MobileRow = styled.tr`
   display: none;
-  ${media.tablet`display: block;`}
+  ${media.tablet`display:table-row;`}
+  height: 50px;
 
-  white-space: nowrap;
-  overflow: hidden;
+  width: 100%;
+  animation: ${({ shouldFocus }) => shouldFocus && lightHighlight} 1s
+    ease-in-out;
 `;
 
-export const SongMobile = styled.p`
-  margin: 8px 0;
+export const DesktopRow = styled.tr`
+  display: table-row;
+  ${media.tablet`display:none;`}
+  height: 50px;
+  width: 100%;
+  animation: ${({ shouldFocus }) => shouldFocus && lightHighlight} 1s
+    ease-in-out;
+`;
+
+export const Cell = styled.td`
+  ${media.tablet`width: 90%; padding: 0;`}
+  padding: 0 12px 0 12px;
+  border-bottom: ${({ hasBorder }) => hasBorder && 'solid 1px #424242'};
   line-height: 1;
 `;
 
-export const ArtistMobile = styled.p`
+export const NameCell = styled(Cell)`
+  width: 55%;
+`;
+export const ArtistCell = styled(Cell)`
+  width: 35%;
+`;
+export const CTACell = styled(Cell)`
+  width: 10%;
+`;
+
+export const MobileName = styled.p`
+  line-height: 0;
+  margin: 0;
+  padding: 0;
+`;
+
+export const MobileArtist = styled.p`
+  line-height: 0;
+  margin: 0;
+  padding: 0;
   color: grey;
-  font-size: 16px;
-  margin: 8px 0;
+  animation: ${({ shouldFocus }) => shouldFocus && darkHighlight} 1s ease-in-out;
 `;

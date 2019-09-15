@@ -13,9 +13,8 @@ import {
   clearError
 } from '../actions';
 import Heading from '../components/Heading';
-import Track from '../components/Track';
-import VoteDetails from '../components/VoteDetails';
-import Icon from '../components/Icon';
+import LockedTrack from '../components/LockedTrack';
+import Tracks from '../components/Tracks';
 import ContentContainer from '../components/ContentContainer';
 import requireAuth from './requireAuth';
 import ErrorIndicator from '../components/ErrorIndicator';
@@ -50,67 +49,6 @@ class Playlist extends React.Component {
     }
   }
 
-  renderCurrentlyPlaying(playing, track) {
-    const { artist, name, uri } = track;
-
-    return (
-      <Track
-        name={name}
-        artist={artist}
-        isLocked={true}
-        shouldFocus={false}
-        key={`${uri}-${name}`}
-      >
-        <Icon isPlaying={playing} />
-      </Track>
-    );
-  }
-
-  renderTracks(playlist) {
-    const { session, updateTrackNumOfVotes, removeTrack } = this.props;
-    const { trackError } = this.props.playlist;
-
-
-    return playlist.map((el, index) => {
-      const { artist, name, votes, uri, updatedAt, error } = el;
-
-      const oneSecondAgo = () => {
-        const d = new Date();
-        d.setSeconds(d.getSeconds() - 1);
-
-        return d.toISOString();
-      };
-
-      // if (error && error.displayMessage) {
-      //   console.log('==track error==', error.displayMessage);
-      // }
-      if (trackError && (trackError.position === index)) {
-        console.log('==track error==', trackError.error.displayMessage);
-      }
-
-      return (
-        <Track
-          name={name}
-          artist={artist}
-          isLocked={false}
-          shouldFocus={updatedAt > oneSecondAgo()}
-          key={`${uri}-${index}`}
-        >
-          <VoteDetails
-            position={index}
-            uri={uri}
-            handleUpVote={updateTrackNumOfVotes}
-            handleDownVote={updateTrackNumOfVotes}
-            removeTrack={removeTrack}
-            votes={votes}
-            playlist={playlist}
-            sessionStarted={session.sessionStarted}
-          />
-        </Track>
-      );
-    });
-  }
-
   render() {
     const {
       playlist,
@@ -131,6 +69,9 @@ class Playlist extends React.Component {
       return null;
     }
 
+    const { updateTrackNumOfVotes, removeTrack } = this.props;
+    const { trackError } = this.props.playlist;
+
     return (
       <ContentContainer>
         <Heading
@@ -138,10 +79,17 @@ class Playlist extends React.Component {
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           handleClick={playing ? pausePlayback : resumePlayback}
         />
-        {lockedTrack.length !== 0 &&
-          this.renderCurrentlyPlaying(playing, lockedTrack[0])}
+        {lockedTrack.length > 0 && (
+          <LockedTrack track={lockedTrack[0]} playing={playing} />
+        )}
 
-        {this.renderTracks(playablePlaylist)}
+        <Tracks
+          playlist={playablePlaylist}
+          trackError={trackError}
+          session={session}
+          updateTrackNumOfVotes={updateTrackNumOfVotes}
+          removeTrack={removeTrack}
+        />
       </ContentContainer>
     );
   }

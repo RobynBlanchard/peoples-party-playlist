@@ -7,7 +7,8 @@ import {
   ADD_TO_PLAYLIST_FAILURE,
   DELETE_TRACK,
   DELETE_TRACK_SUCCESS,
-  DELETE_TRACK_FAILURE
+  DELETE_TRACK_FAILURE,
+  ADD_TO_PLAYLIST_DISALLOWED,
 } from './types';
 
 import {
@@ -117,6 +118,14 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
     removedPlaylist,
     lockedTrack
   } = getState().playlists;
+
+  const alreadyAdded = playablePlaylist.some(track => track.uri === uri);
+  if (alreadyAdded) {
+    return dispatch({
+      type: ADD_TO_PLAYLIST_DISALLOWED,
+      payload: positionInSearch,
+    })
+  }
 
   const updatedAt = new Date().toISOString();
   const track = {

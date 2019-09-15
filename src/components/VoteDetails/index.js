@@ -1,5 +1,5 @@
 import React from 'react';
-import { VotesContent, VotesText, Button, Icon } from './styles';
+import { Wrapper, VotesText, Button, Icon } from './styles';
 
 const VoteDetails = ({
   position,
@@ -18,15 +18,15 @@ const VoteDetails = ({
   };
 
   return (
-    <VotesContent>
+    <Wrapper>
       <Button onClick={() => handleClick(uri, position, handleDownVote, -1)}>
-        <Icon src={`images/white-minus.svg`} />
+        <Icon src="images/white-minus.svg" />
       </Button>
       <VotesText>{votes}</VotesText>
       <Button onClick={() => handleClick(uri, position, handleUpVote, 1)}>
-        <Icon src={`images/white-plus.svg`} />
+        <Icon src="images/white-plus.svg" />
       </Button>
-    </VotesContent>
+    </Wrapper>
   );
 };
 
