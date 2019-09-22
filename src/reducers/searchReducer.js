@@ -7,13 +7,17 @@ import {
   ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_FAILURE,
   ADD_TO_PLAYLIST_SUCCESS,
-  ADD_TO_PLAYLIST_DISALLOWED,
+  ADD_TO_PLAYLIST_DISALLOWED
 } from '../actions/types';
 
 const defaultState = {
   results: [],
   loading: false,
-  error: null
+  // fetch error
+  // TODO: rename to fetch error
+  error: null,
+  // error on a specific track - easier to clear error this way
+  trackError: null
 };
 
 const searchReducer = (state = defaultState, action) => {
@@ -50,43 +54,41 @@ const searchReducer = (state = defaultState, action) => {
       results[action.payload.positionInSearch].loading = true;
       return {
         ...state,
-        results
+        results,
+        trackError: null
       };
     case ADD_TO_PLAYLIST_FAILURE:
       const track = action.payload.track;
-
-      if (results.length > 0) {
-        results[action.payload.positionInSearch].loading = false;
-        results[action.payload.positionInSearch].error = {
-          status: action.payload.error.response.data.error.status,
-          message: action.payload.error.response.data.error.message,
-          displayMessage: `Could not add track - ${track.artist} - ${track.name} to playlist at this time`
-        };
-      }
+      results[action.payload.positionInSearch].loading = false;
 
       return {
         ...state,
-        results
+        trackError: {
+          position: action.payload.positionInSearch,
+          error: {
+            status: action.payload.error.response.data.error.status,
+            message: action.payload.error.response.data.error.message,
+            displayMessage: `Could not add track - ${track.artist} - ${track.name} to playlist at this time`
+          }
+        }
       };
     case ADD_TO_PLAYLIST_DISALLOWED:
-      if (results.length > 0) {
-        results[action.payload].added = false;
-        results[action.payload].loading = false;
-        results[action.payload].error = {
-          status: null,
-          message: null,
-          displayMessage: "Can't add a track that is already on the playlist!"
-        };
-      }
+      results[action.payload].added = false;
 
       return {
         ...state,
-        results
+        trackError: {
+          position: action.payload,
+          error: {
+            status: null,
+            message: null,
+            displayMessage: "Can't add a track that is already on the playlist!"
+          }
+        }
       };
     case ADD_TO_PLAYLIST_SUCCESS:
       if (results.length > 0) {
         results[action.payload.positionInSearch].loading = false;
-        results[action.payload.positionInSearch].error = null;
         results[action.payload.positionInSearch].added = true;
       }
 

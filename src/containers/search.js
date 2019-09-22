@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import styled from 'styled-components';
 
 import { fetchSearchResults, addToPlaylist } from '../actions';
 import Track from '../components/Track';
@@ -9,7 +10,7 @@ import ContentContainer from '../components/ContentContainer';
 import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorIndicator from '../components/ErrorIndicator';
 import requireAuth from './requireAuth';
-import styled from 'styled-components';
+import TrackError from '../components/TrackError';
 
 const Table = styled.table`
   width: 100%;
@@ -25,7 +26,8 @@ class Search extends React.Component {
       loading,
       results,
       fetchSearchResultsError,
-      addToPlaylist
+      addToPlaylist,
+      trackError
     } = this.props;
 
     if (fetchSearchResultsError)
@@ -40,28 +42,33 @@ class Search extends React.Component {
         <tbody>
           {results &&
             results.map((result, index) => {
-              const { name, artists, uri, error, loading, added } = result;
+              const { name, artists, uri, loading, added } = result;
               if (loading)
                 console.log(`adding track ${artists[0].name} - ${name}`);
-              if (error) console.log(error.displayMessage);
               if (added) console.log(`added ${artists[0].name} - ${name}`);
 
               return (
-                <Track name={name} artist={artists[0].name} key={uri}>
-                  {!added && (
-                    <ButtonWrapper>
-                      <CTAButton
-                        handleClick={() =>
-                          addToPlaylist(uri, name, artists[0].name, index)
-                        }
-                        name={name}
-                        artist={artists[0].name}
-                        uri={uri}
-                        img={'add'}
-                      />
-                    </ButtonWrapper>
+                <React.Fragment key={uri}>
+                  <Track name={name} artist={artists[0].name}>
+                    {!added && (
+                      <ButtonWrapper>
+                        <CTAButton
+                          handleClick={() =>
+                            addToPlaylist(uri, name, artists[0].name, index)
+                          }
+                          name={name}
+                          artist={artists[0].name}
+                          uri={uri}
+                          img={'add'}
+                        />
+                      </ButtonWrapper>
+                    )}
+                  </Track>
+
+                  {trackError && trackError.position === index && (
+                    <TrackError text={trackError.error.displayMessage} />
                   )}
-                </Track>
+                </React.Fragment>
               );
             })}
         </tbody>
@@ -86,7 +93,8 @@ const mapStateTopProps = state => {
     results: state.search.results,
     addToPlaylistError: state.playlists.error,
     fetchSearchResultsError: state.search.error,
-    loading: state.search.loading
+    loading: state.search.loading,
+    trackError: state.search.trackError
   };
 };
 

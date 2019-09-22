@@ -22,12 +22,9 @@ const defaultState = {
   loading: false,
   trackError: null
 };
-// differentiate between error and message?
 
-
-// rename to playlist
+// TODO: rename to playlist
 const playlistsReducer = (state = defaultState, action) => {
-  // console.log(action.type);
   let playablePlaylist = cloneDeep(state.playablePlaylist);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
@@ -79,9 +76,7 @@ const playlistsReducer = (state = defaultState, action) => {
       playablePlaylist[action.payload.position].loading = false;
       playablePlaylist[action.payload.position].error = null;
       playablePlaylist.splice(action.payload.position, 1);
-      // playablePlaylist = playablePlaylist.filter(
-      //   track => track.uri !== action.payload.uri
-      // );
+
       return {
         ...state,
         playablePlaylist
@@ -106,8 +101,6 @@ const playlistsReducer = (state = defaultState, action) => {
       };
     case UPDATE_TRACK:
       playablePlaylist[action.payload.position].loading = true;
-      // playablePlaylist[action.payload.position].error = null;
-      // playablePlaylist.map(el => (el.error = null));
 
       return {
         ...state,
@@ -122,17 +115,8 @@ const playlistsReducer = (state = defaultState, action) => {
         0,
         action.payload.track
       );
-      // or attach error to playlist instead ??
 
       playablePlaylist[action.payload.newPosition].loading = false;
-      // playablePlaylist[action.payload.newPosition].error = null;
-      // playablePlaylist.map(el => (el.error = null));
-
-      // playablePlaylist.splice(
-      //   action.payload.newPosition,
-      //   0,
-      //   playablePlaylist.splice(action.payload.position, 1)[0]
-      // )
 
       return {
         ...state,
@@ -141,11 +125,6 @@ const playlistsReducer = (state = defaultState, action) => {
       };
     case UPDATE_TRACK_FAILURE:
       playablePlaylist[action.payload.position].loading = false;
-      // playablePlaylist[action.payload.position].error = {
-      //   status: action.payload.error.response.data.error.status,
-      //   message: action.payload.error.response.data.error.message,
-      //   displayMessage: 'could not update track at this time'
-      // };
 
       return {
         ...state,
@@ -160,12 +139,6 @@ const playlistsReducer = (state = defaultState, action) => {
         }
       };
     case 'UPVOTE_LIMIT_EXCEEDED':
-      // playablePlaylist[action.payload].error = {
-      //   status: '',
-      //   message: '',
-      //   displayMessage: 'cannot upvote more than 3 times on a track!'
-      // };
-
       return {
         ...state,
         trackError: {
@@ -176,14 +149,8 @@ const playlistsReducer = (state = defaultState, action) => {
             displayMessage: 'cannot upvote more than 3 times on a track!'
           }
         }
-        // playablePlaylist
       };
     case 'DOWNVOTE_LIMIT_EXCEEDED':
-      // playablePlaylist[action.payload].error = {
-      //   status: '',
-      //   message: '',
-      //   displayMessage: 'cannot downvote more than 2 times on a track!'
-      // };
       const err = {
         position: action.payload,
         error: {

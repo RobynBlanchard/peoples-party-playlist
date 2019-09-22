@@ -1,7 +1,8 @@
 import React from 'react';
+import styled from 'styled-components';
 import Track from '../Track';
 import VoteDetails from '../VoteDetails';
-import styled from 'styled-components';
+import TrackError from '../TrackError';
 
 const Table = styled.table`
   width: 100%;
@@ -37,26 +38,30 @@ const Tracks = ({
           }
 
           return (
-            <Track
-              name={name}
-              artist={artist}
-              isLocked={false}
-              shouldFocus={updatedAt > oneSecondAgo()}
-              key={`${uri}-${index}`}
-            >
-              <VoteDetailsWrapper>
-                <VoteDetails
-                  position={index}
-                  uri={uri}
-                  handleUpVote={updateTrackNumOfVotes}
-                  handleDownVote={updateTrackNumOfVotes}
-                  removeTrack={removeTrack}
-                  votes={votes}
-                  playlist={playlist}
-                  sessionStarted={session.sessionStarted}
-                />
-              </VoteDetailsWrapper>
-            </Track>
+            <React.Fragment key={`${uri}-${index}`}>
+              <Track
+                name={name}
+                artist={artist}
+                isLocked={false}
+                shouldFocus={updatedAt > oneSecondAgo()}
+              >
+                <VoteDetailsWrapper>
+                  <VoteDetails
+                    position={index}
+                    uri={uri}
+                    handleUpVote={updateTrackNumOfVotes}
+                    handleDownVote={updateTrackNumOfVotes}
+                    removeTrack={removeTrack}
+                    votes={votes}
+                    playlist={playlist}
+                    sessionStarted={session.sessionStarted}
+                  />
+                </VoteDetailsWrapper>
+              </Track>
+              {trackError && trackError.position === index && (
+                <TrackError text={trackError.error.displayMessage} />
+              )}
+            </React.Fragment>
           );
         })}
       </tbody>
