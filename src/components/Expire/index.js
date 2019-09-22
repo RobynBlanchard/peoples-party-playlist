@@ -7,6 +7,13 @@ class Expire extends React.Component {
     this.setTimer();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.children !== this.props.children) {
+      this.setTimer();
+      this.setState({ visible: true });
+    }
+  }
+
   setTimer() {
     if (this.timer != null) {
       clearTimeout(this.timer);
