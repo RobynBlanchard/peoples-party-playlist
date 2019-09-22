@@ -11,6 +11,7 @@ import socketIO from 'socket.io';
 const app = express();
 const server = http.createServer(app)
 
+app.use(cors())
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json({ type: '*/*' }))
 app.use(boolParser());

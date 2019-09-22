@@ -33,6 +33,7 @@
     "babel-plugin-styled-components": "^1.10.0",
     "cookie-parser": "^1.4.4",
     "copy-webpack-plugin": "^5.0.2",
+    "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.11.2",
