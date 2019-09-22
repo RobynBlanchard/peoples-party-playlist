@@ -28,18 +28,24 @@ const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
 export const resumePlayback = () => (dispatch, getState) => {
   const state = getState();
   const { progress_ms } = state.playback;
-  const { removedPlaylist } = state.playlist;
+  const { removedPlaylist, lockedTrack, playablePlaylist } = state.playlist;
   const spotifyOffset = removedPlaylist.length;
   const { sessionStarted } = state.session;
-  const callAPI = token => resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token).then(res => {
-    if (!sessionStarted) dispatch(startSession())
-  })
+  const callAPI = token =>
+    resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token).then(
+      res => {
+        // if (!sessionStarted) dispatch(startSession())
+        if (lockedTrack.length === 0 && playablePlaylist.length > 0) {
+          dispatch(startSession());
+        }
+      }
+    );
 
   dispatch({
     types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
     callAPI: callAPI,
     requiresAuth: true
-  })
+  });
 };
 
 export const pausePlayback = () => ({
