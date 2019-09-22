@@ -29,10 +29,10 @@ export default (app, store) => {
   app.get('/LogInFailure', logInFailure(store));
   app.get('/callback', logInCallback);
   app.get('/invite', invite);
-  app.get('/playlist/api/v1/tracks', getTracks);
-  app.delete('/playlist/api/v1/tracks/:id', removeTrack);
-  app.post('/playlist/api/v1/tracks', addTrack);
-  app.patch('/playlist/api/v1/tracks/:id', patchTrack); // id is track uri
+  app.get('/api/v1/playlist/tracks', getTracks);
+  app.delete('/api/v1/playlist/tracks/:id', removeTrack);
+  app.post('/api/v1/playlist/tracks', addTrack);
+  app.patch('/api/v1/playlist/tracks/:id', patchTrack); // id is track uri
 
   app.get('/*', (req, res) => {
     const context = {};
@@ -68,7 +68,7 @@ export default (app, store) => {
       const reactDom = renderToString(sheet.collectStyles(jsx));
       const reduxState = store.getState();
       const styles = sheet.getStyleTags();
-      console.log('redux state', reduxState)
+      console.log('redux state', reduxState);
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(htmlTemplate(reactDom, styles, reduxState));
     });

@@ -13,7 +13,7 @@ export const startSession = () => (dispatch, getState) => {
   dispatch({
     types: [START_SESSION, START_SESSION_SUCCESS, START_SESSION_FAILURE],
     callAPI: () =>
-      axios.patch(`/playlist/api/v1/tracks/${playablePlaylist[0].uri}`, {
+      axios.patch(`/api/v1/playlist/tracks/${playablePlaylist[0].uri}`, {
         update: { $set: { locked: true } }
       })
   });

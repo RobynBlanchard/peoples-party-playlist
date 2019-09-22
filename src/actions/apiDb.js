@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 export const updateTrack = (uri, update) =>
-  axios.patch(`/playlist/api/v1/tracks/${uri}`, { update });
+  axios.patch(`/api/v1/playlist/tracks/${uri}`, { update });
 
 export const addTrackToDb = (uri, name, artist, updatedAt) => {
-  return axios.post('/playlist/api/v1/tracks', {
+  return axios.post('/api/v1/playlist/tracks', {
     uri,
     name,
     artist,
@@ -13,4 +13,4 @@ export const addTrackToDb = (uri, name, artist, updatedAt) => {
 };
 
 export const removeTrackFromDb = uri =>
-  axios.delete(`/playlist/api/v1/tracks/${uri}`);
+  axios.delete(`/api/v1/playlist/tracks/${uri}`);

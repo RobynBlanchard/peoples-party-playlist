@@ -18,8 +18,8 @@ export const fetchPlaylist = () => ({
   //     params: { removed: false }
   //   }),
   callAPI: () =>
-  axios.get('/playlist/api/v1/tracks'),
-
+  // axios.get('http://localhost:5000/api/v1/playlist/tracks'),
+  axios.get('https://peoples-party-playlist.herokuapp.com/api/v1/playlist/tracks')
 });
 
 // export const fetchPlaylist = () => (dispatch, getState) => {
