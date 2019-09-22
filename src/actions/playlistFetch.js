@@ -18,7 +18,7 @@ export const fetchPlaylist = () => ({
   //     params: { removed: false }
   //   }),
   callAPI: () =>
-  axios.get('http://localhost:5000/playlist/api/v1/tracks'),
+  axios.get('/playlist/api/v1/tracks'),
 
 });
 

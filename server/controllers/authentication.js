@@ -99,6 +99,6 @@ export const logOut = store => {
 export const logInFailure = store => {
   return (req, res, next) => {
     store.dispatch(logInFailureAction('er'));
-    res.redirect('http://localhost:5000/');
+    res.redirect('/');
   };
 };

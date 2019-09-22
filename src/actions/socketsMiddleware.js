@@ -1,7 +1,7 @@
 import io from 'socket.io-client';
 
 export const socketMiddleware = ({ dispatch }) => {
-  const socket = io('http://localhost:5000');
+  const socket = io('/');
 
   socket.on('message', action => {
     // console.log('socket receives action', action);

@@ -8,7 +8,7 @@ export default (reactDom, styles, reduxState) => `
           ${styles}
           <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
           <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
-          <link rel="shortcut icon" href="http://localhost:5000/images/favicon.ico">
+          <link rel="shortcut icon" href="/images/favicon.ico">
       </head>
       <script src="https://unpkg.com/ionicons@4.5.5/dist/ionicons.js"></script>
 
