@@ -2,11 +2,12 @@ import cookieParser from 'cookie-parser';
 import express from 'express';
 import bodyParser from 'body-parser';
 import boolParser from 'express-query-boolean';
+import cors from 'cors';
+import http from 'http';
+import socketIO from 'socket.io';
 
 import createStore from '../src/store';
 import router from './router';
-import http from 'http';
-import socketIO from 'socket.io';
 
 const app = express();
 const server = http.createServer(app)
