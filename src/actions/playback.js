@@ -28,7 +28,7 @@ const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
 export const resumePlayback = () => (dispatch, getState) => {
   const state = getState();
   const { progress_ms } = state.playback;
-  const { removedPlaylist } = state.playlists;
+  const { removedPlaylist } = state.playlist;
   const spotifyOffset = removedPlaylist.length;
   const { sessionStarted } = state.session;
   const callAPI = token => resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token).then(res => {
@@ -72,7 +72,7 @@ const updateCurrentTrackInDb = (
 export const updateCurrentTrack = () => (dispatch, getState) => {
   const state = getState();
   const currentlyPlayingTrack = state.playback.currentTrack.uri;
-  const previouslyPlayingTrack = state.playlists.lockedTrack[0].uri;
+  const previouslyPlayingTrack = state.playlist.lockedTrack[0].uri;
 
   dispatch({
     types: [

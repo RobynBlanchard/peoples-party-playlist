@@ -99,7 +99,7 @@ Playlist.serverFetch = fetchPlaylist;
 
 const mapStateToProps = state => {
   return {
-    playlist: state.playlists,
+    playlist: state.playlist,
     playing: state.playback.playing,
     session: state.session,
     currentTrack: state.playback.currentTrack,

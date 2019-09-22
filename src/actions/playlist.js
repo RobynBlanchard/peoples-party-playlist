@@ -29,7 +29,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
 ) => {
   const state = getState();
   const { userId } = state.appUser;
-  const { playablePlaylist } = state.playlists;
+  const { playablePlaylist } = state.playlist;
   const selectedTrack = playablePlaylist[position];
 
   if (change === 1) {
@@ -79,7 +79,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
         }
       });
     } else {
-      const { removedPlaylist, lockedTrack } = getState().playlists;
+      const { removedPlaylist, lockedTrack } = getState().playlist;
       const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
       return reOrderTrackSpotify(
@@ -117,7 +117,7 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
     playablePlaylist,
     removedPlaylist,
     lockedTrack
-  } = getState().playlists;
+  } = getState().playlist;
 
   const alreadyAdded = playablePlaylist.some(track => track.uri === uri);
   if (alreadyAdded) {

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import playlistsReducer from './playlistsReducer';
+import playlistReducer from './playlistReducer';
 import playbackReducer from './playbackReducer';
 import searchReducer from './searchReducer';
 import sessionReducer from './sessionReducer';
@@ -11,7 +11,7 @@ const reducer = combineReducers({
   auth: authentication,
   user: user,
   appUser: appUser,
-  playlists: playlistsReducer,
+  playlist: playlistReducer,
   playback: playbackReducer,
   search: searchReducer,
   session: sessionReducer

@@ -8,7 +8,7 @@ import {
 // TODO: - save session in db
 export const startSession = () => (dispatch, getState) => {
   const state = getState();
-  const { playablePlaylist } = state.playlists;
+  const { playablePlaylist } = state.playlist;
 
   dispatch({
     types: [START_SESSION, START_SESSION_SUCCESS, START_SESSION_FAILURE],

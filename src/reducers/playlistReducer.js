@@ -23,8 +23,7 @@ const defaultState = {
   trackError: null
 };
 
-// TODO: rename to playlist
-const playlistsReducer = (state = defaultState, action) => {
+const playlistReducer = (state = defaultState, action) => {
   let playablePlaylist = cloneDeep(state.playablePlaylist);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
@@ -205,4 +204,4 @@ const playlistsReducer = (state = defaultState, action) => {
   }
 };
 
-export default playlistsReducer;
+export default playlistReducer;

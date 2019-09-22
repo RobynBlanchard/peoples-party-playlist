@@ -112,7 +112,7 @@ class Search extends React.Component {
 const mapStateTopProps = state => {
   return {
     results: state.search.results,
-    addToPlaylistError: state.playlists.error,
+    addToPlaylistError: state.playlist.error,
     fetchSearchResultsError: state.search.error,
     loading: state.search.loading
   };
