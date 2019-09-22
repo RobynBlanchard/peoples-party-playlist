@@ -49,12 +49,10 @@ const Tracks = ({
                   <VoteDetails
                     position={index}
                     uri={uri}
+                    votes={votes}
                     handleUpVote={updateTrackNumOfVotes}
                     handleDownVote={updateTrackNumOfVotes}
                     removeTrack={removeTrack}
-                    votes={votes}
-                    playlist={playlist}
-                    sessionStarted={session.sessionStarted}
                   />
                 </VoteDetailsWrapper>
               </Track>
