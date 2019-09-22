@@ -7,10 +7,8 @@ import {
   pausePlayback,
   getCurrentlyPlayingTrack,
   removeTrack,
-  updateTrack,
   startSession,
   updateCurrentTrack,
-  clearError
 } from '../actions';
 import Heading from '../components/Heading';
 import LockedTrack from '../components/LockedTrack';
@@ -117,9 +115,7 @@ export default connect(
     resumePlayback,
     pausePlayback,
     getCurrentlyPlayingTrack,
-    updateTrack,
     startSession,
     updateCurrentTrack,
-    clearError
   }
 )(Playlist);
