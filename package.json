@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "NODE_ENV=production webpack --progress",
-    "dev": "webpack --watch --progress & nodemon index.js",
+    "dev": "NODE_ENV=development webpack --watch --progress & nodemon index.js",
     "start": "npm run build && node index.js",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
