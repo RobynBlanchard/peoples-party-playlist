@@ -23,7 +23,6 @@ const store = createStore();
 
 router(app, store);
 
-
 const io = socketIO(server)
 
 io.on('connection', socket => {

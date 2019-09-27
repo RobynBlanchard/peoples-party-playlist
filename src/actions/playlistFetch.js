@@ -7,18 +7,39 @@ import {
   FETCH_PLAYLIST_FROM_DB_FAILURE
 } from './types';
 
+// import * as process from 'process';
+// const env = process.env.NODE_ENV
+// console.log(process.env.NODE_ENV)
+console.log('hkkhjkhkjhkh')
+console.log(process.env.NODE_ENV)
+console.log(process.env.PRODUCTION)
+// console.log(env)
+
 export const fetchPlaylist = () => dispatch => {
   const endpoint =
-    process.env.NODE_ENV === 'development'
-      ? 'http://localhost:5000'
-      : 'https://peoples-party-playlist.herokuapp.com';
+        process.env.NODE_ENV === 'development'
+          ? 'http://localhost:5000'
+          : 'https://peoples-party-playlist.herokuapp.com';
   dispatch({
     types: [
       FETCH_PLAYLIST_FROM_DB,
       FETCH_PLAYLIST_FROM_DB_SUCCESS,
       FETCH_PLAYLIST_FROM_DB_FAILURE
     ],
-    callAPI: () => axios.get(`${endpoint}/api/v1/playlist/tracks`)
+    callAPI: () => {
+      // console.log(process.env.NODE_ENV)
+      console.log('ev', process.env.NODE_ENV)
+      // console.log(process.env.PRODUCTION)
+      // console.log(DUCTION)
+      // console.log(process.env.DUCTION)
+
+      // console.log(process.env)
+      const p = require('process');
+      console.log('===', p.env.NODE_ENV)
+      
+      // console.log('envvv', env)
+      return axios.get(`${endpoint}/api/v1/playlist/tracks`)
+    }
   });
 };
 

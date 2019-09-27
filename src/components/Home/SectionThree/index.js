@@ -33,6 +33,10 @@ const SectionThree = () => {
       <a href="/login">
         <Icon src="/images/log-in.svg" />
       </a>
+      <p>Get a user id to get started</p>
+      <a href="/invite">
+        Click me
+      </a>
     </Wrapper>
   );
 };
