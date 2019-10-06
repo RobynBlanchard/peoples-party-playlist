@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colours } from '../../../globalStyles';
+import { colours, fonts } from '../../../globalStyles';
 
 const sneakAPeekFront = keyframes`
   50% {
@@ -70,6 +70,7 @@ const ContentBlockWrapper = styled.div`
   width: 200px;
   font-size: 20px;
   opacity: 10%;
+  font-family: ${fonts.font1};
 
   &:hover ${Front} {
     transform: rotateY(-180deg);

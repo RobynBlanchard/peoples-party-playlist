@@ -1,5 +1,5 @@
 import styled, { keyframes } from 'styled-components';
-import { media, colours } from '../../globalStyles';
+import { media, colours, fonts } from '../../globalStyles';
 
 const lightHighlight = keyframes`
   50% {
@@ -17,6 +17,8 @@ export const MobileRow = styled.tr`
   display: none;
   ${media.tablet`display:table-row;`}
   height: 50px;
+  color: white;
+  font-family: ${fonts.font1};
 
   width: 100%;
   animation: ${({ shouldFocus }) => shouldFocus && lightHighlight} 1s
@@ -26,6 +28,9 @@ export const MobileRow = styled.tr`
 export const DesktopRow = styled.tr`
   display: table-row;
   ${media.tablet`display:none;`}
+  color: white;
+  font-family: ${fonts.font1};
+
   height: 50px;
   width: 100%;
   animation: ${({ shouldFocus }) => shouldFocus && lightHighlight} 1s
