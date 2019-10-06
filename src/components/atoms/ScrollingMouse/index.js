@@ -1,11 +1,11 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colours } from '../../../../globalStyles';
+import { colours } from '../../../globalStyles';
 
 const scrollAnimation = keyframes`
   0% { opacity: 0; }
   10% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(15px); opacity: 0;
+  100% { transform: translateY(15px); opacity: 0};
 `;
 
 const Scroll = styled.div`

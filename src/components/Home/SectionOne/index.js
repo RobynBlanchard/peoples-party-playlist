@@ -1,8 +1,8 @@
 import React from 'react';
-import styled, { keyframes, css } from 'styled-components';
-import { fonts, media } from '../../../globalStyles';
-import Mouse from './Mouse';
-import axios from 'axios';
+import styled, { keyframes } from 'styled-components';
+import { media } from '../../../globalStyles';
+import Mouse from '../../atoms/ScrollingMouse';
+
 const Title = styled.div`
   display: flex;
   flex-direction: column;
