@@ -7,7 +7,7 @@ import Track from '../components/Track';
 import CTAButton from '../components/CTAButton';
 import SearchBar from '../components/SearchBar';
 import ContentContainer from '../components/ContentContainer';
-import LoadingIndicator from '../components/LoadingIndicator';
+import LoadingIndicator from '../components/atoms/LoadingIndicator';
 import ErrorIndicator from '../components/ErrorIndicator';
 import requireAuth from './requireAuth';
 import TrackError from '../components/TrackError';
