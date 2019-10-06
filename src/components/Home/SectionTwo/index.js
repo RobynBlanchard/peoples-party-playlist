@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import ContentBlock from './ContentBlock';
+import RotatingCard from '../../atoms/RotatingCard';
 import { colours} from '../../../globalStyles';
 
 const Container = styled.div`
@@ -51,20 +51,20 @@ class SectionTwo extends React.Component {
   render() {
     const content = [
       {
-        image: '/disc.svg',
+        image: 'images/disc.svg',
         text: 'Create your own playlist',
         peekCard: true
       },
       {
-        image: '/thumbs_up.svg',
+        image: 'images/thumbs_up.svg',
         text: 'Upvote to move tracks up the playlist'
       },
       {
-        image: '/thumbs_down.svg',
+        image: 'images/thumbs_down.svg',
         text: 'Downvote to move tracks down the playlist'
       },
       {
-        image: '/sad.svg',
+        image: 'images/sad.svg',
         text: '5 downvotes will remove the track from the playlist'
       }
     ];
@@ -73,7 +73,7 @@ class SectionTwo extends React.Component {
         <BlocksWrapper>
           {content.map(block => {
             return (
-              <ContentBlock
+              <RotatingCard
                 image={block.image}
                 text={block.text}
                 displayState={this.state.cardOpen}

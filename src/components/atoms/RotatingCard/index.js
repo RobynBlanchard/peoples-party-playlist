@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colours } from '../../../../globalStyles';
+import { colours } from '../../../globalStyles';
 
 const sneakAPeekFront = keyframes`
   50% {
@@ -40,7 +40,11 @@ const Back = styled(Card)`
   justify-content: center;
   text-align: center;
   color: ${colours.black};
-  background-image: linear-gradient(to right bottom, ${colours.secondaryDark}, ${colours.secondaryLight});
+  background-image: linear-gradient(
+    to right bottom,
+    ${colours.secondaryDark},
+    ${colours.secondaryLight}
+  );
 
   animation: ${props => props.card === true && sneakAPeekBack} 3.5s ease-in-out;
 `;
@@ -49,7 +53,11 @@ const Front = styled(Card)`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: linear-gradient(to right bottom, ${colours.primaryDark}, ${colours.primaryLight});
+  background-image: linear-gradient(
+    to right bottom,
+    ${colours.primaryDark},
+    ${colours.primaryLight}
+  );
 
   animation: ${props => props.card === true && sneakAPeekFront} 3.5s ease-in-out;
 `;
@@ -78,17 +86,13 @@ const Icon = styled.img`
   padding: 20px 20px;
 `;
 
-const ContentBlock = ({ image, text, displayState, peekCard }) => {
-  return (
-    <ContentBlockWrapper card={peekCard && displayState}>
-      <Front card={peekCard && displayState}>
-        <Icon src={`/images${image}`} />
-      </Front>
-      <Back card={peekCard && displayState}>
-        <p>{text}</p>
-      </Back>
-    </ContentBlockWrapper>
-  );
-};
+const ContentBlock = ({ image, text, displayState, peekCard }) => (
+  <ContentBlockWrapper card={peekCard && displayState}>
+    <Front card={peekCard && displayState}>
+      {image && <Icon src={image} />}
+    </Front>
+    <Back card={peekCard && displayState}>{text && <p>{text}</p>}</Back>
+  </ContentBlockWrapper>
+);
 
 export default ContentBlock;
