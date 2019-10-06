@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { media } from '../../globalStyles';
+import { media, fonts } from '../../../globalStyles';
 
 export const Wrapper = styled.div`
   display: flex;
@@ -14,7 +14,8 @@ export const VotesText = styled.p`
   padding: 0 10px;
   width: 20px;
   text-align: center;
-
+  color: white;
+  font-family: ${fonts.font1};
   ${media.tablet`font-size: 18px;`}
 `;
 

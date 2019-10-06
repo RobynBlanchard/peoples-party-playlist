@@ -7,7 +7,9 @@ const VoteDetails = ({
   votes,
   handleUpVote,
   handleDownVote,
-  removeTrack
+  removeTrack,
+  minusImg,
+  plusImg
 }) => {
   const handleClick = (uri, position, handleVote, change) => {
     if (votes + change === -5) {
@@ -20,11 +22,11 @@ const VoteDetails = ({
   return (
     <Wrapper>
       <Button onClick={() => handleClick(uri, position, handleDownVote, -1)}>
-        <Icon src="images/white-minus.svg" />
+        <Icon src={minusImg} />
       </Button>
       <VotesText>{votes}</VotesText>
       <Button onClick={() => handleClick(uri, position, handleUpVote, 1)}>
-        <Icon src="images/white-plus.svg" />
+        <Icon src={plusImg} />
       </Button>
     </Wrapper>
   );

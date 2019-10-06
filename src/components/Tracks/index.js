@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Track from '../Track';
-import VoteDetails from '../VoteDetails';
+import VoteDetails from '../molecules/VoteDetails';
 import TrackError from '../TrackError';
 
 const Table = styled.table`
@@ -53,6 +53,8 @@ const Tracks = ({
                     handleUpVote={updateTrackNumOfVotes}
                     handleDownVote={updateTrackNumOfVotes}
                     removeTrack={removeTrack}
+                    minusImg="images/white-minus.svg"
+                    plusImg="images/white-plus.svg"
                   />
                 </VoteDetailsWrapper>
               </Track>
