@@ -28,7 +28,7 @@ const Button = styled.button`
   }
 `;
 
-const CTAButton = ({ handleClick, img, uri, name, artist }) => {
+const AddButton = ({ handleClick, uri, name, artist }) => {
   return (
     <Button onClick={() => handleClick(uri, name, artist)}>
       <p> + </p>
@@ -36,4 +36,4 @@ const CTAButton = ({ handleClick, img, uri, name, artist }) => {
   );
 };
 
-export default CTAButton;
+export default AddButton;

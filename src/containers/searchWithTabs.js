@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { fetchSearchResults, addToPlaylist } from '../actions';
 import Track from '../components/Track';
-import CTAButton from '../components/CTAButton';
+import AddButton from '../components/atoms/AddButton';
 import SearchBar from '../components/SearchBar';
 import ContentContainer from '../components/ContentContainer';
 import LoadingIndicator from '../components/atoms/LoadingIndicator';
@@ -74,7 +74,7 @@ class Search extends React.Component {
             artist={result.artists[0].name}
             key={result.uri}
           >
-            <CTAButton
+            <AddButton
               handleClick={this.props.addToPlaylist}
               name={result.name}
               artist={result.artists[0].name}
