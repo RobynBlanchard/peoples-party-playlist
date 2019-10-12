@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import RotatingCard from '../../atoms/RotatingCard';
+import RotatingCard from '../../RotatingCard';
 import { colours} from '../../../globalStyles';
 
 const Container = styled.div`

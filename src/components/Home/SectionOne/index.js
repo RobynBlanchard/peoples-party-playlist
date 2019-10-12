@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { media } from '../../../globalStyles';
-import Mouse from '../../atoms/ScrollingMouse';
+import Mouse from '../../ScrollingMouse';
 
 const Title = styled.div`
   display: flex;

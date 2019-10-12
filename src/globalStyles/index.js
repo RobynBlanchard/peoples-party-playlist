@@ -11,7 +11,7 @@ export const colours = {
   primaryLight: '#424242',
   primaryLightRGBA: '66, 66, 66',
   secondaryDark: '#bdbdbd',
-  secondaryLight: '#e0e0e0',
+  secondaryLight: '#e0e0e0'
 };
 
 export const constants = {
@@ -39,3 +39,13 @@ export const media = Object.keys(sizes).reduce((acc, label) => {
 
   return acc;
 }, {});
+
+export const Container = styled.div`
+  width: 70%;
+  ${media.desktop`
+  width: 95%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`}
+`;

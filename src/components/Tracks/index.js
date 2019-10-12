@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Track from '../Track';
-import VoteDetails from '../molecules/VoteDetails';
+import VoteDetails from '../VoteDetails';
 import TrackError from '../TrackError';
 
 const Table = styled.table`

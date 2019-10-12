@@ -4,13 +4,13 @@ import styled from 'styled-components';
 
 import { fetchSearchResults, addToPlaylist } from '../actions';
 import Track from '../components/Track';
-import AddButton from '../components/atoms/AddButton';
-import SearchBar from '../components/molecules/SearchBar';
-import ContentContainer from '../components/ContentContainer';
-import LoadingIndicator from '../components/atoms/LoadingIndicator';
+import AddButton from '../components/AddButton';
+import SearchBar from '../components/SearchBar';
+import LoadingIndicator from '../components/LoadingIndicator';
 import ErrorIndicator from '../components/ErrorIndicator';
 import requireAuth from './requireAuth';
 import TrackError from '../components/TrackError';
+import { Container } from '../globalStyles'
 
 const Table = styled.table`
   width: 100%;
@@ -80,10 +80,10 @@ class Search extends React.Component {
     const { fetchSearchResults } = this.props;
 
     return (
-      <ContentContainer>
+      <Container>
         <SearchBar onSubmit={fetchSearchResults} />
         {this.renderSearchResults()}
-      </ContentContainer>
+      </Container>
     );
   }
 }

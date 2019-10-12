@@ -13,9 +13,9 @@ import {
 import Heading from '../components/Heading';
 import LockedTrack from '../components/LockedTrack';
 import Tracks from '../components/Tracks';
-import ContentContainer from '../components/ContentContainer';
 import requireAuth from './requireAuth';
 import ErrorIndicator from '../components/ErrorIndicator';
+import { Container } from '../globalStyles'
 
 class Playlist extends React.Component {
   componentDidMount() {
@@ -71,7 +71,7 @@ class Playlist extends React.Component {
     const { trackError } = this.props.playlist;
 
     return (
-      <ContentContainer>
+      <Container>
         <Heading
           text={'Party Playlist'}
           img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
@@ -88,7 +88,7 @@ class Playlist extends React.Component {
           updateTrackNumOfVotes={updateTrackNumOfVotes}
           removeTrack={removeTrack}
         />
-      </ContentContainer>
+      </Container>
     );
   }
 }
