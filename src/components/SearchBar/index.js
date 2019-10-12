@@ -31,8 +31,8 @@ class SearchBar extends Component {
   state = { searchTerm: '' };
 
   handleSearchTermChange = e => {
-    this.props.onSubmit(e.target.value);
     this.setState({ searchTerm: e.target.value });
+    this.props.onSubmit(e.target.value);
   };
 
   handleFormSubmit = e => {

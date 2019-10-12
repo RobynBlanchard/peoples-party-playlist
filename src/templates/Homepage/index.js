@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import SectionOne from './SectionOne';
-import SectionTwo from './SectionTwo';
-import SectionThree from './SectionThree';
+import Title from './Sections/Title';
+import RotatingCards from './Sections/RotatingCards';
+import SignIn from './Sections/SignIn';
 
 import { fonts, colours } from '../../globalStyles';
 
@@ -14,8 +14,7 @@ const Wrap = styled.div`
 `;
 
 const Parallax = styled.div`
-  /* background-image: url('images/vinyl.jpg'); */
-  background-image:linear-gradient(to right bottom,#212121,#000000);
+  background-image: linear-gradient(to right bottom, #212121, #000000);
   height: 85vh;
 
   background-attachment: fixed;
@@ -34,24 +33,24 @@ const Static = styled.div`
   width: 100%;
 `;
 
-class Home extends React.Component {
+class HomePage extends React.Component {
   render() {
     return (
       <Wrap>
         <Parallax>
-          <SectionOne />
+          <Title />
         </Parallax>
         <Parallax>
           <Static>
-            <SectionTwo />
+            <RotatingCards />
           </Static>
         </Parallax>
         <Parallax>
-          <SectionThree />
+          <SignIn />
         </Parallax>
       </Wrap>
     );
   }
 }
 
-export default Home;
+export default HomePage;

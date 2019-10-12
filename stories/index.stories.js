@@ -5,3 +5,4 @@ import '../src/components/LoadingIndicator/story';
 import '../src/components/AddButton/story';
 import '../src/components/VoteDetails/story';
 import '../src/components/SearchBar/story';
+import '../src/components/JukeboxAnimation/story';

@@ -1,7 +1,8 @@
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { media } from '../../../globalStyles';
-import Mouse from '../../ScrollingMouse';
+import Mouse from '../../../components/ScrollingMouse';
+import JukeboxAnimation from '../../../components/JukeboxAnimation';
 
 const Title = styled.div`
   display: flex;
@@ -11,8 +12,7 @@ const Title = styled.div`
   height: 70%;
   display: flex;
   justify-content: center;
-  ${media.phone`text-align: center;`}
-  position: relative;
+  ${media.phone`text-align: center;`} /* position: relative; */
 `;
 
 const MainHeading = styled.h2`
@@ -44,46 +44,16 @@ const Container = styled.div`
   justify-content: space-around;
 `;
 
-const Icon = styled.img`
-  height: 64px;
-  transform: translateY(8px);
-`;
-
-const flickerAnimation = keyframes`
-  0% {
-    transform: translate(-10px, 10px);
-    color: white;
-  }
-  50% {
-    color: grey;
-
-  }
-  100% {
-    color: rgba(0, 0, 0, 0);
-  }
-`;
-
-const MusicNote = styled.div`
-  position: absolute;
-  top: 32%;
-  left: 46%;
-  font-size: 24px;
-  animation: ${flickerAnimation} 3s infinite ease-out;
-  color: rgba(0, 0, 0, 0);
-`;
-
 const SectionOne = () => {
   return (
     <Container>
       <Title>
         <MainHeading>
-          People's P<Icon src={'images/jukebox.svg'} />
+          People's P<JukeboxAnimation />
           rty Playlist
         </MainHeading>
         <SubHeading>The Ultimate online jukebox experience</SubHeading>
-        <MusicNote>&#9835;</MusicNote>
       </Title>
-
       <Mouse />
     </Container>
   );

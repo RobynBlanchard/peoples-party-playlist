@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import RotatingCard from '../../RotatingCard';
-import { colours} from '../../../globalStyles';
+import RotatingCard from '../../../components/RotatingCard';
+import { colours } from '../../../globalStyles';
 
 const Container = styled.div`
   display: flex;
@@ -45,7 +45,6 @@ class SectionTwo extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.listenScrollEvent);
-
   }
 
   render() {

@@ -16,7 +16,7 @@ import { cloneDeep } from 'lodash';
 
 const defaultState = {
   removedPlaylist: [],
-  playablePlaylist: [],
+  tracks: [],
   lockedTrack: [],
   error: null,
   loading: false,
@@ -24,10 +24,10 @@ const defaultState = {
 };
 
 const playlistReducer = (state = defaultState, action) => {
-  let playablePlaylist = cloneDeep(state.playablePlaylist);
+  let tracks = cloneDeep(state.tracks);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
-
+  console.log('actoin', action.type)
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
       return {
@@ -35,99 +35,100 @@ const playlistReducer = (state = defaultState, action) => {
         loading: true
       };
     case FETCH_PLAYLIST_FROM_DB_SUCCESS:
-      const tracks = action.payload.response.data.tracks;
-      playablePlaylist = [];
+      const fetchedTracks = action.payload.response.data.tracks;
+      tracks = [];
       lockedTrack = [];
       removedPlaylist = [];
 
-      tracks.forEach(track => {
+      fetchedTracks.forEach(track => {
         if (track.removed) {
           removedPlaylist.push(track);
         } else if (track.locked && !track.removed) {
           lockedTrack.push(track);
         } else {
-          playablePlaylist.push(track);
+          tracks.push(track);
         }
       });
 
       return {
         ...state,
         loading: false,
-        playablePlaylist,
+        tracks,
         lockedTrack,
         removedPlaylist
       };
     case FETCH_PLAYLIST_FROM_DB_FAILURE:
+      console.log(action)
       return {
         ...state,
         loading: false,
         error: action.payload.error
       };
     case DELETE_TRACK:
-      playablePlaylist[action.payload.position].loading = true;
+      tracks[action.payload.position].loading = true;
 
       return {
         ...state,
-        playablePlaylist
+        tracks
       };
 
     case DELETE_TRACK_SUCCESS:
-      playablePlaylist[action.payload.position].loading = false;
-      playablePlaylist[action.payload.position].error = null;
-      playablePlaylist.splice(action.payload.position, 1);
+      tracks[action.payload.position].loading = false;
+      tracks[action.payload.position].error = null;
+      tracks.splice(action.payload.position, 1);
 
       return {
         ...state,
-        playablePlaylist
+        tracks
       };
     case DELETE_TRACK_FAILURE:
-      playablePlaylist[action.payload.position].loading = false;
-      playablePlaylist[action.payload.position].error = {
+      tracks[action.payload.position].loading = false;
+      tracks[action.payload.position].error = {
         status: action.payload.error.response.data.error.status,
         message: action.payload.error.response.data.error.message,
         displayMessage: 'could not update track at this time'
       };
       return {
         ...state,
-        playablePlaylist
+        tracks
       };
     case ADD_TO_PLAYLIST_SUCCESS:
-      playablePlaylist.splice(action.payload.position, 0, action.payload.track);
+      tracks.splice(action.payload.position, 0, action.payload.track);
       return {
         ...state,
-        playablePlaylist: playablePlaylist,
+        tracks: tracks,
         trackError: null
       };
     case UPDATE_TRACK:
-      playablePlaylist[action.payload.position].loading = true;
+      tracks[action.payload.position].loading = true;
 
       return {
         ...state,
-        playablePlaylist: playablePlaylist,
+        tracks: tracks,
         trackError: null
       };
 
     case UPDATE_TRACK_SUCCESS:
-      playablePlaylist.splice(action.payload.position, 1);
-      playablePlaylist.splice(
+      tracks.splice(action.payload.position, 1);
+      tracks.splice(
         action.payload.newPosition,
         0,
         action.payload.track
       );
 
-      playablePlaylist[action.payload.newPosition].loading = false;
+      tracks[action.payload.newPosition].loading = false;
 
       return {
         ...state,
-        playablePlaylist,
+        tracks,
         trackError: null
       };
     case UPDATE_TRACK_FAILURE:
-      playablePlaylist[action.payload.position].loading = false;
+      tracks[action.payload.position].loading = false;
 
       return {
         ...state,
-        playablePlaylist,
+        tracks,
         trackError: {
           position: action.payload.position,
           error: {
@@ -168,9 +169,9 @@ const playlistReducer = (state = defaultState, action) => {
         removedPlaylist.push(lockedTrack[0]);
         lockedTrack.pop();
       }
-      if (playablePlaylist.length > 0) {
-        lockedTrack = [playablePlaylist[0]];
-        playablePlaylist.shift();
+      if (tracks.length > 0) {
+        lockedTrack = [tracks[0]];
+        tracks.shift();
       }
       if (lockedTrack.length > 0) {
         lockedTrack[0].locked = true;
@@ -178,7 +179,7 @@ const playlistReducer = (state = defaultState, action) => {
       return {
         ...state,
         lockedTrack,
-        playablePlaylist,
+        tracks,
         removedPlaylist,
         trackError: null
       };
@@ -187,16 +188,16 @@ const playlistReducer = (state = defaultState, action) => {
         lockedTrack[0].removed = true;
         removedPlaylist.push(lockedTrack[0]);
       }
-      lockedTrack = [playablePlaylist[0]];
+      lockedTrack = [tracks[0]];
       if (lockedTrack.length > 0) {
         lockedTrack[0].locked = true;
       }
 
-      playablePlaylist.shift();
+      tracks.shift();
       return {
         ...state,
         lockedTrack,
-        playablePlaylist,
+        tracks,
         removedPlaylist
       };
     default:

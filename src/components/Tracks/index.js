@@ -16,7 +16,6 @@ const VoteDetailsWrapper = styled.div`
 const Tracks = ({
   playlist,
   trackError,
-  session,
   updateTrackNumOfVotes,
   removeTrack
 }) => {

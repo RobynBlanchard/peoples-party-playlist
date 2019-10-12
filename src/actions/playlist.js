@@ -29,8 +29,8 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
 ) => {
   const state = getState();
   const { userId } = state.appUser;
-  const { playablePlaylist } = state.playlist;
-  const selectedTrack = playablePlaylist[position];
+  const { tracks } = state.playlist;
+  const selectedTrack = tracks[position];
 
   if (change === 1) {
     if (selectedTrack.upVoters && selectedTrack.upVoters[userId] === 3) {
@@ -63,7 +63,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   }
 
   const newPosition = updatedTrackPosition(
-    playablePlaylist,
+    tracks,
     updatedTrack,
     change
   );
@@ -114,12 +114,12 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
   getState
 ) => {
   const {
-    playablePlaylist,
+    tracks,
     removedPlaylist,
     lockedTrack
   } = getState().playlist;
 
-  const alreadyAdded = playablePlaylist.some(track => track.uri === uri);
+  const alreadyAdded = tracks.some(track => track.uri === uri);
   if (alreadyAdded) {
     return dispatch({
       type: ADD_TO_PLAYLIST_DISALLOWED,
@@ -136,7 +136,7 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
     updatedAt
   };
 
-  const newPosition = updatedTrackPosition(playablePlaylist, track, 1);
+  const newPosition = updatedTrackPosition(tracks, track, 1);
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
   const callAPI = token => {

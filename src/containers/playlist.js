@@ -8,20 +8,17 @@ import {
   getCurrentlyPlayingTrack,
   removeTrack,
   startSession,
-  updateCurrentTrack,
+  updateCurrentTrack
 } from '../actions';
-import Heading from '../components/Heading';
-import LockedTrack from '../components/LockedTrack';
-import Tracks from '../components/Tracks';
-import requireAuth from './requireAuth';
+import requireAuth from '../components/RequireAuth';
 import ErrorIndicator from '../components/ErrorIndicator';
-import { Container } from '../globalStyles'
-
+import PlaylistTemplate from '../templates/Playlist';
 class Playlist extends React.Component {
   componentDidMount() {
     const { playlist, fetchPlaylist } = this.props;
+    const { tracks } = playlist;
 
-    if (playlist.playablePlaylist.length === 0) {
+    if (tracks.length === 0) {
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
@@ -29,17 +26,19 @@ class Playlist extends React.Component {
 
   getCurrentlyPlaying() {
     const { session, getCurrentlyPlayingTrack } = this.props;
+    const { sessionStarted } = session;
 
-    if (session.sessionStarted) {
+    if (sessionStarted) {
       getCurrentlyPlayingTrack();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     const { currentTrack, updateCurrentTrack, session } = this.props;
+    const { sessionStarted } = session;
 
     if (
-      session.sessionStarted &&
+      sessionStarted &&
       currentTrack.uri &&
       nextProps.currentTrack.uri !== currentTrack.uri
     ) {
@@ -54,42 +53,36 @@ class Playlist extends React.Component {
       resumePlayback,
       pausePlayback,
       playbackError,
-      session
+      session,
+      updateTrackNumOfVotes,
+      removeTrack
     } = this.props;
-    const { playablePlaylist, lockedTrack, error: playlistError } = playlist;
-    const { error: sessionError } = session.sessionStarted;
+    const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
+    const { error: sessionError } = session;
 
     let error = playlistError || playbackError || sessionError;
 
     if (error) return <ErrorIndicator message={error.displayMessage} />;
 
-    if (playablePlaylist.length === 0 && lockedTrack.length === 0) {
+    if (tracks.length === 0 && lockedTrack.length === 0) {
       return null;
     }
 
-    const { updateTrackNumOfVotes, removeTrack } = this.props;
-    const { trackError } = this.props.playlist;
+    const playback = {
+      playing,
+      pausePlayback,
+      resumePlayback
+    };
 
-    return (
-      <Container>
-        <Heading
-          text={'Party Playlist'}
-          img={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
-          handleClick={playing ? pausePlayback : resumePlayback}
-        />
-        {lockedTrack.length > 0 && (
-          <LockedTrack track={lockedTrack[0]} playing={playing} />
-        )}
+    const playlistProp = {
+      tracks: tracks,
+      lockedTrack,
+      trackError,
+      updateTrackVotes: updateTrackNumOfVotes,
+      removeTrack
+    };
 
-        <Tracks
-          playlist={playablePlaylist}
-          trackError={trackError}
-          session={session}
-          updateTrackNumOfVotes={updateTrackNumOfVotes}
-          removeTrack={removeTrack}
-        />
-      </Container>
-    );
+    return <PlaylistTemplate playlist={playlistProp} playback={playback} />;
   }
 }
 
@@ -116,6 +109,6 @@ export default connect(
     pausePlayback,
     getCurrentlyPlayingTrack,
     startSession,
-    updateCurrentTrack,
+    updateCurrentTrack
   }
 )(Playlist);

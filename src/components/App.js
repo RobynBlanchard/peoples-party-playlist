@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { colours, fonts } from '../globalStyles';
 import Playlist from '../containers/playlist';
-import Home from './Home';
+import Home from '../templates/Homepage';
 import Search from '../containers/search';
 import Nav from '../containers/nav';
 

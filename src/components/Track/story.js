@@ -5,7 +5,7 @@ import { storiesOf } from '@storybook/react';
 import Track from '.';
 
 const Background = styled.div`
-  background-image: linear-gradient(to right bottom,#212121,#424242);
+  background-image: linear-gradient(to right bottom, #212121, #424242);
 `;
 
 const props = {
@@ -22,6 +22,10 @@ const props = {
 
 storiesOf('Track Component', module).add('Track not selected', () => (
   <Background>
-    <Track {...props} />
+    <table>
+      <tbody>
+        <Track {...props} />
+      </tbody>
+    </table>
   </Background>
 ));
