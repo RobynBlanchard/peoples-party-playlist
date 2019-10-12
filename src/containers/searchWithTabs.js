@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { fetchSearchResults, addToPlaylist } from '../actions';
 import Track from '../components/Track';
 import AddButton from '../components/atoms/AddButton';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/molecules/SearchBar';
 import ContentContainer from '../components/ContentContainer';
 import LoadingIndicator from '../components/atoms/LoadingIndicator';
 import ErrorIndicator from '../components/ErrorIndicator';

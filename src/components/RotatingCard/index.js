@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colours, fonts } from '../../../globalStyles';
+import { colours, fonts } from '../../globalStyles';
 
 const sneakAPeekFront = keyframes`
   50% {

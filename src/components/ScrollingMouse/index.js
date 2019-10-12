@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colours } from '../../../globalStyles';
+import { colours } from '../../globalStyles';
 
 const scrollAnimation = keyframes`
   0% { opacity: 0; }

@@ -1,6 +1,7 @@
 import '../src/components/Track/story';
-import '../src/components/atoms/RotatingCard/story';
-import '../src/components/atoms/ScrollingMouse/story';
-import '../src/components/atoms/LoadingIndicator/story';
-import '../src/components/atoms/AddButton/story';
-import '../src/components/molecules/VoteDetails/story';
+import '../src/components/RotatingCard/story';
+import '../src/components/ScrollingMouse/story';
+import '../src/components/LoadingIndicator/story';
+import '../src/components/AddButton/story';
+import '../src/components/VoteDetails/story';
+import '../src/components/SearchBar/story';
