@@ -68,7 +68,7 @@ export default (app, store) => {
       const reactDom = renderToString(sheet.collectStyles(jsx));
       const reduxState = store.getState();
       const styles = sheet.getStyleTags();
-      console.log('redux state', reduxState);
+
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(htmlTemplate(reactDom, styles, reduxState));
     });

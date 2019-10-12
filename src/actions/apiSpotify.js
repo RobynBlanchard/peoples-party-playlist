@@ -1,4 +1,4 @@
-import spotifyApi from '../api';
+import spotifyApi from './api';
 import { playlistId } from '../utils/constants';
 
 export const reOrderTrackSpotify = (

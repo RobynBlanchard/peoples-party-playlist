@@ -12,7 +12,7 @@ import {
   PAUSE_PLAYBACK_SUCCESS,
   PAUSE_PLAYBACK_FAILURE
 } from './types';
-import spotifyApi from '../api';
+import spotifyApi from './api';
 import { playlistId } from '../utils/constants';
 import { updateTrack } from './apiDb';
 import { startSession } from './index';
