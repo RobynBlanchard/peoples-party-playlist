@@ -1,16 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
+import { DefaultButton } from '../../globalStyles';
 
-const Button = styled.button`
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
+const Button = styled(DefaultButton)`
   font-size: 24px;
-
   height: 20px;
 
   & > p {

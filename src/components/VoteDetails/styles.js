@@ -19,16 +19,6 @@ export const VotesText = styled.p`
   ${media.tablet`font-size: 18px;`}
 `;
 
-export const Button = styled.button`
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-`;
-
 export const Icon = styled.img`
   height: 20px;
   width: 20px;

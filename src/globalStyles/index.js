@@ -49,3 +49,13 @@ export const Container = styled.div`
   justify-content: center;
 `}
 `;
+
+export const DefaultButton = styled.button`
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+`;

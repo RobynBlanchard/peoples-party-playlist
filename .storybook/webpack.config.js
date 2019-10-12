@@ -7,31 +7,30 @@
 // to "React Create App". This only has babel loader to load JavaScript.
 
 const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  plugins: [
-    // your custom plugins
-  ],
   module: {
     rules: [
       {
         test: /\.css$/,
         exclude: /node_modules(?!\/@storybook\/addon-info)/,
-        use: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader']
       },
       {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
-        include: path.resolve(__dirname, '../'),
+        include: path.resolve(__dirname, '../')
       },
       {
         test: /\.(png|jpg|svg)$/,
         use: [
           {
-            loader: 'file-loader',
-          },
-        ],
-      },
-    ],
+            loader: 'file-loader'
+          }
+        ]
+      }
+    ]
   },
+  // plugins: [new CopyPlugin([{ from: 'static/img', to: 'images' }])]
 };

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Wrapper, VotesText, Button, Icon } from './styles';
+import { Wrapper, VotesText, Icon } from './styles';
+import { DefaultButton } from '../../globalStyles';
 
 const VoteDetails = ({
   position,
@@ -21,13 +22,17 @@ const VoteDetails = ({
 
   return (
     <Wrapper>
-      <Button onClick={() => handleClick(uri, position, handleDownVote, -1)}>
+      <DefaultButton
+        onClick={() => handleClick(uri, position, handleDownVote, -1)}
+      >
         <Icon src={minusImg} />
-      </Button>
+      </DefaultButton>
       <VotesText>{votes}</VotesText>
-      <Button onClick={() => handleClick(uri, position, handleUpVote, 1)}>
+      <DefaultButton
+        onClick={() => handleClick(uri, position, handleUpVote, 1)}
+      >
         <Icon src={plusImg} />
-      </Button>
+      </DefaultButton>
     </Wrapper>
   );
 };

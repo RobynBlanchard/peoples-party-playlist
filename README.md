@@ -110,3 +110,8 @@
 
 
   <!-- make user go to /invite -->
+
+  <!-- debounde -->
+  <!-- mobile first -->
+  <!-- prop types -->
+  <!-- fix file loader for images -->

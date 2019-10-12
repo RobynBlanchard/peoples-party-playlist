@@ -2,7 +2,7 @@ import React from 'react';
 
 import { storiesOf } from '@storybook/react';
 import ContentBlock from '.';
-import image from '../../../static/img/disc.svg';
+import image from '../../static/img/disc.svg';
 
 const props = {
   image,

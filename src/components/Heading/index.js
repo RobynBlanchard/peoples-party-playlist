@@ -1,18 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import { DefaultButton } from '../../globalStyles';
 
 const Container = styled.div`
   display: flex;
   align-items: row;
-`;
-
-const Button = styled.button`
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  outline: inherit;
-  cursor: pointer;
 `;
 
 const Icon = styled.img`
@@ -24,9 +16,9 @@ const Icon = styled.img`
 const Heading = ({ text, img, handleClick }) => {
   return (
     <Container>
-      <Button onClick={handleClick}>
+      <DefaultButton onClick={handleClick}>
         <Icon src={img} />
-      </Button>
+      </DefaultButton>
       <h2>{text}</h2>{' '}
     </Container>
   );
