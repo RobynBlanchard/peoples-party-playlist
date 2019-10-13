@@ -1,5 +1,7 @@
 import { Switch, Route } from 'react-router-dom';
 import React from 'react';
+import { hot } from "react-hot-loader";
+
 import styled from 'styled-components';
 
 import { colours, fonts } from '../globalStyles';
@@ -38,4 +40,5 @@ class App extends React.Component {
   }
 }
 
-export default App;
+// export default App;
+export default hot(module)(App);

@@ -6,6 +6,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack --progress",
     "dev": "NODE_ENV=development webpack --watch --progress & nodemon index.js",
+    "devv": "nodemon .",
     "start": "npm run build && node index.js",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
@@ -48,7 +49,9 @@
     "path": "^0.12.7",
     "query-string": "^6.2.0",
     "react": "^16.8.1",
+    "react-dev-utils": "^9.1.0",
     "react-dom": "^16.8.1",
+    "react-hot-loader": "^4.12.15",
     "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "react-test-renderer": "^16.8.6",

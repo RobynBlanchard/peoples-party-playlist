@@ -9,10 +9,11 @@ module.exports = {
     minimize: false
   },
   context: path.join(__dirname, 'src'),
-  entry: './client.js',
+  entry: `webpack-hot-middleware/client?reload=true&overlay=$true`,
   output: {
     path: path.resolve(__dirname, 'public'),
-    filename: '[name].bundle.js'
+    filename: '[name].bundle.js',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -21,7 +22,7 @@ module.exports = {
         test: /\.(png|jpg|svg)$/,
         use: [
           {
-            loader: 'file-loader',
+            loader: 'file-loader'
             // options: {}
           }
         ]
@@ -29,9 +30,21 @@ module.exports = {
     ]
   },
   plugins: [
-    new CopyPlugin([{ from: 'static/img', to: 'images' }]),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-    })
-  ]
+    new webpack.HotModuleReplacementPlugin(),
+    new CopyPlugin([{ from: 'static/img', to: 'images' }])
+  ],
+  // resolve: {
+  //   alias: {
+  //     'react-dom': '@hot-loader/react-dom'
+  //   },
+  //   modules: ['src', 'node_modules'],
+  //   descriptionFiles: ['package.json'],
+  //   extensions: ['.js', '.jsx', '.json', '.scss']
+  // },
+  node: {
+    fs: 'empty',
+    vm: 'empty',
+    net: 'empty',
+    tls: 'empty'
+  }
 };
