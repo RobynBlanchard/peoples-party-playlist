@@ -4,12 +4,11 @@ const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
-  optimization: {
-    // We no not want to minimize our code.
-    minimize: false
-  },
-  context: path.join(__dirname, 'src'),
-  entry: `webpack-hot-middleware/client?reload=true&overlay=$true`,
+  // context: path.join(__dirname, 'src'),
+  entry: [
+    'webpack-hot-middleware/client?reload=true&overlay=$true',
+    './src/client.js'
+  ],
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: '[name].bundle.js',
@@ -17,13 +16,12 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.(js)$/, use: 'babel-loader' },
+      { test: /\.(js|jsx)$/, use: 'babel-loader' },
       {
         test: /\.(png|jpg|svg)$/,
         use: [
           {
             loader: 'file-loader'
-            // options: {}
           }
         ]
       }
@@ -36,10 +34,7 @@ module.exports = {
   // resolve: {
   //   alias: {
   //     'react-dom': '@hot-loader/react-dom'
-  //   },
-  //   modules: ['src', 'node_modules'],
-  //   descriptionFiles: ['package.json'],
-  //   extensions: ['.js', '.jsx', '.json', '.scss']
+  //   }
   // },
   node: {
     fs: 'empty',

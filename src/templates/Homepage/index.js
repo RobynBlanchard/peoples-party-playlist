@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Title from './Sections/Title';
 import RotatingCards from './Sections/RotatingCards';
 import SignIn from './Sections/SignIn';
-
 import { fonts, colours } from '../../globalStyles';
 
 const Wrap = styled.div`

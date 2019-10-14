@@ -24,7 +24,7 @@ const store = createStore();
 
 const devServer = () => {
   const webpack = require("webpack");
-  const webpackConfig = require("../webpack.config");
+  const webpackConfig = require("../config/webpack.config");
   const compiler = webpack(webpackConfig);
   const webpackDevMiddleware = require("webpack-dev-middleware");
   const webpackHotMiddleware = require("webpack-hot-middleware");
