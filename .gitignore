@@ -6,3 +6,4 @@ src/.DS_Store
 src/static/.DS_Store
 build
 public
+server-production.js

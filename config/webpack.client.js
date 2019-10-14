@@ -72,7 +72,7 @@ module.exports = {
   },
   plugins: [
     new ManifestPlugin(),
-    new CopyPlugin([{ from: 'static/img', to: 'images' }]),
+    new CopyPlugin([{ from: './src/static/img', to: 'images' }]),
     new ImageminPlugin()
   ]
 };

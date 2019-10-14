@@ -5,9 +5,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon .",
+    "clean:client": "rm -rf ./public",
+    "clean:server": "rm -f ./server-production.js",
     "build:client": "webpack --config ./config/webpack.client.js",
     "build:server": "webpack --config ./config/webpack.server.js",
-    "start": "npm run build && node index.js",
+    "serve": "node server-production.js",
+    "start": "npm run clean:client && npm run clean:server && npm run build:client && npm run build:server && npm run serve",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"

@@ -19,7 +19,7 @@ export const fetchPlaylist = () => dispatch => {
       FETCH_PLAYLIST_FROM_DB_FAILURE
     ],
     // callAPI: () => axios.get(`${endpoint}/api/v1/playlist/tracks`)
-    callAPI: () => axios.get(`http://localhost:5000/api/v1/playlist/tracks`)
+    callAPI: () => axios.get(`http://localhost:8080/api/v1/playlist/tracks`)
   });
 };
 

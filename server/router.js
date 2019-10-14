@@ -36,9 +36,10 @@ export default (app, store) => {
 
   app.get('/*', (req, res) => {
     const context = {};
-
+    console.log('======', req.path)
     const token = req.cookies.spotifyAccessToken;
     if (token) {
+
       store.dispatch(logInSucess(token));
     }
 
