@@ -6,40 +6,16 @@ import { ServerStyleSheet } from 'styled-components';
 
 import routes from '../src/routes';
 import App from '../src/components/App';
-import {
-  logIn,
-  logOut,
-  logInCallback,
-  logInFailure
-} from './controllers/authentication';
-import { invite } from './controllers/user';
-import {
-  addTrack,
-  patchTrack,
-  getTracks,
-  removeTrack
-} from './controllers/playlist';
 import htmlTemplate from './htmlTemplate';
 import { logInSucess, assignUser } from '../src/actions';
 
 export default (app, store) => {
-  app.get('/login', logIn);
-  app.get('/log-out', logOut(store));
-  app.get('/change-user', logIn);
-  app.get('/LogInFailure', logInFailure(store));
-  app.get('/callback', logInCallback);
-  app.get('/invite', invite);
-  app.get('/api/v1/playlist/tracks', getTracks);
-  app.delete('/api/v1/playlist/tracks/:id', removeTrack);
-  app.post('/api/v1/playlist/tracks', addTrack);
-  app.patch('/api/v1/playlist/tracks/:id', patchTrack); // id is track uri
-
   app.get('/*', (req, res) => {
     const context = {};
-    console.log('======', req.path)
+
+    // fix - happens on every request eg all requests for images
     const token = req.cookies.spotifyAccessToken;
     if (token) {
-
       store.dispatch(logInSucess(token));
     }
 

@@ -7,3 +7,4 @@ src/static/.DS_Store
 build
 public
 server-production.js
+dist

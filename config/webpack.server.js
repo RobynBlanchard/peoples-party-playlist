@@ -5,7 +5,7 @@ module.exports = {
   mode: 'production',
   target : 'node',
   entry: {
-    server: './server/server.js'
+    server: './server'
   },
   output: {
     filename: '[name]-production.js',

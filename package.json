@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon .",
-    "clean:client": "rm -rf ./public",
+    "clean:client": "rm -rf ./dist",
     "clean:server": "rm -f ./server-production.js",
     "build:client": "webpack --config ./config/webpack.client.js",
     "build:server": "webpack --config ./config/webpack.server.js",

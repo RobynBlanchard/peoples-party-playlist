@@ -14,7 +14,7 @@ module.exports = {
     // homePage: './src/templates/Homepage'
   },
   output: {
-    path: path.resolve(__dirname, '../public'),
+    path: path.resolve(__dirname, '../dist'),
     // TODO:
     // filename: '[name].[contenthash:8].js',
     filename: '[name].bundle.js',

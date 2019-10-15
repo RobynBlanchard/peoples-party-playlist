@@ -115,3 +115,4 @@
   <!-- mobile first -->
   <!-- prop types -->
   <!-- fix file loader for images -->
+  <!-- set up - HMR for reducers -->

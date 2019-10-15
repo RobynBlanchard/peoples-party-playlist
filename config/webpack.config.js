@@ -10,7 +10,7 @@ module.exports = {
     './src/client.js'
   ],
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
     publicPath: '/'
   },
@@ -29,7 +29,7 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new CopyPlugin([{ from: 'static/img', to: 'images' }])
+    new CopyPlugin([{ from: './src/static/img', to: 'images' }])
   ],
   // resolve: {
   //   alias: {
