@@ -54,7 +54,7 @@ const playlistReducer = (state = defaultState, action) => {
           tracks.push(track);
         }
       });
-      debugger
+      // debugger
 
       return {
         ...state,
@@ -123,7 +123,7 @@ const playlistReducer = (state = defaultState, action) => {
         action.payload.track
       );
 
-      debugger
+      // debugger
 
       // tracks[action.payload.newPosition].loading = false;
 
