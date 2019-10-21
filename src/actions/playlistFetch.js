@@ -7,21 +7,35 @@ import {
   FETCH_PLAYLIST_FROM_DB_FAILURE
 } from './types';
 
-export const fetchPlaylist = () => dispatch => {
-  const endpoint =
-    // process.env.NODE_ENV === 'development'
-      // ? 'http://localhost:5000'
-      // : 'https://peoples-party-playlist.herokuapp.com';
-  dispatch({
-    types: [
-      FETCH_PLAYLIST_FROM_DB,
-      FETCH_PLAYLIST_FROM_DB_SUCCESS,
-      FETCH_PLAYLIST_FROM_DB_FAILURE
-    ],
-    // callAPI: () => axios.get(`${endpoint}/api/v1/playlist/tracks`)
-    callAPI: () => axios.get(`http://localhost:8080/api/v1/playlist/tracks`)
-  });
-};
+// export const fetchPlaylist = () => dispatch => {
+//   const endpoint =
+//     // process.env.NODE_ENV === 'development'
+//       // ? 'http://localhost:5000'
+//       // : 'https://peoples-party-playlist.herokuapp.com';
+//   dispatch({
+//     types: [
+//       FETCH_PLAYLIST_FROM_DB,
+//       FETCH_PLAYLIST_FROM_DB_SUCCESS,
+//       FETCH_PLAYLIST_FROM_DB_FAILURE
+//     ],
+//     // callAPI: () => axios.get(`${endpoint}/api/v1/playlist/tracks`)
+//     callAPI: () => axios.get(`http://localhost:8080/api/v1/playlist/tracks`)
+//   });
+// };
+export const fetchPlaylist = () => ({
+  types: [
+    FETCH_PLAYLIST_FROM_DB,
+    FETCH_PLAYLIST_FROM_DB_SUCCESS,
+    FETCH_PLAYLIST_FROM_DB_FAILURE
+  ],
+  // callAPI: () =>
+  //   axios.get('http://localhost:5000/playlist/api/v1/tracks', {
+  //     params: { removed: false }
+  //   }),
+  callAPI: () =>
+  axios.get('http://localhost:8080/api/v1/playlist/tracks'),
+  // axios.get('https://peoples-party-playlist.herokuapp.com/api/v1/playlist/tracks')
+});
 
 // export const fetchPlaylist = () => (dispatch, getState) => {
 //   axios
