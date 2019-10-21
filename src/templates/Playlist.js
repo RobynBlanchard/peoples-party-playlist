@@ -4,7 +4,7 @@ import { Container, DefaultButton } from '../globalStyles';
 import Tracks from '../components/Tracks';
 
 const Heading = styled.div`
-  text-align: left;
+  display: flex;
 `;
 
 const PlaybackIcon = styled.img`
