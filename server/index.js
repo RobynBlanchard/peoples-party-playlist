@@ -12,12 +12,12 @@ const app = express();
 const server = http.createServer(app);
 const store = createStore();
 
-setUpMiddlewares(app, server);
 
 if (process.env.NODE_ENV !== 'production') {
   setUpDevServer(app);
 }
 
+setUpMiddlewares(app, server);
 setUpApi(app, store);
 
 renderReact(app, store);
