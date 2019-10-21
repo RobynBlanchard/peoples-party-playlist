@@ -27,25 +27,32 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
 ) => {
+  console.log('update track')
+  console.log('uri', uri);
+  console.log('position', position);
+  console.log('change', change)
+  // debugger
   const state = getState();
   const { userId } = state.appUser;
   const { tracks } = state.playlist;
   const selectedTrack = tracks[position];
 
-  if (change === 1) {
-    if (selectedTrack.upVoters && selectedTrack.upVoters[userId] === 3) {
-      return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
-    }
-  } else {
+  // if (change > 0) {
+  //   if (selectedTrack.upVoters && selectedTrack.upVoters[userId] === 3) {
+  //     return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
+  //   }
+  // } else {
 
-    if (selectedTrack.downVoters && selectedTrack.downVoters[userId] === 2) {
-      return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
-    }
-  }
+  //   if (selectedTrack.downVoters && selectedTrack.downVoters[userId] === 2) {
+  //     return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
+  //   }
+  // }
 
   const updatedTrack = {
     ...selectedTrack,
-    votes: selectedTrack.votes + change,
+    // votes: selectedTrack.votes + change,
+    votes: change,
+
     updatedAt: new Date().toISOString(),
     upVoters: {
       ...selectedTrack.upVoters
@@ -55,12 +62,14 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     }
   };
 
-  if (change === 1) {
-    updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + 1;
-  } else {
-    updatedTrack.downVoters[userId] =
-      (updatedTrack.downVoters[userId] || 0) + 1;
-  }
+  // debugger
+
+  // if (change > 0) {
+  //   updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + 1;
+  // } else {
+  //   updatedTrack.downVoters[userId] =
+  //     (updatedTrack.downVoters[userId] || 0) + 1;
+  // }
 
   const newPosition = updatedTrackPosition(
     tracks,
@@ -71,8 +80,9 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   const callAPI = token => {
     if (newPosition === position) {
       return updateTrackDb(uri, {
-        $inc: { votes: change },
+        // $inc: { votes: change },
         $set: {
+          votes: change, 
           updatedAt: updatedTrack.updatedAt,
           upVoters: updatedTrack.upVoters,
           downVoters: updatedTrack.downVoters
@@ -90,8 +100,8 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
         token
       ).then(res =>
         updateTrackDb(uri, {
-          $inc: { votes: change },
-          $set: { updatedAt: updatedTrack.updatedAt }
+          // $inc: { votes: change },
+          $set: { votes: change, updatedAt: updatedTrack.updatedAt }
         })
       );
     }

@@ -54,6 +54,7 @@ const Tracks = ({
                     removeTrack={removeTrack}
                     minusImg="images/white-minus.svg"
                     plusImg="images/white-plus.svg"
+                    shouldFocus={updatedAt > oneSecondAgo()}
                   />
                 </VoteDetailsWrapper>
               </Track>

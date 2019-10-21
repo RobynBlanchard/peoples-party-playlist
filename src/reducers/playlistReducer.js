@@ -30,16 +30,21 @@ const playlistReducer = (state = defaultState, action) => {
   console.log('actoin', action.type)
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
+      console.log('fetch from db')
+      // debugger
+
       return {
         ...state,
         loading: true
       };
     case FETCH_PLAYLIST_FROM_DB_SUCCESS:
+      console.log('fetch from db success', action.payload.response.data.tracks)
       const fetchedTracks = action.payload.response.data.tracks;
       tracks = [];
       lockedTrack = [];
       removedPlaylist = [];
 
+      
       fetchedTracks.forEach(track => {
         if (track.removed) {
           removedPlaylist.push(track);
@@ -49,6 +54,7 @@ const playlistReducer = (state = defaultState, action) => {
           tracks.push(track);
         }
       });
+      debugger
 
       return {
         ...state,
@@ -100,7 +106,7 @@ const playlistReducer = (state = defaultState, action) => {
         trackError: null
       };
     case UPDATE_TRACK:
-      tracks[action.payload.position].loading = true;
+      // tracks[action.payload.position].loading = true;
 
       return {
         ...state,
@@ -109,6 +115,7 @@ const playlistReducer = (state = defaultState, action) => {
       };
 
     case UPDATE_TRACK_SUCCESS:
+      tracks[action.payload.position].loading = false;
       tracks.splice(action.payload.position, 1);
       tracks.splice(
         action.payload.newPosition,
@@ -116,7 +123,9 @@ const playlistReducer = (state = defaultState, action) => {
         action.payload.track
       );
 
-      tracks[action.payload.newPosition].loading = false;
+      debugger
+
+      // tracks[action.payload.newPosition].loading = false;
 
       return {
         ...state,

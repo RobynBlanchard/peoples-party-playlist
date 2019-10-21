@@ -1,5 +1,11 @@
-import styled from 'styled-components';
-import { media, fonts } from '../../globalStyles';
+import styled, { keyframes } from 'styled-components';
+import { media, fonts, colours } from '../../globalStyles';
+
+const lightHighlight = keyframes`
+  50% {
+    color: ${colours.spotifyGreen};
+  }
+`;
 
 export const Wrapper = styled.div`
   display: flex;
@@ -17,6 +23,8 @@ export const VotesText = styled.p`
   color: white;
   font-family: ${fonts.font1};
   ${media.tablet`font-size: 18px;`}
+  animation: ${({ shouldFocus }) => shouldFocus && lightHighlight} 1s
+    ease-in-out;
 `;
 
 export const Icon = styled.img`
