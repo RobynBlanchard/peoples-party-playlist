@@ -115,6 +115,7 @@ const playlistReducer = (state = defaultState, action) => {
       };
 
     case UPDATE_TRACK_SUCCESS:
+      console.log(action.payload)
       tracks[action.payload.position].loading = false;
       tracks.splice(action.payload.position, 1);
       tracks.splice(

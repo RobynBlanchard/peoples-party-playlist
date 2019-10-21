@@ -82,7 +82,7 @@ class Playlist extends React.Component {
       removeTrack
     };
 
-    // console.log('=====', tracks)
+    console.log('=====', tracks)
     // debugger
 
     return <PlaylistTemplate playlist={playlistProp} playback={playback} />;

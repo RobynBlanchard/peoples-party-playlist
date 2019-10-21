@@ -26,6 +26,8 @@ const Tracks = ({
     return d.toISOString();
   };
 
+  console.log(playlist)
+
   return (
     <Table>
       <tbody>

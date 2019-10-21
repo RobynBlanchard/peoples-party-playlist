@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { Wrapper, VotesText, Icon } from './styles';
 import { DefaultButton } from '../../globalStyles';
 
-
 const debounce = (fn, delay) => {
   let timeoutId;
   return function(...args) {
@@ -23,7 +22,6 @@ const VoteDetails = ({
   shouldFocus
 }) => {
   // const handleClick = (uri, position, handleVote, change) => {
-    
 
   //   if (votes + change === -5) {
   //     removeTrack(uri, position);
@@ -31,7 +29,13 @@ const VoteDetails = ({
   //     handleVote(uri, position, change);
   //   }
   // };
+
   const [input, setInput] = useState(votes);
+
+  React.useEffect(() => {
+    setInput(votes);
+  }, [votes]);
+
   const debounceCallback = useCallback(
     debounce((value, setNumVotes, uri, position) => {
       // console.log('value: ', value)
@@ -44,16 +48,20 @@ const VoteDetails = ({
     []
   );
 
+  console.log('vote details');
+  console.log('votes', votes);
+  console.log('input', input);
+
   const onInputChangeHandler = (value, setNumVotes, uri, position) => {
     setInput(prevState => {
       // console.log('prevstate', prevState)
       // console.log(prevState += value)
       // debugger
-      return prevState += value
+      return (prevState += value);
       // return prevState
     });
-    console.log('input', input)
-    console.log('value', value)
+    console.log('input', input);
+    console.log('value', value);
 
     debounceCallback(input + value, setNumVotes, uri, position);
   };
@@ -61,7 +69,7 @@ const VoteDetails = ({
   // just pass new num of votes instead of change?
 
   // console.log('input', input)
-  console.log('votes', votes)
+  console.log('votes', votes);
 
   return (
     <Wrapper>
