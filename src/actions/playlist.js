@@ -27,11 +27,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
 ) => {
-  console.log('update track')
-  console.log('uri', uri);
-  console.log('position', position);
-  console.log('change', change)
-  // debugger
   const state = getState();
   const { userId } = state.appUser;
   const { tracks } = state.playlist;
@@ -61,8 +56,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
       ...selectedTrack.downVoters
     }
   };
-
-  // debugger
 
   // if (change > 0) {
   //   updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + 1;
