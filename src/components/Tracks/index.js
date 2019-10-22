@@ -17,7 +17,10 @@ const Tracks = ({
   playlist,
   trackError,
   updateTrackNumOfVotes,
-  removeTrack
+  removeTrack,
+  userId,
+  upVoteLimitExceeded,
+  downVoteLimitExceeded
 }) => {
   const oneSecondAgo = () => {
     const d = new Date();
@@ -26,13 +29,12 @@ const Tracks = ({
     return d.toISOString();
   };
 
-  console.log(playlist)
-
   return (
     <Table>
       <tbody>
         {playlist.map((track, index) => {
-          const { artist, name, votes, uri, updatedAt } = track;
+          const { artist, name, votes, uri, updatedAt, upVoters, downVoters } = track;
+
 
           if (trackError && trackError.position === index) {
             console.log('==track error==', trackError.error.displayMessage);
@@ -54,8 +56,13 @@ const Tracks = ({
                     handleUpVote={updateTrackNumOfVotes}
                     handleDownVote={updateTrackNumOfVotes}
                     removeTrack={removeTrack}
-                    minusImg="images/white-minus.svg"
-                    plusImg="images/white-plus.svg"
+                    upVoteLimitExceeded={upVoteLimitExceeded}
+                    downVoteLimitExceeded={downVoteLimitExceeded}
+                    // minusImg="images/white-minus.svg"
+                    // plusImg="images/white-plus.svg"
+                    upVoters={upVoters}
+                    downVoters={downVoters}
+                    userId={userId}
                     shouldFocus={updatedAt > oneSecondAgo()}
                   />
                 </VoteDetailsWrapper>

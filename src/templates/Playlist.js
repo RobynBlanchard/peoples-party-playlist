@@ -20,7 +20,10 @@ const PlaylistTemplate = ({ playback, playlist }) => {
     lockedTrack,
     trackError,
     updateTrackVotes,
-    removeTrack
+    removeTrack,
+    userId,
+    upVoteLimitExceeded,
+    downVoteLimitExceeded
   } = playlist;
 
   return (
@@ -41,6 +44,9 @@ const PlaylistTemplate = ({ playback, playlist }) => {
         trackError={trackError}
         updateTrackNumOfVotes={updateTrackVotes}
         removeTrack={removeTrack}
+        userId={userId}
+        upVoteLimitExceeded={upVoteLimitExceeded}
+        downVoteLimitExceeded={downVoteLimitExceeded}
       />
     </Container>
   );

@@ -8,7 +8,7 @@ import {
   DELETE_TRACK,
   DELETE_TRACK_SUCCESS,
   DELETE_TRACK_FAILURE,
-  ADD_TO_PLAYLIST_DISALLOWED,
+  ADD_TO_PLAYLIST_DISALLOWED
 } from './types';
 
 import {
@@ -23,6 +23,18 @@ import {
 } from './apiDb';
 import { spotifyOffSet, updatedTrackPosition } from './playlistUtils';
 
+export const upVoteLimitExceeded = position => ({
+  type: 'UPVOTE_LIMIT_EXCEEDED',
+  payload: position
+});
+
+export const downVoteLimitExceeded = position => ({
+  type: 'DOWNVOTE_LIMIT_EXCEEDED',
+  payload: position
+});
+
+
+
 export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
@@ -32,16 +44,21 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   const { tracks } = state.playlist;
   const selectedTrack = tracks[position];
 
-  // if (change > 0) {
-  //   if (selectedTrack.upVoters && selectedTrack.upVoters[userId] === 3) {
-  //     return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
-  //   }
-  // } else {
+  console.log('1');
 
-  //   if (selectedTrack.downVoters && selectedTrack.downVoters[userId] === 2) {
-  //     return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
-  //   }
-  // }
+  if (change > 0) {
+    console.log('2');
+
+    if (selectedTrack.upVoters && selectedTrack.upVoters[userId] === 3) {
+      console.log('3, ', selectedTrack.upVoters[userId]);
+
+      return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
+    }
+  } else {
+    if (selectedTrack.downVoters && selectedTrack.downVoters[userId] === 2) {
+      return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
+    }
+  }
 
   const updatedTrack = {
     ...selectedTrack,
@@ -57,25 +74,21 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     }
   };
 
-  // if (change > 0) {
-  //   updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + 1;
-  // } else {
-  //   updatedTrack.downVoters[userId] =
-  //     (updatedTrack.downVoters[userId] || 0) + 1;
-  // }
+  if (change > 0) {
+    updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + 1;
+  } else {
+    updatedTrack.downVoters[userId] =
+      (updatedTrack.downVoters[userId] || 0) + 1;
+  }
 
-  const newPosition = updatedTrackPosition(
-    tracks,
-    updatedTrack,
-    change
-  );
+  const newPosition = updatedTrackPosition(tracks, updatedTrack, change);
 
   const callAPI = token => {
     if (newPosition === position) {
       return updateTrackDb(uri, {
         // $inc: { votes: change },
         $set: {
-          votes: change, 
+          votes: change,
           updatedAt: updatedTrack.updatedAt,
           upVoters: updatedTrack.upVoters,
           downVoters: updatedTrack.downVoters
@@ -116,18 +129,14 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
   dispatch,
   getState
 ) => {
-  const {
-    tracks,
-    removedPlaylist,
-    lockedTrack
-  } = getState().playlist;
+  const { tracks, removedPlaylist, lockedTrack } = getState().playlist;
 
   const alreadyAdded = tracks.some(track => track.uri === uri);
   if (alreadyAdded) {
     return dispatch({
       type: ADD_TO_PLAYLIST_DISALLOWED,
-      payload: positionInSearch,
-    })
+      payload: positionInSearch
+    });
   }
 
   const updatedAt = new Date().toISOString();

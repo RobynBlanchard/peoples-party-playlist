@@ -15,6 +15,7 @@ const debounce = (fn, delay) => {
 // add back -5 to remove
 // tests
 // tidy up
+// debounce to search
 
 const VoteDetails = ({
   position,
@@ -23,11 +24,18 @@ const VoteDetails = ({
   handleUpVote,
   handleDownVote,
   removeTrack,
-  minusImg,
-  plusImg,
-  shouldFocus
+  upVoters,
+  downVoters,
+  userId,
+  shouldFocus,
+  upVoteLimitExceeded,
+  downVoteLimitExceeded
 }) => {
+  // use redux state instead ?
   const [input, setInput] = useState(votes);
+
+  console.log('input', input)
+  console.log('votes', votes)
 
   useEffect(() => {
     setInput(votes);
@@ -42,6 +50,29 @@ const VoteDetails = ({
 
   const onInputChangeHandler = (value, setNumVotes, uri, position) => {
     const newVotes = input + value;
+    console.log(upVoters)
+      console.log(downVoters)
+        console.log(userId)
+
+        console.log('value', value)
+
+    if (value > 0) {
+      if (upVoters && upVoters[userId] > 2) {
+        console.log('limit exceeded')
+        return upVoteLimitExceeded(position)
+      }
+
+    } else {
+
+        if (downVoters && downVoters[userId] > 1) {
+          return downVoteLimitExceeded(position)
+        }
+    }
+
+    // debugger
+
+    // if vote limit exceeded dispatch vote error ?
+
 
     if (newVotes >= -5) {
       setInput(prevState => {
@@ -54,18 +85,21 @@ const VoteDetails = ({
     }
   };
 
+  // pass in voters and show error ?
+
+
   return (
     <Wrapper>
       <DefaultButton
         onClick={() => onInputChangeHandler(-1, handleDownVote, uri, position)}
       >
-        <Icon src={minusImg} />
+        <Icon src="images/white-minus.svg" />
       </DefaultButton>
       <VotesText shouldFocus={shouldFocus}>{input}</VotesText>
       <DefaultButton
         onClick={() => onInputChangeHandler(1, handleUpVote, uri, position)}
       >
-        <Icon src={plusImg} />
+        <Icon src="images/white-plus.svg" />
       </DefaultButton>
     </Wrapper>
   );

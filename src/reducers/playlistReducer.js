@@ -27,18 +27,13 @@ const playlistReducer = (state = defaultState, action) => {
   let tracks = cloneDeep(state.tracks);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
-  console.log('actoin', action.type)
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
-      console.log('fetch from db')
-      // debugger
-
       return {
         ...state,
         loading: true
       };
     case FETCH_PLAYLIST_FROM_DB_SUCCESS:
-      console.log('fetch from db success', action.payload.response.data.tracks)
       const fetchedTracks = action.payload.response.data.tracks;
       tracks = [];
       lockedTrack = [];
@@ -115,7 +110,6 @@ const playlistReducer = (state = defaultState, action) => {
       };
 
     case UPDATE_TRACK_SUCCESS:
-      console.log(action.payload)
       tracks[action.payload.position].loading = false;
       tracks.splice(action.payload.position, 1);
       tracks.splice(
@@ -126,6 +120,7 @@ const playlistReducer = (state = defaultState, action) => {
 
       // debugger
 
+      console.log('updated tracks', tracks)
       // tracks[action.payload.newPosition].loading = false;
 
       return {

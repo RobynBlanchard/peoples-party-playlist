@@ -8,7 +8,9 @@ import {
   getCurrentlyPlayingTrack,
   removeTrack,
   startSession,
-  updateCurrentTrack
+  updateCurrentTrack,
+  upVoteLimitExceeded,
+  downVoteLimitExceeded
 } from '../actions';
 import requireAuth from '../components/RequireAuth';
 import ErrorIndicator from '../components/ErrorIndicator';
@@ -55,7 +57,10 @@ class Playlist extends React.Component {
       playbackError,
       session,
       updateTrackNumOfVotes,
-      removeTrack
+      removeTrack,
+      userId,
+      upVoteLimitExceeded,
+      downVoteLimitExceeded
     } = this.props;
     const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
     const { error: sessionError } = session;
@@ -79,11 +84,11 @@ class Playlist extends React.Component {
       lockedTrack,
       trackError,
       updateTrackVotes: updateTrackNumOfVotes,
-      removeTrack
+      removeTrack,
+      userId,
+      upVoteLimitExceeded,
+      downVoteLimitExceeded
     };
-
-    console.log('=====', tracks)
-    // debugger
 
     return <PlaylistTemplate playlist={playlistProp} playback={playback} />;
   }
@@ -97,7 +102,8 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     session: state.session,
     currentTrack: state.playback.currentTrack,
-    playbackError: state.playback.error
+    playbackError: state.playback.error,
+    userId: state.appUser.userId
   };
 };
 
@@ -112,6 +118,8 @@ export default connect(
     pausePlayback,
     getCurrentlyPlayingTrack,
     startSession,
-    updateCurrentTrack
+    updateCurrentTrack,
+    upVoteLimitExceeded,
+    downVoteLimitExceeded
   }
 )(Playlist);
