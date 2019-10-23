@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { colours, media } from '../../globalStyles';
 
@@ -27,33 +27,31 @@ const SearchInput = styled.input`
   }
 `;
 
-class SearchBar extends Component {
-  state = { searchTerm: '' };
+const SearchBar = ({ onSubmit }) => {
+  const [searchTerm, setSearchTerm] = useState('');
 
-  handleSearchTermChange = e => {
-    this.setState({ searchTerm: e.target.value });
-    this.props.onSubmit(e.target.value);
+  const handleSearchTermChange = e => {
+    setSearchTerm(e.target.value);
+    onSubmit(e.target.value);
   };
 
-  handleFormSubmit = e => {
+  const handleFormSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state.searchTerm);
+    onSubmit(searchTerm);
   };
 
-  render() {
-    return (
-      <Wrapper>
-        <form onSubmit={this.handleFormSubmit}>
-          <SearchInput
-            type="text"
-            value={this.state.searchTerm}
-            onChange={this.handleSearchTermChange}
-            placeholder={'search by artist, song or album'}
-          />
-        </form>
-      </Wrapper>
-    );
-  }
-}
+  return (
+    <Wrapper>
+      <form onSubmit={handleFormSubmit}>
+        <SearchInput
+          type="text"
+          value={searchTerm}
+          onChange={handleSearchTermChange}
+          placeholder={'search by artist, song or album'}
+        />
+      </form>
+    </Wrapper>
+  );
+};
 
 export default SearchBar;
