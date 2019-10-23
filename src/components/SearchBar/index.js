@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { colours, media } from '../../globalStyles';
 
@@ -27,17 +27,34 @@ const SearchInput = styled.input`
   }
 `;
 
+const debounce = (fn, delay) => {
+  let timeoutId;
+  return function(...args) {
+    clearInterval(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+  };
+};
+
 const SearchBar = ({ onSubmit }) => {
   const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSearchTermChange = e => {
-    setSearchTerm(e.target.value);
-    onSubmit(e.target.value);
-  };
 
   const handleFormSubmit = e => {
     e.preventDefault();
     onSubmit(searchTerm);
+  };
+
+  const debounceCallback = useCallback(
+    debounce(value => {
+      onSubmit(value);
+    }, 500),
+    []
+  );
+
+
+  const handleSearchTermChange = e => {
+    setSearchTerm(e.target.value);
+
+    debounceCallback(e.target.value);
   };
 
   return (
