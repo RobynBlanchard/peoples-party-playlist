@@ -27,7 +27,7 @@ const playlistReducer = (state = defaultState, action) => {
   let tracks = cloneDeep(state.tracks);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
-  console.log('actoin', action.type)
+
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
       return {
@@ -75,6 +75,8 @@ const playlistReducer = (state = defaultState, action) => {
     case DELETE_TRACK_SUCCESS:
       tracks[action.payload.position].loading = false;
       tracks[action.payload.position].error = null;
+
+      // array filter
       tracks.splice(action.payload.position, 1);
 
       return {
