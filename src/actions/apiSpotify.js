@@ -11,7 +11,7 @@ export const reOrderTrackSpotify = (
   const range_start = offset + position;
   let insert_before = offset + newPosition + 1;
 
-  if (change === 1) {
+  if (change > 0) {
     insert_before -= 1;
   }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Container, DefaultButton } from '../globalStyles';
 import Tracks from '../components/Tracks';
+import LockedTrack from '../components/LockedTrack';
 
 const Heading = styled.div`
   display: flex;
@@ -25,6 +26,8 @@ const PlaylistTemplate = ({ playback, playlist }) => {
     upVoteLimitExceeded,
     downVoteLimitExceeded
   } = playlist;
+
+  // console.log('render --------------', lockedTrack)
 
   return (
     <Container>

@@ -20,7 +20,11 @@ class Playlist extends React.Component {
     const { playlist, fetchPlaylist } = this.props;
     const { tracks } = playlist;
 
+    // console.log('comp did mount')
+
     if (tracks.length === 0) {
+      // debugger;
+      // console.log('fetch-----------')
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
@@ -31,6 +35,8 @@ class Playlist extends React.Component {
     const { sessionStarted } = session;
 
     if (sessionStarted) {
+      // TOOO: stop this if paused
+      // console.log('get cur plauing ++++++++')
       getCurrentlyPlayingTrack();
     }
   }
@@ -44,6 +50,9 @@ class Playlist extends React.Component {
       currentTrack.uri &&
       nextProps.currentTrack.uri !== currentTrack.uri
     ) {
+      // console.log('will receive props')
+      console.log('update track!!!!!!!!!!!!!!!!!!!!!!!!!')
+
       updateCurrentTrack();
     }
   }
@@ -63,6 +72,7 @@ class Playlist extends React.Component {
       downVoteLimitExceeded
     } = this.props;
     const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
+    // console.log('lcoked trackkkkk', lockedTrack)
     const { error: sessionError } = session;
 
     let error = playlistError || playbackError || sessionError;
@@ -89,6 +99,7 @@ class Playlist extends React.Component {
       upVoteLimitExceeded,
       downVoteLimitExceeded
     };
+    // console.log('render======')
 
     return <PlaylistTemplate playlist={playlistProp} playback={playback} />;
   }

@@ -1,6 +1,7 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { colours, media } from '../../globalStyles';
+import useDebounce from '../useDebounce';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -27,43 +28,50 @@ const SearchInput = styled.input`
   }
 `;
 
-const debounce = (fn, delay) => {
-  let timeoutId;
-  return function(...args) {
-    clearInterval(timeoutId);
-    timeoutId = setTimeout(() => fn.apply(this, args), delay);
-  };
-};
-
 const SearchBar = ({ onSubmit }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(''); // store in redux ?
+  const debouncedSearchTerm = useDebounce(null, searchTerm, 200);
 
-  const handleFormSubmit = e => {
+  // console.log('searchTerm 1', searchTerm)
+  // console.log('debouncedSearchTerm 1', debouncedSearchTerm)
+
+  const handleSubmit = e => {
     e.preventDefault();
-    onSubmit(searchTerm);
-  };
+    onSubmit(searchTerm)
+  }
 
-  const debounceCallback = useCallback(
-    debounce(value => {
-      onSubmit(value);
-    }, 500),
-    []
+  const handleChange = e => {
+    e.preventDefault();
+    setSearchTerm(e.target.value)
+  }
+
+  useEffect(
+    () => {
+      // console.log('use effeect')
+      // console.log('searchTerm', searchTerm)
+      // console.log('debouncedSearchTerm', debouncedSearchTerm)
+
+      if (debouncedSearchTerm) {
+        // console.log('debounced search term3', debouncedSearchTerm)
+        // dispatch loading ?
+        // setIsSearching(true);
+        onSubmit(debouncedSearchTerm)
+        
+      } else {
+        // setResults([]);
+      }
+    },
+    [debouncedSearchTerm] // Only call effect if debounced search term changes
   );
-
-
-  const handleSearchTermChange = e => {
-    setSearchTerm(e.target.value);
-
-    debounceCallback(e.target.value);
-  };
 
   return (
     <Wrapper>
-      <form onSubmit={handleFormSubmit}>
+      <form onSubmit={handleSubmit}>
         <SearchInput
           type="text"
           value={searchTerm}
-          onChange={handleSearchTermChange}
+          // onChange={handleSearchTermChange}
+          onChange={handleChange}
           placeholder={'search by artist, song or album'}
         />
       </form>

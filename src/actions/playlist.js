@@ -39,26 +39,36 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
 ) => {
+  console.log('action!')
+  // debugger
   const state = getState();
   const { userId } = state.appUser;
   const { tracks } = state.playlist;
   const selectedTrack = tracks[position];
 
-  console.log('1');
+  // console.log('updateTrackNumOfVotes, change: ', change)
 
-  if (change > 0) {
-    console.log('2');
+  const votesByPerson = change - selectedTrack.votes;
+  console.log('votesByPerson', votesByPerson);
 
-    if (selectedTrack.upVoters && selectedTrack.upVoters[userId] === 3) {
-      console.log('3, ', selectedTrack.upVoters[userId]);
+  // debugger
+
+  if ((change - selectedTrack.votes) > 0) {
+    // console.log('2');
+
+    if (selectedTrack.upVoters && selectedTrack.upVoters[userId] > 3) {
+      // console.log('3, ', selectedTrack.upVoters[userId]);
 
       return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
     }
   } else {
-    if (selectedTrack.downVoters && selectedTrack.downVoters[userId] === 2) {
+    if (selectedTrack.downVoters && selectedTrack.downVoters[userId] > 2) {
       return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
     }
   }
+
+  console.log('NEW VOTES',change )
+  console.log('NEW VOTES',selectedTrack.votes )
 
   const updatedTrack = {
     ...selectedTrack,
@@ -74,14 +84,16 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     }
   };
 
-  if (change > 0) {
-    updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + 1;
+  if ((change - selectedTrack.votes) > 0) {
+    updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + votesByPerson;
   } else {
+    // debugger
+    // console.log('incerease down votes')
     updatedTrack.downVoters[userId] =
-      (updatedTrack.downVoters[userId] || 0) + 1;
+      (updatedTrack.downVoters[userId] || 0) - votesByPerson;
   }
 
-  const newPosition = updatedTrackPosition(tracks, updatedTrack, change);
+  const newPosition = updatedTrackPosition(tracks, updatedTrack, votesByPerson);
 
   const callAPI = token => {
     if (newPosition === position) {
@@ -97,12 +109,11 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     } else {
       const { removedPlaylist, lockedTrack } = getState().playlist;
       const offset = spotifyOffSet(removedPlaylist, lockedTrack);
-
       return reOrderTrackSpotify(
         position,
         newPosition,
         offset,
-        change,
+        votesByPerson,
         token
       ).then(res =>
         updateTrackDb(uri, {

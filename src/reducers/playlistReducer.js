@@ -27,8 +27,11 @@ const playlistReducer = (state = defaultState, action) => {
   let tracks = cloneDeep(state.tracks);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
+  console.log('action: ', action.type)
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
+        // console.log('fetch playlist from db')
+
       return {
         ...state,
         loading: true
@@ -59,7 +62,7 @@ const playlistReducer = (state = defaultState, action) => {
         removedPlaylist
       };
     case FETCH_PLAYLIST_FROM_DB_FAILURE:
-      console.log(action)
+      // console.log(action)
       return {
         ...state,
         loading: false,
@@ -102,7 +105,7 @@ const playlistReducer = (state = defaultState, action) => {
       };
     case UPDATE_TRACK:
       // tracks[action.payload.position].loading = true;
-
+      // console.log('update track')
       return {
         ...state,
         tracks: tracks,
@@ -118,9 +121,9 @@ const playlistReducer = (state = defaultState, action) => {
         action.payload.track
       );
 
+      console.log('update track new tracks:', tracks)
       // debugger
 
-      console.log('updated tracks', tracks)
       // tracks[action.payload.newPosition].loading = false;
 
       return {

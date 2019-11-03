@@ -29,12 +29,15 @@ const Tracks = ({
     return d.toISOString();
   };
 
+  // debugger;
+
   return (
     <Table>
       <tbody>
         {playlist.map((track, index) => {
           const { artist, name, votes, uri, updatedAt, upVoters, downVoters } = track;
-
+          // debugger
+          // console.log('render')
 
           if (trackError && trackError.position === index) {
             console.log('==track error==', trackError.error.displayMessage);
