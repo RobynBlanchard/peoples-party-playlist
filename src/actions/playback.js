@@ -76,6 +76,7 @@ const updateCurrentTrackInDb = (
   ]);
 
 export const updateCurrentTrack = () => (dispatch, getState) => {
+  // debugger
   const state = getState();
   const currentlyPlayingTrack = state.playback.currentTrack.uri;
   const previouslyPlayingTrack = state.playlist.lockedTrack[0].uri;

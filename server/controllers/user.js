@@ -9,5 +9,6 @@ export const invite = (req, res, next) => {
     return result;
   }
   res.cookie('userId', randomString());
-  res.redirect('/');
+
+  res.redirect('/playlist');  
 }

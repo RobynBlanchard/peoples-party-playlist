@@ -2,9 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { Container, DefaultButton } from '../globalStyles';
 import Tracks from '../components/Tracks';
+import LockedTrack from '../components/LockedTrack';
 
 const Heading = styled.div`
-  text-align: left;
+  display: flex;
 `;
 
 const PlaybackIcon = styled.img`
@@ -20,8 +21,13 @@ const PlaylistTemplate = ({ playback, playlist }) => {
     lockedTrack,
     trackError,
     updateTrackVotes,
-    removeTrack
+    removeTrack,
+    userId,
+    upVoteLimitExceeded,
+    downVoteLimitExceeded
   } = playlist;
+
+  // console.log('render --------------', lockedTrack)
 
   return (
     <Container>
@@ -41,6 +47,9 @@ const PlaylistTemplate = ({ playback, playlist }) => {
         trackError={trackError}
         updateTrackNumOfVotes={updateTrackVotes}
         removeTrack={removeTrack}
+        userId={userId}
+        upVoteLimitExceeded={upVoteLimitExceeded}
+        downVoteLimitExceeded={downVoteLimitExceeded}
       />
     </Container>
   );

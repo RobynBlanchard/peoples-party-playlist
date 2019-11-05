@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon .",
+    "dev": "nodemon --inspect .",
     "clean:client": "rm -rf ./dist",
     "clean:server": "rm -f ./server-production.js",
     "build:client": "webpack --config ./config/webpack.client.js",

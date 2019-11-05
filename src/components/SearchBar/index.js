@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { colours, media } from '../../globalStyles';
+import useDebounce from '../useDebounce';
 
 const Wrapper = styled.div`
   text-align: center;
@@ -27,33 +28,38 @@ const SearchInput = styled.input`
   }
 `;
 
-class SearchBar extends Component {
-  state = { searchTerm: '' };
+const SearchBar = ({ onSubmit }) => {
+  const [searchTerm, setSearchTerm] = useState(''); // store in redux ?
+  const debouncedSearchTerm = useDebounce(searchTerm, 200);
 
-  handleSearchTermChange = e => {
-    this.setState({ searchTerm: e.target.value });
-    this.props.onSubmit(e.target.value);
-  };
-
-  handleFormSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state.searchTerm);
+    onSubmit(searchTerm);
   };
 
-  render() {
-    return (
-      <Wrapper>
-        <form onSubmit={this.handleFormSubmit}>
-          <SearchInput
-            type="text"
-            value={this.state.searchTerm}
-            onChange={this.handleSearchTermChange}
-            placeholder={'search by artist, song or album'}
-          />
-        </form>
-      </Wrapper>
-    );
-  }
-}
+  const handleChange = e => {
+    e.preventDefault();
+    setSearchTerm(e.target.value);
+  };
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      onSubmit(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm]);
+
+  return (
+    <Wrapper>
+      <form onSubmit={handleSubmit}>
+        <SearchInput
+          type="text"
+          value={searchTerm}
+          onChange={handleChange}
+          placeholder={'search by artist, song or album'}
+        />
+      </form>
+    </Wrapper>
+  );
+};
 
 export default SearchBar;

@@ -8,7 +8,9 @@ import {
   getCurrentlyPlayingTrack,
   removeTrack,
   startSession,
-  updateCurrentTrack
+  updateCurrentTrack,
+  upVoteLimitExceeded,
+  downVoteLimitExceeded
 } from '../actions';
 import requireAuth from '../components/RequireAuth';
 import ErrorIndicator from '../components/ErrorIndicator';
@@ -18,7 +20,12 @@ class Playlist extends React.Component {
     const { playlist, fetchPlaylist } = this.props;
     const { tracks } = playlist;
 
+    // console.log('comp did mount')
+
     if (tracks.length === 0) {
+      // debugger;
+      // console.log('fetch-----------')
+      // always fetch on did mount ?
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
@@ -29,6 +36,8 @@ class Playlist extends React.Component {
     const { sessionStarted } = session;
 
     if (sessionStarted) {
+      // TOOO: stop this if paused
+      // console.log('get cur plauing ++++++++')
       getCurrentlyPlayingTrack();
     }
   }
@@ -42,6 +51,9 @@ class Playlist extends React.Component {
       currentTrack.uri &&
       nextProps.currentTrack.uri !== currentTrack.uri
     ) {
+      // console.log('will receive props')
+      console.log('update track!!!!!!!!!!!!!!!!!!!!!!!!!')
+
       updateCurrentTrack();
     }
   }
@@ -55,9 +67,13 @@ class Playlist extends React.Component {
       playbackError,
       session,
       updateTrackNumOfVotes,
-      removeTrack
+      removeTrack,
+      userId,
+      upVoteLimitExceeded,
+      downVoteLimitExceeded
     } = this.props;
     const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
+    // console.log('lcoked trackkkkk', lockedTrack)
     const { error: sessionError } = session;
 
     let error = playlistError || playbackError || sessionError;
@@ -79,8 +95,12 @@ class Playlist extends React.Component {
       lockedTrack,
       trackError,
       updateTrackVotes: updateTrackNumOfVotes,
-      removeTrack
+      removeTrack,
+      userId,
+      upVoteLimitExceeded,
+      downVoteLimitExceeded
     };
+    // console.log('render======')
 
     return <PlaylistTemplate playlist={playlistProp} playback={playback} />;
   }
@@ -94,7 +114,8 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     session: state.session,
     currentTrack: state.playback.currentTrack,
-    playbackError: state.playback.error
+    playbackError: state.playback.error,
+    userId: state.appUser.userId
   };
 };
 
@@ -109,6 +130,8 @@ export default connect(
     pausePlayback,
     getCurrentlyPlayingTrack,
     startSession,
-    updateCurrentTrack
+    updateCurrentTrack,
+    upVoteLimitExceeded,
+    downVoteLimitExceeded
   }
 )(Playlist);

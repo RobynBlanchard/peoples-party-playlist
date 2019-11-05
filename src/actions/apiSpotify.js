@@ -9,10 +9,10 @@ export const reOrderTrackSpotify = (
   token
 ) => {
   const range_start = offset + position;
-  let insert_before = offset + newPosition + 1;
+  let insert_before = offset + newPosition;
 
-  if (change === 1) {
-    insert_before -= 1;
+  if (change < 0) {
+    insert_before += 1;
   }
 
   return spotifyApi(token).put(`playlists/${playlistId}/tracks`, {

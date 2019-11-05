@@ -12,7 +12,7 @@ export const updatedTrackPosition = (playlist, track, change) => {
   if (newPosition === -1) {
     newPosition = playlist.length
   }
-  if (change === -1) {
+  if (change < 0) {
     newPosition -= 1
   }
 

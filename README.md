@@ -116,3 +116,4 @@
   <!-- prop types -->
   <!-- fix file loader for images -->
   <!-- set up - HMR for reducers -->
+  <!-- use styled components theme -->

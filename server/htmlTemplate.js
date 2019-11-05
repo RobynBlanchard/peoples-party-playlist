@@ -17,7 +17,7 @@ export default (reactDom, styles, reduxState) => `
         <script>
           window.REDUX_DATA = ${JSON.stringify(reduxState)}
         </script>
-        <script type="text/javascript" src="/main.bundle.js"></script>
+        <script type="text/javascript" src="main.bundle.js"></script>
       </body>
       </html>
   `;
