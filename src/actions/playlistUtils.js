@@ -10,10 +10,11 @@ export const updatedTrackPosition = (playlist, track, change) => {
   });
 
   if (newPosition === -1) {
-    newPosition = playlist.length
+    newPosition = playlist.length;
   }
-  if (change < 0) {
-    newPosition -= 1
+
+  if (change < 1) {
+    newPosition -= 1;
   }
 
   return newPosition;
