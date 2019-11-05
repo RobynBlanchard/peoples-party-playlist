@@ -8,7 +8,6 @@ import SearchTemplate from '../templates/Search';
 
 class Search extends React.Component {
   render() {
-    // console.log('render')
     const {
       loading,
       results,

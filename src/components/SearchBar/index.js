@@ -30,39 +30,23 @@ const SearchInput = styled.input`
 
 const SearchBar = ({ onSubmit }) => {
   const [searchTerm, setSearchTerm] = useState(''); // store in redux ?
-  const debouncedSearchTerm = useDebounce(null, searchTerm, 200);
-
-  // console.log('searchTerm 1', searchTerm)
-  // console.log('debouncedSearchTerm 1', debouncedSearchTerm)
+  const debouncedSearchTerm = useDebounce(searchTerm, 200);
 
   const handleSubmit = e => {
     e.preventDefault();
-    onSubmit(searchTerm)
-  }
+    onSubmit(searchTerm);
+  };
 
   const handleChange = e => {
     e.preventDefault();
-    setSearchTerm(e.target.value)
-  }
+    setSearchTerm(e.target.value);
+  };
 
-  useEffect(
-    () => {
-      // console.log('use effeect')
-      // console.log('searchTerm', searchTerm)
-      // console.log('debouncedSearchTerm', debouncedSearchTerm)
-
-      if (debouncedSearchTerm) {
-        // console.log('debounced search term3', debouncedSearchTerm)
-        // dispatch loading ?
-        // setIsSearching(true);
-        onSubmit(debouncedSearchTerm)
-        
-      } else {
-        // setResults([]);
-      }
-    },
-    [debouncedSearchTerm] // Only call effect if debounced search term changes
-  );
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      onSubmit(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm]);
 
   return (
     <Wrapper>
@@ -70,7 +54,6 @@ const SearchBar = ({ onSubmit }) => {
         <SearchInput
           type="text"
           value={searchTerm}
-          // onChange={handleSearchTermChange}
           onChange={handleChange}
           placeholder={'search by artist, song or album'}
         />
