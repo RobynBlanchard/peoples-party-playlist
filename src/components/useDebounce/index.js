@@ -5,6 +5,10 @@ const useDebounce = (votes, value, delay) => {
 
   useEffect(
     () => {
+      console.log('hook');
+      console.log('debouncedValue', debouncedValue)
+      console.log('value', value)
+
       // if votes === 3
       // return early and clear timeout
       // if ((value - votes) === 3) {

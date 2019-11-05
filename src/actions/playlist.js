@@ -10,7 +10,7 @@ import {
   DELETE_TRACK_FAILURE,
   ADD_TO_PLAYLIST_DISALLOWED
 } from './types';
-
+import { upVoteLimit, downVoteLimit } from '../utils/constants';
 import {
   reOrderTrackSpotify,
   addToSpotifyPlaylist,
@@ -33,48 +33,36 @@ export const downVoteLimitExceeded = position => ({
   payload: position
 });
 
-
-
 export const updateTrackNumOfVotes = (uri, position, change) => (
   dispatch,
   getState
 ) => {
-  console.log('action!')
-  // debugger
   const state = getState();
   const { userId } = state.appUser;
   const { tracks } = state.playlist;
   const selectedTrack = tracks[position];
 
-  // console.log('updateTrackNumOfVotes, change: ', change)
-
   const votesByPerson = change - selectedTrack.votes;
-  console.log('votesByPerson', votesByPerson);
 
-  // debugger
-
-  if ((change - selectedTrack.votes) > 0) {
-    // console.log('2');
-
-    if (selectedTrack.upVoters && selectedTrack.upVoters[userId] > 3) {
-      // console.log('3, ', selectedTrack.upVoters[userId]);
-
+  if (change - selectedTrack.votes > 0) {
+    if (
+      selectedTrack.upVoters &&
+      selectedTrack.upVoters[userId] > upVoteLimit
+    ) {
       return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
     }
   } else {
-    if (selectedTrack.downVoters && selectedTrack.downVoters[userId] > 2) {
+    if (
+      selectedTrack.downVoters &&
+      selectedTrack.downVoters[userId] > downVoteLimit
+    ) {
       return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
     }
   }
 
-  console.log('NEW VOTES',change )
-  console.log('NEW VOTES',selectedTrack.votes )
-
   const updatedTrack = {
     ...selectedTrack,
-    // votes: selectedTrack.votes + change,
     votes: change,
-
     updatedAt: new Date().toISOString(),
     upVoters: {
       ...selectedTrack.upVoters
@@ -84,11 +72,10 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     }
   };
 
-  if ((change - selectedTrack.votes) > 0) {
-    updatedTrack.upVoters[userId] = (updatedTrack.upVoters[userId] || 0) + votesByPerson;
+  if (change - selectedTrack.votes > 0) {
+    updatedTrack.upVoters[userId] =
+      (updatedTrack.upVoters[userId] || 0) + votesByPerson;
   } else {
-    // debugger
-    // console.log('incerease down votes')
     updatedTrack.downVoters[userId] =
       (updatedTrack.downVoters[userId] || 0) - votesByPerson;
   }
@@ -98,7 +85,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
   const callAPI = token => {
     if (newPosition === position) {
       return updateTrackDb(uri, {
-        // $inc: { votes: change },
         $set: {
           votes: change,
           updatedAt: updatedTrack.updatedAt,
@@ -109,6 +95,7 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
     } else {
       const { removedPlaylist, lockedTrack } = getState().playlist;
       const offset = spotifyOffSet(removedPlaylist, lockedTrack);
+
       return reOrderTrackSpotify(
         position,
         newPosition,
@@ -117,7 +104,6 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
         token
       ).then(res =>
         updateTrackDb(uri, {
-          // $inc: { votes: change },
           $set: { votes: change, updatedAt: updatedTrack.updatedAt }
         })
       );

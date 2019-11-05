@@ -25,6 +25,7 @@ class Playlist extends React.Component {
     if (tracks.length === 0) {
       // debugger;
       // console.log('fetch-----------')
+      // always fetch on did mount ?
       fetchPlaylist();
     }
     this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
