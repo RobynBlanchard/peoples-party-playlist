@@ -19,7 +19,7 @@ const VoteDetails = ({
   downVoteLimitExceeded
 }) => {
   const [input, setInput] = useState(votes);
-  const debouncedInput = useDebounce(votes, input, 500);
+  const debouncedInput = useDebounce(input, 500);
 
   useEffect(() => {
     if (debouncedInput !== votes) {
