@@ -5,7 +5,7 @@ export const reOrderTrackSpotify = (
   position,
   newPosition,
   offset,
-  change,
+  change, // -1 or 1 ? pos or neg ?
   token
 ) => {
   const range_start = offset + position;
