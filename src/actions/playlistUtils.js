@@ -2,7 +2,7 @@ export const spotifyOffSet = (removedPlaylist, lockedTrack) => {
   return removedPlaylist.length + lockedTrack.length;
 };
 
-export const updatedTrackPosition = (playlist, track, change) => {
+export const updatedTrackNewPosition = (playlist, track, change) => {
   if (playlist.length === 0) return 0;
 
   let newPosition = playlist.findIndex(el => {
