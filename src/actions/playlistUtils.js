@@ -1,3 +1,6 @@
+import { addToSpotifyPlaylist } from './apiSpotify';
+import { addTrackToDb } from './apiDb';
+
 export const spotifyOffSet = (removedPlaylist, lockedTrack) => {
   return removedPlaylist.length + lockedTrack.length;
 };
@@ -18,4 +21,12 @@ export const updatedTrackNewPosition = (playlist, track, change) => {
   }
 
   return newPosition;
+};
+
+export const addToPlaylistApi = (token, position, track) => {
+  const { uri, name, artist, updatedAt } = track;
+
+  return addToSpotifyPlaylist(uri, position, token).then(() =>
+    addTrackToDb(uri, name, artist, updatedAt)
+  );
 };

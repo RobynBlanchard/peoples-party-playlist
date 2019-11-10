@@ -21,7 +21,11 @@ import {
   addTrackToDb,
   removeTrackFromDb
 } from './apiDb';
-import { spotifyOffSet, updatedTrackNewPosition } from './playlistUtils';
+import {
+  spotifyOffSet,
+  updatedTrackNewPosition,
+  addToPlaylistApi
+} from './playlistUtils';
 
 export const upVoteLimitExceeded = position => ({
   type: 'UPVOTE_LIMIT_EXCEEDED',
@@ -80,7 +84,11 @@ export const updateTrackNumOfVotes = (uri, position, change) => (
       (updatedTrack.downVoters[userId] || 0) - votesByPerson;
   }
 
-  const newPosition = updatedTrackNewPosition(tracks, updatedTrack, votesByPerson);
+  const newPosition = updatedTrackNewPosition(
+    tracks,
+    updatedTrack,
+    votesByPerson
+  );
 
   const callAPI = token => {
     if (newPosition === position) {
@@ -148,16 +156,10 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
   const newPosition = updatedTrackNewPosition(tracks, track, 1);
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
-  const callAPI = token => {
-    return addToSpotifyPlaylist(uri, newPosition + offset, token).then(res =>
-      addTrackToDb(uri, name, artist, updatedAt)
-    );
-  };
-
   return dispatch({
     types: [ADD_TO_PLAYLIST, ADD_TO_PLAYLIST_SUCCESS, ADD_TO_PLAYLIST_FAILURE],
     requiresAuth: true,
-    callAPI: token => callAPI(token),
+    callAPI: token => addToPlaylistApi(token, newPosition + offset, track),
     payload: {
       position: newPosition,
       positionInSearch: positionInSearch,
