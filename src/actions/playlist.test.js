@@ -1,5 +1,5 @@
-import { addToPlaylist } from './playlist';
-import { addToPlaylistApi } from './playlistUtils';
+import { addToPlaylist, removeTrack } from './playlist';
+import { addToPlaylistApi, removeFromPlaylistApi } from './playlistUtils';
 
 describe('addToPlaylist', () => {
   const removedPlaylist = [{ uri: '111', votes: 10 }];
@@ -48,7 +48,7 @@ describe('addToPlaylist', () => {
     const mockDateNow = new Date('2019');
     global.Date = jest.fn(() => mockDateNow);
 
-    it('dispatches add to playlist actions for call api middleware', () => {
+    it('dispatches add to playlist actions', () => {
       addToPlaylist(uri, name, artist, positionInSearch)(dispatch, getState);
 
       const dispatchArgs = dispatch.mock.calls[0][0];
@@ -75,5 +75,35 @@ describe('addToPlaylist', () => {
       ]);
       expect(dispatchArgs.requiresAuth).toEqual(true);
     });
+  });
+});
+
+describe('removeTrack', () => {
+  let dispatch, getState;
+  beforeEach(() => {
+    (dispatch = jest.fn()), (getState = jest.fn(() => initialState));
+  });
+
+  it('dispatches delete track actions', () => {
+    const uri = '912';
+    const position = 3;
+
+    removeTrack(uri, position)(dispatch, getState);
+
+    const dispatchArgs = dispatch.mock.calls[0][0];
+
+    expect(dispatchArgs.payload).toEqual({
+      position: 3,
+      uri: '912'
+    });
+    expect(dispatchArgs.callAPI('123', 3)).toEqual(
+      removeFromPlaylistApi('123', 3)
+    );
+    expect(dispatchArgs.types).toEqual([
+      'DELETE_TRACK',
+      'DELETE_TRACK_SUCCESS',
+      'DELETE_TRACK_FAILURE'
+    ]);
+    expect(dispatchArgs.requiresAuth).toEqual(true);
   });
 });

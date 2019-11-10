@@ -24,7 +24,8 @@ import {
 import {
   spotifyOffSet,
   updatedTrackNewPosition,
-  addToPlaylistApi
+  addToPlaylistApi,
+  removeFromPlaylistApi
 } from './playlistUtils';
 
 export const upVoteLimitExceeded = position => ({
@@ -168,19 +169,13 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
   });
 };
 
-export const removeTrack = (uri, position) => (dispatch, getState) => {
-  const callAPI = token => {
-    return removeTrackFromSpotifyPlaylist(uri, token).then(res =>
-      removeTrackFromDb(uri)
-    );
-  };
-  return dispatch({
+export const removeTrack = (uri, position) => dispatch =>
+  dispatch({
     types: [DELETE_TRACK, DELETE_TRACK_SUCCESS, DELETE_TRACK_FAILURE],
     requiresAuth: true,
-    callAPI: token => callAPI(token),
+    callAPI: token => removeFromPlaylistApi(token, uri),
     payload: {
       position: position,
       uri: uri
     }
   });
-};
