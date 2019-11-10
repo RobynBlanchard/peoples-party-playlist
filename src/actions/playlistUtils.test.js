@@ -1,4 +1,4 @@
-import { updatedTrackNewPosition } from './playlistUtils';
+import { updatedTrackNewPosition, spotifyOffSet } from './playlistUtils';
 
 describe('updatedTrackNewPosition', () => {
   describe('when the playlist is empty', () => {
@@ -123,5 +123,17 @@ describe('updatedTrackNewPosition', () => {
         expect(newPosition).toEqual(2);
       });
     });
+  });
+});
+
+describe('spotifyOffSet', () => {
+  it('returns the length of the removed playlist plus the locked Track', () => {
+    const removedPlaylist = [
+      { song: 'Do I wanna know?' },
+      { song: 'Snow (Hey oh)' }
+    ];
+    const lockedTrack = [{ song: 'All my life' }];
+
+    expect(spotifyOffSet(removedPlaylist, lockedTrack)).toEqual(3);
   });
 });
