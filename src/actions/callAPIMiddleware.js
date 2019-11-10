@@ -30,21 +30,28 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
     if (requiresAuth) {
       token = getState().auth.token;
     }
-
+console.log('1')
     dispatch({
       type: requestType,
       payload: { ...payload, response: { loading: true } }
     });
 
+    console.log('2')
+
     return callAPI(token)
       .then(response => {
+        console.log('3')
+
         if (socketTypes.includes(successType)) {
+          console.log('4')
+
           return dispatch({
             payload: { ...payload, response },
             type: successType,
             handler: 'WS'
           });
         }
+        console.log('5')
 
         return dispatch({
           payload: { ...payload, response },
@@ -52,6 +59,7 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
         });
       })
       .catch(error => {
+        console.log('6')
 
         return dispatch({
           payload: { ...payload, error },
