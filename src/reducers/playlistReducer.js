@@ -13,6 +13,7 @@ import {
   UPDATE_TRACK_FAILURE
 } from '../actions/types';
 import { cloneDeep } from 'lodash';
+import { upVoteLimit, downVoteLimit } from '../utils/constants';
 
 const defaultState = {
   removedPlaylist: [],
@@ -27,10 +28,10 @@ const playlistReducer = (state = defaultState, action) => {
   let tracks = cloneDeep(state.tracks);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
-  console.log('action: ', action.type)
+  console.log('action: ', action.type);
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
-        // console.log('fetch playlist from db')
+      // console.log('fetch playlist from db')
 
       return {
         ...state,
@@ -42,7 +43,6 @@ const playlistReducer = (state = defaultState, action) => {
       lockedTrack = [];
       removedPlaylist = [];
 
-      
       fetchedTracks.forEach(track => {
         if (track.removed) {
           removedPlaylist.push(track);
@@ -115,13 +115,9 @@ const playlistReducer = (state = defaultState, action) => {
     case UPDATE_TRACK_SUCCESS:
       tracks[action.payload.position].loading = false;
       tracks.splice(action.payload.position, 1);
-      tracks.splice(
-        action.payload.newPosition,
-        0,
-        action.payload.track
-      );
+      tracks.splice(action.payload.newPosition, 0, action.payload.track);
 
-      console.log('update track new tracks:', tracks)
+      console.log('update track new tracks:', tracks);
       // debugger
 
       // tracks[action.payload.newPosition].loading = false;
@@ -154,7 +150,7 @@ const playlistReducer = (state = defaultState, action) => {
           error: {
             status: '',
             message: '',
-            displayMessage: 'cannot upvote more than 3 times on a track!'
+            displayMessage: `cannot upvote more than ${upVoteLimit} times on a track!`
           }
         }
       };
@@ -164,7 +160,7 @@ const playlistReducer = (state = defaultState, action) => {
         error: {
           status: '',
           message: '',
-          displayMessage: 'cannot downvote more than 2 times on a track!'
+          displayMessage: `cannot downvote more than ${downVoteLimit} times on a track!`
         }
       };
       return {

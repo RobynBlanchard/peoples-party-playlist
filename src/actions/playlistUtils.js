@@ -1,5 +1,9 @@
-import { addToSpotifyPlaylist, removeTrackFromSpotifyPlaylist } from './apiSpotify';
-import { addTrackToDb, removeTrackFromDb } from './apiDb';
+import {
+  addToSpotifyPlaylist,
+  removeTrackFromSpotifyPlaylist,
+  reOrderTrackSpotify
+} from './apiSpotify';
+import { addTrackToDb, updateTrackDb, removeTrackFromDb } from './apiDb';
 
 export const spotifyOffSet = (removedPlaylist, lockedTrack) => {
   return removedPlaylist.length + lockedTrack.length;
@@ -36,3 +40,150 @@ export const removeFromPlaylistApi = (token, uri) => {
     removeTrackFromDb(uri)
   );
 };
+
+export const updateTrackApi = (
+  token,
+  oldPosition,
+  newPosition,
+  updatedTrack,
+  offset
+) => {
+  const { updatedAt, upVoters, downVoters, uri, votes } = updatedTrack;
+
+  const updateTrack = updateTrackDb(uri, {
+    $set: {
+      votes: votes,
+      updatedAt: updatedAt,
+      upVoters: upVoters,
+      downVoters: downVoters
+    }
+  });
+
+  if (oldPosition !== newPosition) {
+    const rangeStart = offset + oldPosition;
+    const insertBefore =
+      newPosition > oldPosition
+        ? offset + newPosition + 1
+        : offset + newPosition;
+
+    reOrderTrackSpotify(rangeStart, insertBefore, token).then(() =>
+      updateTrack()
+    );
+  } else {
+    return updatedTrack();
+  }
+};
+
+export const updatedTrackVotes = (
+  selectedTrack,
+  votes,
+  votesByPerson,
+  userId
+) => {
+  const upVotesByUser = selectedTrack.upVoters[userId];
+  const downVotesByUser = selectedTrack.downVoters[userId];
+
+  return {
+    ...selectedTrack,
+    votes: votes,
+    updatedAt: new Date().toISOString(),
+    upVoters: {
+      ...selectedTrack.upVoters,
+      [userId]: votesByPerson > 0 ? (upVotesByUser || 0) + votes : upVotesByUser
+    },
+    downVoters: {
+      ...selectedTrack.downVoters,
+      [userId]:
+        votesByPerson < 0 ? (downVotesByUser || 0) - votes : downVotesByUser
+    }
+  };
+};
+
+// export const updateTrackVotesApi = (
+//   token,
+//   shouldCallSpotify,
+//   updatedTrack,
+// ) => {
+//   const { updatedAt, upVoters, downVoters, uri } = updatedTrack;
+
+//   const updateTrack = updateTrackDb(uri, {
+//     $set: {
+//       votes: newVotes,
+//       updatedAt: updatedAt,
+//       upVoters: upVoters,
+//       downVoters: downVoters
+//     }
+//   });
+
+//   if (shouldCallSpotify) {
+//     return reOrderTrackSpotify(
+//       rangeStart,
+//       insertBefore,
+//       token
+//     ).then(() => updateTrack())
+//   } else {
+//     return updatedTrack()
+//   }
+
+//   if (newPosition === oldPosition) {
+
+//   const { updatedAt, upVoters, downVoters } = updatedTrack;
+//   if (newPosition === oldPosition) {
+//     return updateTrackDb(uri, {
+//       $set: {
+//         votes: newVotes,
+//         updatedAt: updatedAt,
+//         upVoters: upVoters,
+//         downVoters: downVoters
+//       }
+//     });
+//   } else {
+//     // const { removedPlaylist, lockedTrack } = getState().playlist;
+//     // const offset = spotifyOffSet(removedPlaylist, lockedTrack);
+
+//     return reOrderTrackSpotify(
+//       // position,
+//       // newPosition,
+//       // offset,
+//       // votesByUser,
+//       rangeStart,
+//       insertBefore,
+//       token
+//     ).then(res =>
+//       updateTrackDb(uri, {
+//         $set: { votes: newVotes,
+//           updatedAt: updatedAt,
+//           upVoters: upVoters,
+//           downVoters: downVoters }
+//       })
+//     );
+//   }
+// };
+
+// TODO:
+// export const updateTrackVotesAPi = (uri, votes, updatedTrack) => {
+//   const { updatedAt, upVoters, downVoters } = updatedTrack;
+
+//   return updateTrackDb(uri, {
+//     $set: {
+//       votes: votes,
+//       updatedAt: updatedAt,
+//       upVoters: upVoters,
+//       downVoters: downVoters
+//     }
+//   });
+// };
+
+// export const updateTrackVotesAndPositionApi = (
+//   token,
+//   position,
+//   newPosition,
+//   offset,
+//   votesByPerson
+// ) => {
+//   reOrderTrackSpotify(position,
+//     newPosition,
+//     offset,
+//     votesByPerson,
+//     token)
+// };

@@ -2,18 +2,20 @@ import spotifyApi from './api';
 import { playlistId } from '../utils/constants';
 
 export const reOrderTrackSpotify = (
-  position,
-  newPosition,
-  offset,
-  change, // -1 or 1 ? pos or neg ?
+  // position,
+  // newPosition,
+  // offset,
+  // change, // -1 or 1 ? pos or neg ?
+  range_start,
+  insert_before,
   token
 ) => {
-  const range_start = offset + position;
-  let insert_before = offset + newPosition;
+  // const range_start = offset + position;
+  // let insert_before = offset + newPosition;
 
-  if (change < 0) {
-    insert_before += 1;
-  }
+  // if (change < 0) {
+  //   insert_before += 1;
+  // }
 
   return spotifyApi(token).put(`playlists/${playlistId}/tracks`, {
     range_start,

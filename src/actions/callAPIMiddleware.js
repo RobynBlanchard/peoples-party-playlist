@@ -2,8 +2,13 @@ import { socketTypes } from './types';
 
 export const callAPIMiddleware = ({ dispatch, getState }) => {
   return next => action => {
-
-    const { types, callAPI, shouldCallAPI = () => true, payload = {}, requiresAuth = false } = action;
+    const {
+      types,
+      callAPI,
+      shouldCallAPI = () => true,
+      payload = {},
+      requiresAuth = false
+    } = action;
 
     if (!types) {
       return next(action);
@@ -30,28 +35,21 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
     if (requiresAuth) {
       token = getState().auth.token;
     }
-console.log('1')
+
     dispatch({
       type: requestType,
       payload: { ...payload, response: { loading: true } }
     });
 
-    console.log('2')
-
     return callAPI(token)
       .then(response => {
-        console.log('3')
-
         if (socketTypes.includes(successType)) {
-          console.log('4')
-
           return dispatch({
             payload: { ...payload, response },
             type: successType,
             handler: 'WS'
           });
         }
-        console.log('5')
 
         return dispatch({
           payload: { ...payload, response },
@@ -59,12 +57,10 @@ console.log('1')
         });
       })
       .catch(error => {
-        console.log('6')
-
         return dispatch({
           payload: { ...payload, error },
           type: failureType
         });
       });
   };
-}
+};

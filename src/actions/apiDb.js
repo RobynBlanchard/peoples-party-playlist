@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const updateTrack = (uri, update) =>
+export const updateTrackDb = (uri, update) =>
   axios.patch(`/api/v1/playlist/tracks/${uri}`, { update });
 
 export const addTrackToDb = (uri, name, artist, updatedAt) => {

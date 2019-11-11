@@ -10,22 +10,13 @@ import {
   DELETE_TRACK_FAILURE,
   ADD_TO_PLAYLIST_DISALLOWED
 } from './types';
-import { upVoteLimit, downVoteLimit } from '../utils/constants';
-import {
-  reOrderTrackSpotify,
-  addToSpotifyPlaylist,
-  removeTrackFromSpotifyPlaylist
-} from './apiSpotify';
-import {
-  updateTrack as updateTrackDb,
-  addTrackToDb,
-  removeTrackFromDb
-} from './apiDb';
 import {
   spotifyOffSet,
   updatedTrackNewPosition,
   addToPlaylistApi,
-  removeFromPlaylistApi
+  removeFromPlaylistApi,
+  updateTrackApi,
+  updatedTrackVotes
 } from './playlistUtils';
 
 export const upVoteLimitExceeded = position => ({
@@ -38,91 +29,37 @@ export const downVoteLimitExceeded = position => ({
   payload: position
 });
 
-export const updateTrackNumOfVotes = (uri, position, change) => (
+export const updateTrackNumOfVotes = (uri, position, newVotes) => (
   dispatch,
   getState
 ) => {
   const state = getState();
   const { userId } = state.appUser;
-  const { tracks } = state.playlist;
+  const { tracks, removedPlaylist, lockedTrack } = state.playlist;
   const selectedTrack = tracks[position];
 
-  const votesByPerson = change - selectedTrack.votes;
-
-  if (change - selectedTrack.votes > 0) {
-    if (
-      selectedTrack.upVoters &&
-      selectedTrack.upVoters[userId] > upVoteLimit
-    ) {
-      return dispatch({ type: 'UPVOTE_LIMIT_EXCEEDED', payload: position });
-    }
-  } else {
-    if (
-      selectedTrack.downVoters &&
-      selectedTrack.downVoters[userId] > downVoteLimit
-    ) {
-      return dispatch({ type: 'DOWNVOTE_LIMIT_EXCEEDED', payload: position });
-    }
-  }
-
-  const updatedTrack = {
-    ...selectedTrack,
-    votes: change,
-    updatedAt: new Date().toISOString(),
-    upVoters: {
-      ...selectedTrack.upVoters
-    },
-    downVoters: {
-      ...selectedTrack.downVoters
-    }
-  };
-
-  if (change - selectedTrack.votes > 0) {
-    updatedTrack.upVoters[userId] =
-      (updatedTrack.upVoters[userId] || 0) + votesByPerson;
-  } else {
-    updatedTrack.downVoters[userId] =
-      (updatedTrack.downVoters[userId] || 0) - votesByPerson;
-  }
+  const votesByUser = newVotes - selectedTrack.votes;
+  const updatedTrack = updatedTrackVotes(
+    selectedTrack,
+    newVotes,
+    votesByUser,
+    userId
+  );
 
   const newPosition = updatedTrackNewPosition(
     tracks,
     updatedTrack,
-    votesByPerson
+    newVotes
   );
 
-  const callAPI = token => {
-    if (newPosition === position) {
-      return updateTrackDb(uri, {
-        $set: {
-          votes: change,
-          updatedAt: updatedTrack.updatedAt,
-          upVoters: updatedTrack.upVoters,
-          downVoters: updatedTrack.downVoters
-        }
-      });
-    } else {
-      const { removedPlaylist, lockedTrack } = getState().playlist;
-      const offset = spotifyOffSet(removedPlaylist, lockedTrack);
-
-      return reOrderTrackSpotify(
-        position,
-        newPosition,
-        offset,
-        votesByPerson,
-        token
-      ).then(res =>
-        updateTrackDb(uri, {
-          $set: { votes: change, updatedAt: updatedTrack.updatedAt }
-        })
-      );
-    }
-  };
+  // unecessary if not calling spotify ?
+  const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
   return dispatch({
     types: [UPDATE_TRACK, UPDATE_TRACK_SUCCESS, UPDATE_TRACK_FAILURE],
     requiresAuth: true,
-    callAPI: token => callAPI(token),
+    callAPI: token =>
+      updateTrackApi(token, position, newPosition, updatedTrack, offset),
     payload: {
       position,
       newPosition,
