@@ -1,5 +1,8 @@
 {
   "name": "ultimate-party-playlist",
+  "jest": {
+    "resetMocks": true
+  },
   "version": "1.0.0",
   "description": "",
   "main": "index.js",

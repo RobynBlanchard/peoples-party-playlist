@@ -29,13 +29,14 @@ export const downVoteLimitExceeded = position => ({
   payload: position
 });
 
-export const updateTrackNumOfVotes = (uri, position, newVotes) => (
+export const updateTrackNumOfVotes = (position, newVotes) => (
   dispatch,
   getState
 ) => {
   const state = getState();
   const { userId } = state.appUser;
   const { tracks, removedPlaylist, lockedTrack } = state.playlist;
+
   const selectedTrack = tracks[position];
 
   const votesByUser = newVotes - selectedTrack.votes;

@@ -24,8 +24,8 @@ const VoteDetails = ({
   useEffect(() => {
     if (debouncedInput !== votes) {
       input > votes
-        ? handleUpVote(uri, position, input)
-        : handleDownVote(uri, position, input);
+        ? handleUpVote(position, input)
+        : handleDownVote(position, input);
     }
   }, [debouncedInput]);
 
@@ -42,7 +42,7 @@ const VoteDetails = ({
     if ((upVoters && upVoters[userId]) + newVotes - votes === upVoteLimit) {
       setInput(newVotes);
 
-      return handleUpVote(uri, position, input + 1);
+      return handleUpVote(position, input + 1);
     }
 
     setInput(newVotes);
@@ -63,7 +63,7 @@ const VoteDetails = ({
     ) {
       setInput(newVotes);
 
-      return handleDownVote(uri, position, input - 1);
+      return handleDownVote(position, input - 1);
     }
 
     if (newVotes >= -5) {
