@@ -18,7 +18,7 @@ export const updatedTrackNewPosition = (playlist, track, change) => {
   });
 
   if (newPosition === -1) {
-    return playlist.length;
+    return playlist.length - 1;
   }
 
   if (change < 1) {
@@ -68,8 +68,8 @@ export const updateTrackApi = (
         ? offset + newPosition + 1
         : offset + newPosition;
 
-    reOrderTrackSpotify(rangeStart, insertBefore, token).then(
-      () => updateTrack
+    return reOrderTrackSpotify(rangeStart, insertBefore, token).then(() =>
+      updateTrack()
     );
   } else {
     return updateTrack();
@@ -82,8 +82,8 @@ export const updatedTrackVotes = (
   votesByPerson,
   userId
 ) => {
-  const upVotesByUser = selectedTrack.upVoters[userId];
-  const downVotesByUser = selectedTrack.downVoters[userId];
+  const upVotesByUser = selectedTrack.upVoters[userId] || 0;
+  const downVotesByUser = selectedTrack.downVoters[userId] || 0;
 
   return {
     ...selectedTrack,
@@ -91,12 +91,11 @@ export const updatedTrackVotes = (
     updatedAt: new Date().toISOString(),
     upVoters: {
       ...selectedTrack.upVoters,
-      [userId]: votesByPerson > 0 ? (upVotesByUser || 0) + votes : upVotesByUser
+      [userId]: votesByPerson > 0 ? upVotesByUser + votes : upVotesByUser
     },
     downVoters: {
       ...selectedTrack.downVoters,
-      [userId]:
-        votesByPerson < 0 ? (downVotesByUser || 0) - votes : downVotesByUser
+      [userId]: votesByPerson < 0 ? downVotesByUser - votes : downVotesByUser
     }
   };
 };

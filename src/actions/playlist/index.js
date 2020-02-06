@@ -48,8 +48,8 @@ export const updateTrackNumOfVotes = (position, newVotes) => (
   );
 
   const newPosition = updatedTrackNewPosition(tracks, updatedTrack, votesByUser);
-  const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
+  const offset = spotifyOffSet(removedPlaylist, lockedTrack);
   return dispatch({
     types: [UPDATE_TRACK, UPDATE_TRACK_SUCCESS, UPDATE_TRACK_FAILURE],
     requiresAuth: true,
@@ -83,7 +83,9 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
     name,
     votes: 0,
     uri,
-    updatedAt
+    updatedAt,
+    upVoters: {},
+    downVoters: {}
   };
 
   const addToPlaylistIncrement = 1;
