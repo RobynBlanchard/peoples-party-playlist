@@ -13,11 +13,15 @@ import {
   PAUSE_PLAYBACK_FAILURE
 } from '../types';
 import spotifyApi from '../utils/api';
-import { playlistId } from'../../utils/constants';
+import { playlistId } from '../../utils/constants';
 import { updateTrackDb } from '../utils/apiDb';
 import { startSession } from '../session';
 
-export const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
+export const resumePlaybackSpotify = (
+  playbackPosition,
+  playlistIndex,
+  token
+) => {
   return spotifyApi(token).put('me/player/play', {
     context_uri: `spotify:playlist:${playlistId}`,
     offset: { position: playlistIndex },
@@ -32,7 +36,7 @@ export const resumePlayback = () => (dispatch, getState) => {
   const spotifyOffset = removedPlaylist.length;
   const { sessionStarted } = state.session;
   const callAPI = token =>
-    resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token)
+    resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token);
 
   dispatch({
     types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
@@ -46,6 +50,10 @@ export const pausePlayback = () => ({
   callAPI: token => spotifyApi(token).put('me/player/pause'),
   requiresAuth: true
 });
+
+export const getCurrentlyPlayingSpotify = token => {
+  return spotifyApi(token).get('me/player/currently-playing');
+};
 
 export const getCurrentlyPlayingTrack = () => ({
   types: [

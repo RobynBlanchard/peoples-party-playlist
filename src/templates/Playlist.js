@@ -35,7 +35,9 @@ const PlaylistTemplate = ({ playback, playlist, session, startSession, getCurren
     if (!playing) {
       if (!session.sessionStarted) {
         console.log('start session');
-        setInterval(() => getCurrentlyPlayingTrack(), 1000)
+        // need to wait for success so can't do here
+        // todo - create playback class you can pause and play
+        // setInterval(() => getCurrentlyPlayingTrack(), 1000)
         return startSession();
       }
       return resumePlayback();
