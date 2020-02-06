@@ -17,7 +17,7 @@ import { playlistId } from'../../utils/constants';
 import { updateTrackDb } from '../utils/apiDb';
 import { startSession } from '../session';
 
-const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
+export const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
   return spotifyApi(token).put('me/player/play', {
     context_uri: `spotify:playlist:${playlistId}`,
     offset: { position: playlistIndex },
@@ -32,14 +32,7 @@ export const resumePlayback = () => (dispatch, getState) => {
   const spotifyOffset = removedPlaylist.length;
   const { sessionStarted } = state.session;
   const callAPI = token =>
-    resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token).then(
-      res => {
-        // if (!sessionStarted) dispatch(startSession())
-        if (lockedTrack.length === 0 && tracks.length > 0) {
-          dispatch(startSession());
-        }
-      }
-    );
+    resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token)
 
   dispatch({
     types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],

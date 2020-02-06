@@ -22,6 +22,8 @@ const defaultState = {
   progress_ms: null,
 };
 
+// put session here instead? and just say resume success etc.
+
 const playBackReducer = (state = defaultState, action) => {
   switch (action.type) {
     case RESUME_PLAYBACK:

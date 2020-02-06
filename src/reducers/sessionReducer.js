@@ -18,6 +18,7 @@ const sessionReducer = (state = defaultState, action) => {
         loading: true
       };
     case START_SESSION_SUCCESS:
+      // debugger
       return {
         loading: false,
         sessionStarted: true,

@@ -14,7 +14,7 @@ const PlaybackIcon = styled.img`
   padding: 16px;
 `;
 
-const PlaylistTemplate = ({ playback, playlist }) => {
+const PlaylistTemplate = ({ playback, playlist, session, startSession, getCurrentlyPlayingTrack }) => {
   const { pausePlayback, resumePlayback, playing } = playback;
   const {
     tracks,
@@ -27,12 +27,29 @@ const PlaylistTemplate = ({ playback, playlist }) => {
     downVoteLimitExceeded
   } = playlist;
 
+
+  // TODO: locked track not being persisted
+
+
+  const handlePlayback = () => {
+    if (!playing) {
+      if (!session.sessionStarted) {
+        console.log('start session');
+        setInterval(() => getCurrentlyPlayingTrack(), 1000)
+        return startSession();
+      }
+      return resumePlayback();
+    }
+    // if paused stop get currently playing ??
+    return pausePlayback();
+  };
+
   // console.log('render --------------', lockedTrack)
 
   return (
     <Container>
       <Heading>
-        <DefaultButton onClick={playing ? pausePlayback : resumePlayback}>
+        <DefaultButton onClick={handlePlayback}>
           <PlaybackIcon
             src={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           />

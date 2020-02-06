@@ -28,23 +28,36 @@ class Playlist extends React.Component {
       // always fetch on did mount ?
       fetchPlaylist();
     }
-    this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
+
+    // const { session, getCurrentlyPlayingTrack } = this.props;
+    // const { sessionStarted } = session;
+    // console.log(session)
+
+    // if (sessionStarted) {
+    //   // getCurrentlyPlayingTrack();
+    //   setInterval(() => getCurrentlyPlayingTrack(), 1000)
+    // }
+
+    // this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
   }
 
-  getCurrentlyPlaying() {
-    const { session, getCurrentlyPlayingTrack } = this.props;
-    const { sessionStarted } = session;
+  // getCurrentlyPlaying() {
+  //   const { session, getCurrentlyPlayingTrack } = this.props;
+  //   const { sessionStarted } = session;
 
-    if (sessionStarted) {
-      // TOOO: stop this if paused
-      // console.log('get cur plauing ++++++++')
-      getCurrentlyPlayingTrack();
-    }
-  }
+  //   if (sessionStarted) {
+  //     // c
+  //     // TOOO: stop this if paused
+  //     console.log('get cur plauing ++++++++')
+  //     getCurrentlyPlayingTrack();
+  //   }
+  // }
 
   componentWillReceiveProps(nextProps) {
+    
     const { currentTrack, updateCurrentTrack, session } = this.props;
     const { sessionStarted } = session;
+    console.log(sessionStarted)
 
     if (
       sessionStarted &&
@@ -100,9 +113,11 @@ class Playlist extends React.Component {
       upVoteLimitExceeded,
       downVoteLimitExceeded
     };
+
+    
     // console.log('render======')
 
-    return <PlaylistTemplate playlist={playlistProp} playback={playback} />;
+    return <PlaylistTemplate playlist={playlistProp} playback={playback} session={session} startSession={this.props.startSession} getCurrentlyPlayingTrack={this.props.getCurrentlyPlayingTrack} />;
   }
 }
 

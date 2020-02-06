@@ -188,16 +188,23 @@ const playlistReducer = (state = defaultState, action) => {
         trackError: null
       };
     case 'START_SESSION_SUCCESS':
-      if (lockedTrack.length > 0) {
-        lockedTrack[0].removed = true;
-        removedPlaylist.push(lockedTrack[0]);
-      }
-      lockedTrack = [tracks[0]];
-      if (lockedTrack.length > 0) {
-        lockedTrack[0].locked = true;
-      }
+      // if (lockedTrack.length > 0) {
+      //   lockedTrack[0].removed = true;
+      //   removedPlaylist.push(lockedTrack[0]);
+      // }
+      // lockedTrack = [tracks[0]];
+      // if (lockedTrack.length > 0) {
+      //   lockedTrack[0].locked = true;
+      // }
 
-      tracks.shift();
+      // tracks.shift();
+
+      if (lockedTrack.length === 0) {
+        lockedTrack = [tracks[0]];
+        lockedTrack[0].locked = true;
+        tracks.shift();
+
+      }
       return {
         ...state,
         lockedTrack,
