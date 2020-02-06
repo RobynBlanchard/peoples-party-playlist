@@ -88,12 +88,13 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
     downVoters: {}
   };
 
-  const addToPlaylistIncrement = 1;
+  const addToPlaylistIncrement = 1; // can be number greater than 0
   const newPosition = updatedTrackNewPosition(
     tracks,
     track,
     addToPlaylistIncrement
   );
+
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
   return dispatch({

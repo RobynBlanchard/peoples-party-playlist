@@ -1,139 +1,230 @@
-import { updatedTrackNewPosition, spotifyOffSet } from '../utils/playlistUtils';
+import { updateTrackNumOfVotes, addToPlaylist, removeTrack } from './';
+import {
+  addToPlaylistApi,
+  removeFromPlaylistApi,
+  updateTrackApi
+} from '../utils/playlistUtils';
+import * as playlistUtils from '../utils/playlistUtils';
+jest.mock('../utils/playlistUtils');
 
-describe('updatedTrackNewPosition', () => {
-  describe('when the playlist is empty', () => {
-    it('returns 0 as the new position', () => {
-      const playlist = [];
-      const newTrack = { song: 'Snow (Hey oh)', votes: 0 };
-      const change = 1;
+import {
+  UPDATE_TRACK,
+  UPDATE_TRACK_SUCCESS,
+  UPDATE_TRACK_FAILURE,
+  ADD_TO_PLAYLIST,
+  ADD_TO_PLAYLIST_SUCCESS,
+  ADD_TO_PLAYLIST_FAILURE,
+  DELETE_TRACK,
+  DELETE_TRACK_SUCCESS,
+  DELETE_TRACK_FAILURE,
+  ADD_TO_PLAYLIST_DISALLOWED
+} from '../types';
 
-      const newPosition = updatedTrackNewPosition(playlist, newTrack, change);
-      expect(newPosition).toEqual(0);
+describe('playlist actions', () => {
+  const topTrack = { uri: '3', votes: 4 };
+  const middleTrack = { uri: '4', votes: 3 };
+  const bottomTrack = { uri: '5', votes: -1 };
+  const tracks = [topTrack, middleTrack, bottomTrack];
+  const removedPlaylist = [{ uri: '1', votes: 10 }];
+  const lockedTrack = [{ uri: '2', votes: 8 }];
+  const userId = 'a1';
+
+  const initialState = {
+    playlist: {
+      tracks,
+      removedPlaylist,
+      lockedTrack
+    },
+    appUser: {
+      userId
+    }
+  };
+
+  const apiToken = '123';
+
+  describe('updateTrackNumOfVotes', () => {
+    let dispatch, getState;
+    const mockNewPosition = 0;
+    const mockSpotifyOffset = 2;
+    const newVotes = 5;
+    const originalPosition = 1;
+    const votesByUser = 2;
+
+    const updatedTrack = {
+      uri: middleTrack.uri,
+      votes: newVotes
+    };
+    beforeEach(() => {
+      dispatch = jest.fn();
+      getState = jest.fn(() => initialState);
+
+      playlistUtils.updatedTrackNewPosition = jest.fn(() => mockNewPosition);
+      playlistUtils.spotifyOffSet = jest.fn(() => mockSpotifyOffset);
+      playlistUtils.updatedTrackVotes = jest.fn(() => updatedTrack);
+    });
+
+    it('dispatches update track actions', () => {
+      updateTrackNumOfVotes(originalPosition, newVotes)(dispatch, getState);
+
+      expect(playlistUtils.updatedTrackVotes).toHaveBeenCalledWith(
+        middleTrack,
+        newVotes,
+        votesByUser,
+        userId
+      );
+      expect(playlistUtils.updatedTrackNewPosition).toHaveBeenCalledWith(
+        tracks,
+        updatedTrack,
+        votesByUser
+      );
+
+      expect(playlistUtils.spotifyOffSet).toHaveBeenCalledWith(
+        removedPlaylist,
+        lockedTrack
+      );
+
+      const dispatchArgs = dispatch.mock.calls[0][0];
+
+      expect(dispatchArgs.payload).toEqual({
+        position: originalPosition,
+        newPosition: mockNewPosition,
+        track: updatedTrack
+      });
+      expect(dispatchArgs.types).toEqual([
+        UPDATE_TRACK,
+        UPDATE_TRACK_SUCCESS,
+        UPDATE_TRACK_FAILURE
+      ]);
+      expect(dispatchArgs.requiresAuth).toEqual(true);
+      expect(dispatchArgs.callAPI(apiToken)).toEqual(
+        updateTrackApi(
+          apiToken,
+          originalPosition,
+          mockNewPosition,
+          updatedTrack,
+          mockSpotifyOffset
+        )
+      );
     });
   });
 
-  describe('when the playlist is not empty', () => {
-    const dateNow = new Date();
+  describe('addToPlaylist', () => {
+    let dispatch, getState;
+    beforeEach(() => {
+      dispatch = jest.fn();
+      getState = jest.fn(() => initialState);
+    });
+    describe('when the track is already on the playlist', () => {
+      it('dispatches add to playlist disallowed action', () => {
+        const uri = topTrack.uri;
+        const name = 'Do I wanna know?';
+        const artist = 'arctic monkeys';
+        const positionInSearch = 2;
 
-    const trackOne = {
-      song: 'Do I wanna know?',
-      votes: 3,
-      updatedAt: dateNow - 30000
-    };
-    const trackTwo = {
-      song: 'Snow (Hey oh)',
-      votes: 2,
-      updatedAt: dateNow - 10000
-    };
-    const trackThree = {
-      song: 'All my life',
-      votes: 1,
-      updatedAt: dateNow - 40000
-    };
-    const trackFour = { song: 'Naive', votes: -1, updatedAt: dateNow - 50000 };
+        addToPlaylist(uri, name, artist, positionInSearch)(dispatch, getState);
 
-    const playlist = [trackOne, trackTwo, trackThree, trackFour];
-
-    describe('when the updated track now has more votes than the track above it', () => {
-      it('returns a positon one place higher', () => {
-        const updatedTrackTwo = {
-          song: 'Snow (Hey oh)',
-          votes: 4,
-          updatedAt: dateNow
-        };
-        const change = 2;
-
-        const newPosition = updatedTrackNewPosition(
-          playlist,
-          updatedTrackTwo,
-          change
-        );
-        expect(newPosition).toEqual(0);
+        expect(dispatch).toHaveBeenCalledWith({
+          type: ADD_TO_PLAYLIST_DISALLOWED,
+          payload: positionInSearch
+        });
       });
     });
 
-    describe('when the updated track now has the least number of votes', () => {
-      it('returns the bottom playlist position', () => {
-        const updatedTrackTwo = {
-          song: 'Snow (Hey oh)',
-          votes: -2,
-          updatedAt: dateNow
-        };
-        const change = -4;
+    describe('when the track is not already on the playlist', () => {
+      const uri = '6';
+      const name = 'Go your own way';
+      const artist = 'Fleetwood mac';
+      const positionInSearch = 2;
+      const mockNewPosition = 2;
+      const mockSpotifyOffset = 2;
+      const addToPlaylistIncrement = 1;
 
-        const newPosition = updatedTrackNewPosition(
-          playlist,
-          updatedTrackTwo,
-          change
-        );
-        expect(newPosition).toEqual(3);
+      let mockDateNow;
+      beforeEach(() => {
+        mockDateNow = new Date('2019');
+        global.Date = jest.fn(() => mockDateNow);
+
+        playlistUtils.updatedTrackNewPosition = jest.fn(() => mockNewPosition);
+        playlistUtils.spotifyOffSet = jest.fn(() => mockSpotifyOffset);
       });
-    });
 
-    describe('when the updated track now has less votes than the track below it', () => {
-      it('returns a position one place lower', () => {
-        const updatedTrackTwo = {
-          song: 'Snow (Hey oh)',
+      it('dispatches add to playlist actions', () => {
+        addToPlaylist(uri, name, artist, positionInSearch)(dispatch, getState);
+
+        const expectedTrack = {
+          artist,
+          name,
           votes: 0,
-          updatedAt: dateNow
+          uri,
+          updatedAt: mockDateNow.toISOString(),
+          downVoters: {},
+          upVoters: {},
         };
-        const change = -2;
 
-        const newPosition = updatedTrackNewPosition(
-          playlist,
-          updatedTrackTwo,
-          change
+        expect(playlistUtils.updatedTrackNewPosition).toHaveBeenCalledWith(
+          tracks,
+          expectedTrack,
+          1,
         );
-        expect(newPosition).toEqual(2);
-      });
-    });
-
-    describe('when the updated track now has the same number of votes as the track above it', () => {
-      it('the most recently updated track has the lower position', () => {
-        const updatedTrack = {
-          song: 'Do I wanna know?',
-          votes: 3,
-          updatedAt: dateNow
-        };
-        const change = 1;
-
-        const newPosition = updatedTrackNewPosition(
-          playlist,
-          updatedTrack,
-          change
+        expect(playlistUtils.spotifyOffSet).toHaveBeenCalledWith(
+          removedPlaylist,
+          lockedTrack
         );
-        expect(newPosition).toEqual(1);
-      });
-    });
 
-    describe('when the updated track now has the same number of votes as the track below it', () => {
-      it('the most recently updated track has the lower position', () => {
-        const updatedTrack = {
-          song: 'Do I wanna know?',
-          votes: 1,
-          updatedAt: dateNow
-        };
-        const change = -1;
+        const dispatchArgs = dispatch.mock.calls[0][0];
 
-        const newPosition = updatedTrackNewPosition(
-          playlist,
-          updatedTrack,
-          change
+        expect(dispatchArgs.payload).toEqual({
+          position: mockNewPosition,
+          positionInSearch,
+          track: expectedTrack
+        });
+        expect(dispatchArgs.types).toEqual([
+          ADD_TO_PLAYLIST,
+          ADD_TO_PLAYLIST_SUCCESS,
+          ADD_TO_PLAYLIST_FAILURE
+        ]);
+        expect(dispatchArgs.requiresAuth).toEqual(true);
+        expect(dispatchArgs.callAPI(apiToken)).toEqual(
+          addToPlaylistApi(
+            apiToken,
+            mockNewPosition + mockSpotifyOffset,
+            expectedTrack
+          )
         );
-        expect(newPosition).toEqual(2);
       });
     });
   });
-});
 
-describe('spotifyOffSet', () => {
-  it('returns the length of the removed playlist plus the locked Track', () => {
-    const removedPlaylist = [
-      { song: 'Do I wanna know?' },
-      { song: 'Snow (Hey oh)' }
-    ];
-    const lockedTrack = [{ song: 'All my life' }];
+  describe('removeTrack', () => {
+    let dispatch, getState;
+    beforeEach(() => {
+      dispatch = jest.fn();
+      getState = jest.fn(() => initialState);
+    });
 
-    expect(spotifyOffSet(removedPlaylist, lockedTrack)).toEqual(3);
+    it('dispatches delete track actions', () => {
+      const uri = bottomTrack.uri;
+      const position = 2;
+
+      removeTrack(uri, position)(dispatch, getState);
+
+      const dispatchArgs = dispatch.mock.calls[0][0];
+
+      expect(dispatchArgs.payload).toEqual({
+        position,
+        uri
+      });
+
+      expect(dispatchArgs.callAPI(apiToken)).toEqual(
+        removeFromPlaylistApi(apiToken, 3)
+      );
+
+      expect(dispatchArgs.types).toEqual([
+        DELETE_TRACK,
+        DELETE_TRACK_SUCCESS,
+        DELETE_TRACK_FAILURE
+      ]);
+      expect(dispatchArgs.requiresAuth).toEqual(true);
+    });
   });
 });
