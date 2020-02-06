@@ -1,4 +1,4 @@
-import spotifyApi from './api';
+import spotifyApi from './utils/api';
 import {
   FETCH_SEARCH_RESULTS,
   FETCH_SEARCH_RESULTS_SUCCESS,

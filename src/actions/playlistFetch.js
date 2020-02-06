@@ -1,5 +1,5 @@
 import axios from 'axios';
-import spotifyApi from './api';
+import spotifyApi from './utils/api';
 import { playlistId } from '../utils/constants';
 import {
   FETCH_PLAYLIST_FROM_DB,
