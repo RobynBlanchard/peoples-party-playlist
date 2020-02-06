@@ -17,7 +17,7 @@ import {
   removeFromPlaylistApi,
   updateTrackApi,
   updatedTrackVotes
-} from './playlistUtils';
+} from './utils/playlistUtils';
 
 export const upVoteLimitExceeded = position => ({
   type: 'UPVOTE_LIMIT_EXCEEDED',

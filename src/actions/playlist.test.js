@@ -3,8 +3,8 @@ import {
   addToPlaylistApi,
   removeFromPlaylistApi,
   updateTrackApi
-} from './playlistUtils';
-import * as playlistUtils from './playlistUtils';
+} from './utils/playlistUtils'
+import * as playlistUtils from './utils/playlistUtils'
 import {
   UPDATE_TRACK,
   UPDATE_TRACK_SUCCESS,

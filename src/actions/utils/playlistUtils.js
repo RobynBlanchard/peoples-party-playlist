@@ -2,8 +2,8 @@ import {
   addToSpotifyPlaylist,
   removeTrackFromSpotifyPlaylist,
   reOrderTrackSpotify
-} from './apiSpotify';
-import { addTrackToDb, updateTrackDb, removeTrackFromDb } from './apiDb';
+} from '../apiSpotify';
+import { addTrackToDb, updateTrackDb, removeTrackFromDb } from '../apiDb';
 
 export const spotifyOffSet = (removedPlaylist, lockedTrack) => {
   return removedPlaylist.length + lockedTrack.length;
