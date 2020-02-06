@@ -1,4 +1,4 @@
-import { socketTypes } from './types';
+import { socketTypes } from '../types';
 
 export const callAPIMiddleware = ({ dispatch, getState }) => {
   return next => action => {
