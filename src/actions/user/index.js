@@ -2,8 +2,8 @@ import {
   FETCH_USER_ID,
   FETCH_USER_ID_SUCCESS,
   FETCH_USER_ID_FAILURE
-} from '../actions/types';
-import api from './utils/api';
+} from '../types';
+import api from '../utils/api';
 
 // spotify user
 export const fetchUser = () => ({

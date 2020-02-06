@@ -1,11 +1,11 @@
 import axios from 'axios';
-import spotifyApi from './utils/api';
-import { playlistId } from '../utils/constants';
+import spotifyApi from '../utils/api';
+import { playlistId } from '../../utils/constants';
 import {
   FETCH_PLAYLIST_FROM_DB,
   FETCH_PLAYLIST_FROM_DB_SUCCESS,
   FETCH_PLAYLIST_FROM_DB_FAILURE
-} from './types';
+} from '../types';
 
 // export const fetchPlaylist = () => dispatch => {
 //   const endpoint =

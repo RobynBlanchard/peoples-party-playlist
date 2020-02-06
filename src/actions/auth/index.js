@@ -1,4 +1,4 @@
-import { LOG_IN_SUCESS, LOG_IN_FAILURE, LOG_OUT } from './types';
+import { LOG_IN_SUCESS, LOG_IN_FAILURE, LOG_OUT } from '../types';
 
 export const logInSucess = accesToken => ({
   type: LOG_IN_SUCESS,

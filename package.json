@@ -7,7 +7,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect .",
+    "dev": "npm run clean:client && webpack --colors --display-error-details --progress --config ./config/webpack.config.js --progress && nodemon index.js",
     "clean:client": "rm -rf ./dist",
     "clean:server": "rm -f ./server-production.js",
     "build:client": "webpack --config ./config/webpack.client.js",

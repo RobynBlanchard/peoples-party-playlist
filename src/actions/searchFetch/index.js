@@ -1,10 +1,10 @@
-import spotifyApi from './utils/api';
+import spotifyApi from '../utils/api';
 import {
   FETCH_SEARCH_RESULTS,
   FETCH_SEARCH_RESULTS_SUCCESS,
   FETCH_SEARCH_RESULTS_FAILURE,
   CLEAR_RESULTS
-} from './types';
+} from '../types';
 
 export const dispatchFetchSearchResults = query => ({
   types: [
