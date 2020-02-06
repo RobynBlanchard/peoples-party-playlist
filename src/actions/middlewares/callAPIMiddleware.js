@@ -1,9 +1,14 @@
-import { socketTypes } from './types';
+import { socketTypes } from '../types';
 
 export const callAPIMiddleware = ({ dispatch, getState }) => {
   return next => action => {
-
-    const { types, callAPI, shouldCallAPI = () => true, payload = {}, requiresAuth = false } = action;
+    const {
+      types,
+      callAPI,
+      shouldCallAPI = () => true,
+      payload = {},
+      requiresAuth = false
+    } = action;
 
     if (!types) {
       return next(action);
@@ -52,11 +57,10 @@ export const callAPIMiddleware = ({ dispatch, getState }) => {
         });
       })
       .catch(error => {
-
         return dispatch({
           payload: { ...payload, error },
           type: failureType
         });
       });
   };
-}
+};

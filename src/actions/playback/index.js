@@ -11,11 +11,11 @@ import {
   PAUSE_PLAYBACK,
   PAUSE_PLAYBACK_SUCCESS,
   PAUSE_PLAYBACK_FAILURE
-} from './types';
-import spotifyApi from './api';
-import { playlistId } from '../utils/constants';
-import { updateTrack } from './apiDb';
-import { startSession } from './index';
+} from '../types';
+import spotifyApi from '../utils/api';
+import { playlistId } from'../../utils/constants';
+import { updateTrackDb } from '../utils/apiDb';
+import { startSession } from '../session';
 
 const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
   return spotifyApi(token).put('me/player/play', {
@@ -69,10 +69,10 @@ const updateCurrentTrackInDb = (
   currentlyPlayingTrack
 ) =>
   Promise.all([
-    updateTrack(previouslyPlayingTrack, {
+    updateTrackDb(previouslyPlayingTrack, {
       $set: { removed: true }
     }),
-    updateTrack(currentlyPlayingTrack, { $set: { locked: true } })
+    updateTrackDb(currentlyPlayingTrack, { $set: { locked: true } })
   ]);
 
 export const updateCurrentTrack = () => (dispatch, getState) => {

@@ -3,13 +3,12 @@ import {
   START_SESSION,
   START_SESSION_SUCCESS,
   START_SESSION_FAILURE
-} from '../actions/types';
+} from '../types';
 
 // TODO: - save session in db
 export const startSession = () => (dispatch, getState) => {
   const state = getState();
   const { tracks } = state.playlist;
-  // debugger
   dispatch({
     types: [START_SESSION, START_SESSION_SUCCESS, START_SESSION_FAILURE],
     callAPI: () =>

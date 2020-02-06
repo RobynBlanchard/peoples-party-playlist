@@ -117,3 +117,18 @@
   <!-- fix file loader for images -->
   <!-- set up - HMR for reducers -->
   <!-- use styled components theme -->
+
+
+<!-- // TODO: handle when playlist ends
+// just re-order playlist and push whole thing to spotify?
+// todo match range_end to spotify ? -->
+<!-- rename actions to addto playlisy, remove from playlist (instead of removeTrack) etc -->
+<!-- default votes to have upvoters and downvoters -->
+<!-- 
+TODO: fix - xpect(dispatchArgs.callAPI(apiToken)).toEqual(
+          addToPlaylistApi(
+            apiToken,
+            mockNewPosition + mockSpotifyOffset,
+            expectedTrack
+          )
+        ); -->
