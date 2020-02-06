@@ -22,7 +22,7 @@ export const updatedTrackNewPosition = (playlist, track, change) => {
   }
 
   if (change < 1) {
-    return newPosition -= 1;
+    return (newPosition -= 1);
   }
 
   return newPosition;
@@ -51,14 +51,15 @@ export const updateTrackApi = (
 ) => {
   const { updatedAt, upVoters, downVoters, uri, votes } = updatedTrack;
 
-  const updateTrack = updateTrackDb(uri, {
-    $set: {
-      votes: votes,
-      updatedAt: updatedAt,
-      upVoters: upVoters,
-      downVoters: downVoters
-    }
-  });
+  const updateTrack = () =>
+    updateTrackDb(uri, {
+      $set: {
+        votes: votes,
+        updatedAt: updatedAt,
+        upVoters: upVoters,
+        downVoters: downVoters
+      }
+    });
 
   if (oldPosition !== newPosition) {
     const rangeStart = offset + oldPosition;
@@ -67,11 +68,11 @@ export const updateTrackApi = (
         ? offset + newPosition + 1
         : offset + newPosition;
 
-    reOrderTrackSpotify(rangeStart, insertBefore, token).then(() =>
-      updateTrack()
+    reOrderTrackSpotify(rangeStart, insertBefore, token).then(
+      () => updateTrack
     );
   } else {
-    return updatedTrack();
+    return updateTrack();
   }
 };
 

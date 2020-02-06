@@ -47,8 +47,7 @@ export const updateTrackNumOfVotes = (position, newVotes) => (
     userId
   );
 
-  const newPosition = updatedTrackNewPosition(tracks, updatedTrack, newVotes);
-
+  const newPosition = updatedTrackNewPosition(tracks, updatedTrack, votesByUser);
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
   return dispatch({
