@@ -47,13 +47,8 @@ export const updateTrackNumOfVotes = (position, newVotes) => (
     userId
   );
 
-  const newPosition = updatedTrackNewPosition(
-    tracks,
-    updatedTrack,
-    newVotes
-  );
+  const newPosition = updatedTrackNewPosition(tracks, updatedTrack, newVotes);
 
-  // unecessary if not calling spotify ?
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
   return dispatch({
@@ -92,7 +87,12 @@ export const addToPlaylist = (uri, name, artist, positionInSearch) => (
     updatedAt
   };
 
-  const newPosition = updatedTrackNewPosition(tracks, track, 1);
+  const addToPlaylistIncrement = 1;
+  const newPosition = updatedTrackNewPosition(
+    tracks,
+    track,
+    addToPlaylistIncrement
+  );
   const offset = spotifyOffSet(removedPlaylist, lockedTrack);
 
   return dispatch({
