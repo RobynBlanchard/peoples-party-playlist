@@ -13,15 +13,16 @@ export const updatedTrackNewPosition = (playlist, track, change) => {
   if (playlist.length === 0) return 0;
 
   let newPosition = playlist.findIndex(el => {
+    // el.updatedAt > track.updatedAt will always be true ?
     return el.votes < track.votes || el.updatedAt > track.updatedAt;
   });
 
   if (newPosition === -1) {
-    newPosition = playlist.length;
+    return playlist.length;
   }
 
   if (change < 1) {
-    newPosition -= 1;
+    return newPosition -= 1;
   }
 
   return newPosition;
@@ -98,92 +99,3 @@ export const updatedTrackVotes = (
     }
   };
 };
-
-// export const updateTrackVotesApi = (
-//   token,
-//   shouldCallSpotify,
-//   updatedTrack,
-// ) => {
-//   const { updatedAt, upVoters, downVoters, uri } = updatedTrack;
-
-//   const updateTrack = updateTrackDb(uri, {
-//     $set: {
-//       votes: newVotes,
-//       updatedAt: updatedAt,
-//       upVoters: upVoters,
-//       downVoters: downVoters
-//     }
-//   });
-
-//   if (shouldCallSpotify) {
-//     return reOrderTrackSpotify(
-//       rangeStart,
-//       insertBefore,
-//       token
-//     ).then(() => updateTrack())
-//   } else {
-//     return updatedTrack()
-//   }
-
-//   if (newPosition === oldPosition) {
-
-//   const { updatedAt, upVoters, downVoters } = updatedTrack;
-//   if (newPosition === oldPosition) {
-//     return updateTrackDb(uri, {
-//       $set: {
-//         votes: newVotes,
-//         updatedAt: updatedAt,
-//         upVoters: upVoters,
-//         downVoters: downVoters
-//       }
-//     });
-//   } else {
-//     // const { removedPlaylist, lockedTrack } = getState().playlist;
-//     // const offset = spotifyOffSet(removedPlaylist, lockedTrack);
-
-//     return reOrderTrackSpotify(
-//       // position,
-//       // newPosition,
-//       // offset,
-//       // votesByUser,
-//       rangeStart,
-//       insertBefore,
-//       token
-//     ).then(res =>
-//       updateTrackDb(uri, {
-//         $set: { votes: newVotes,
-//           updatedAt: updatedAt,
-//           upVoters: upVoters,
-//           downVoters: downVoters }
-//       })
-//     );
-//   }
-// };
-
-// TODO:
-// export const updateTrackVotesAPi = (uri, votes, updatedTrack) => {
-//   const { updatedAt, upVoters, downVoters } = updatedTrack;
-
-//   return updateTrackDb(uri, {
-//     $set: {
-//       votes: votes,
-//       updatedAt: updatedAt,
-//       upVoters: upVoters,
-//       downVoters: downVoters
-//     }
-//   });
-// };
-
-// export const updateTrackVotesAndPositionApi = (
-//   token,
-//   position,
-//   newPosition,
-//   offset,
-//   votesByPerson
-// ) => {
-//   reOrderTrackSpotify(position,
-//     newPosition,
-//     offset,
-//     votesByPerson,
-//     token)
-// };
