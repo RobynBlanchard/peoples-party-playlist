@@ -17,9 +17,9 @@ const defaultState = {
     // progress_ms: null,
     uri: '',
     artist: '',
-    name: '',
+    name: ''
   },
-  progress_ms: null,
+  progress_ms: null
 };
 
 const playBackReducer = (state = defaultState, action) => {
@@ -27,50 +27,56 @@ const playBackReducer = (state = defaultState, action) => {
     case RESUME_PLAYBACK:
       return {
         ...state,
-        loading: true,
-      }
+        loading: true
+      };
     case RESUME_PLAYBACK_SUCCESS:
       return {
         ...state,
         playing: true,
         loading: false,
-        error: null,
+        error: null
       };
     case RESUME_PLAYBACK_FAILURE:
+      const status = action.payload.error.response.data.error.status;
       return {
         ...state,
         loading: false,
         playing: false,
         error: {
-          status: action.payload.error.response.data.error.status,
+          status,
           message: action.payload.error.response.data.error.message,
-          displayMessage: "Couldn't find active device, make sure you have spotify open"
+          displayMessage:
+            status === 401
+              ? 'please log out and in again'
+              : "Couldn't find active device, make sure you have spotify open"
         }
-      }
+      };
     case PAUSE_PLAYBACK_SUCCESS:
       return {
         ...state,
         playing: false
       };
 
-      // dont want to send this all the time
+    // dont want to send this all the time
     case GET_CURRENTLY_PLAYING_SUCCESS:
-    if (action.payload.response.data.item) {
 
-      return {
-        ...state,
-        progress_ms: action.payload.response.data.progress_ms,
+      console.log('SUCESSSSSSS')
+
+      if (action.payload.response.data.item) {
+        return {
+          ...state,
+          progress_ms: action.payload.response.data.progress_ms,
           currentTrack: {
             uri: action.payload.response.data.item.uri,
             artist: action.payload.response.data.item.artists[0].name,
-            name: action.payload.response.data.item.name,
-        }
-    }
-    } else {
-      return {
-        ...state
+            name: action.payload.response.data.item.name
+          }
+        };
+      } else {
+        return {
+          ...state
+        };
       }
-    }
     default:
       return state;
   }

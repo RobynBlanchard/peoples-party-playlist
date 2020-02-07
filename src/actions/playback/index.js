@@ -12,57 +12,17 @@ import {
   PAUSE_PLAYBACK_SUCCESS,
   PAUSE_PLAYBACK_FAILURE
 } from '../types';
-import spotifyApi from '../utils/api';
-import { playlistId } from'../../utils/constants';
 import { updateTrackDb } from '../utils/apiDb';
-import { startSession } from '../session';
+import PollAPI from '../utils/pollAPI';
+import {
+  resumePlaybackSpotify,
+  pausePlaybackSpotify,
+  getCurrentlyPlayingSpotify
+} from '../utils/apiSpotify';
 
-const resumePlaybackSpotify = (playbackPosition, playlistIndex, token) => {
-  return spotifyApi(token).put('me/player/play', {
-    context_uri: `spotify:playlist:${playlistId}`,
-    offset: { position: playlistIndex },
-    position_ms: playbackPosition
-  });
+const pauseSpotifyAndPoll = token => {
+  return pausePlaybackSpotify(token).then(res => PollAPI.stop());
 };
-
-export const resumePlayback = () => (dispatch, getState) => {
-  const state = getState();
-  const { progress_ms } = state.playback;
-  const { removedPlaylist, lockedTrack, tracks } = state.playlist;
-  const spotifyOffset = removedPlaylist.length;
-  const { sessionStarted } = state.session;
-  const callAPI = token =>
-    resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token).then(
-      res => {
-        // if (!sessionStarted) dispatch(startSession())
-        if (lockedTrack.length === 0 && tracks.length > 0) {
-          dispatch(startSession());
-        }
-      }
-    );
-
-  dispatch({
-    types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
-    callAPI: callAPI,
-    requiresAuth: true
-  });
-};
-
-export const pausePlayback = () => ({
-  types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
-  callAPI: token => spotifyApi(token).put('me/player/pause'),
-  requiresAuth: true
-});
-
-export const getCurrentlyPlayingTrack = () => ({
-  types: [
-    GET_CURRENTLY_PLAYING,
-    GET_CURRENTLY_PLAYING_SUCCESS,
-    GET_CURRENTLY_PLAYING_FAILURE
-  ],
-  callAPI: token => spotifyApi(token).get('me/player/currently-playing'),
-  requiresAuth: true
-});
 
 const updateCurrentTrackInDb = (
   previouslyPlayingTrack,
@@ -75,8 +35,64 @@ const updateCurrentTrackInDb = (
     updateTrackDb(currentlyPlayingTrack, { $set: { locked: true } })
   ]);
 
+const playTrackAction = (
+  token,
+  shouldLockTopTrack,
+  progress_ms,
+  spotifyOffset,
+  tracks,
+  dispatch
+) => {
+  // TODO use call api middleare or dispatch success and failure..
+  PollAPI.setFn(() =>
+    getCurrentlyPlayingSpotify(token).then(res => {
+      dispatch({
+        type: 'GET_CURRENTLY_PLAYING_SUCCESS',
+        payload: { response: res }
+      });
+    })
+  );
+
+  if (shouldLockTopTrack) {
+    return resumePlaybackSpotify(
+      token,
+      parseInt(spotifyOffset, 10),
+      progress_ms
+    )
+      .then(res => {
+        return updateTrackDb(tracks[0].uri, { $set: { locked: true } });
+      })
+      .then(res => {
+        PollAPI.start();
+      });
+  }
+
+  return resumePlaybackSpotify(
+    token,
+    parseInt(spotifyOffset, 10),
+    progress_ms
+  ).then(res => {
+    PollAPI.start();
+  });
+};
+
+export const pauseTrack = () => ({
+  types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
+  callAPI: token => pauseSpotifyAndPoll(token),
+  requiresAuth: true
+});
+
+export const getCurrentlyPlayingTrack = () => ({
+  types: [
+    GET_CURRENTLY_PLAYING,
+    GET_CURRENTLY_PLAYING_SUCCESS,
+    GET_CURRENTLY_PLAYING_FAILURE
+  ],
+  callAPI: token => getCurrentlyPlayingSpotify(token),
+  requiresAuth: true
+});
+
 export const updateCurrentTrack = () => (dispatch, getState) => {
-  // debugger
   const state = getState();
   const currentlyPlayingTrack = state.playback.currentTrack.uri;
   const previouslyPlayingTrack = state.playlist.lockedTrack[0].uri;
@@ -89,5 +105,27 @@ export const updateCurrentTrack = () => (dispatch, getState) => {
     ],
     callAPI: () =>
       updateCurrentTrackInDb(previouslyPlayingTrack, currentlyPlayingTrack)
+  });
+};
+
+export const playTrack = () => (dispatch, getState) => {
+  const state = getState();
+  const { tracks, lockedTrack, removedPlaylist } = state.playlist;
+  const { progress_ms } = state.playback;
+  const spotifyOffset = removedPlaylist.length;
+  const shouldLockTopTrack = lockedTrack.length === 0;
+
+  dispatch({
+    types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
+    callAPI: token =>
+      playTrackAction(
+        token,
+        shouldLockTopTrack,
+        progress_ms,
+        spotifyOffset,
+        tracks,
+        dispatch
+      ),
+    requiresAuth: true
   });
 };

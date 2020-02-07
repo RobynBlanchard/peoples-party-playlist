@@ -85,6 +85,7 @@ export const updateTrackApi = (
       }
     });
 
+    // TODO: move this to reOrderTrackSpotify
   if (oldPosition !== newPosition) {
     const rangeStart = offset + oldPosition;
     const insertBefore =

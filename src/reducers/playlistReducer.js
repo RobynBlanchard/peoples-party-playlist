@@ -187,17 +187,12 @@ const playlistReducer = (state = defaultState, action) => {
         removedPlaylist,
         trackError: null
       };
-    case 'START_SESSION_SUCCESS':
-      if (lockedTrack.length > 0) {
-        lockedTrack[0].removed = true;
-        removedPlaylist.push(lockedTrack[0]);
-      }
-      lockedTrack = [tracks[0]];
-      if (lockedTrack.length > 0) {
+    case 'RESUME_PLAYBACK_SUCCESS':
+      if (lockedTrack.length === 0) {
+        lockedTrack = [tracks[0]];
         lockedTrack[0].locked = true;
+        tracks.shift();
       }
-
-      tracks.shift();
       return {
         ...state,
         lockedTrack,

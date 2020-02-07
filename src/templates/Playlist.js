@@ -14,8 +14,8 @@ const PlaybackIcon = styled.img`
   padding: 16px;
 `;
 
-const PlaylistTemplate = ({ playback, playlist }) => {
-  const { pausePlayback, resumePlayback, playing } = playback;
+const PlaylistTemplate = ({ playback, playlist, playTrack }) => {
+  const { pauseTrack, playing } = playback;
   const {
     tracks,
     lockedTrack,
@@ -27,12 +27,14 @@ const PlaylistTemplate = ({ playback, playlist }) => {
     downVoteLimitExceeded
   } = playlist;
 
-  // console.log('render --------------', lockedTrack)
+  const handlePlayback = () => {
+    return playing ? pauseTrack() : playTrack()
+  };
 
   return (
     <Container>
       <Heading>
-        <DefaultButton onClick={playing ? pausePlayback : resumePlayback}>
+        <DefaultButton onClick={handlePlayback}>
           <PlaybackIcon
             src={`images/${playing ? 'pause' : 'play'}-circle-regular.svg`}
           />
