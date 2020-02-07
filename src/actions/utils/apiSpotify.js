@@ -48,8 +48,16 @@ export const resumePlaybackSpotify = (
   });
 };
 
+export const pausePlaybackSpotify = token =>
+  spotifyApi(token).put('me/player/pause');
+
+export const getCurrentlyPlayingSpotify = token =>
+  spotifyApi(token).get('me/player/currently-playing');
+
 // class Spotify {
 //   constructor(playlistId) {
 //     this.playlistId = playlistId;
+// this.api =
+
 //   }
 // }
