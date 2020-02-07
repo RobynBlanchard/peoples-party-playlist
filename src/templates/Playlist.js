@@ -15,7 +15,7 @@ const PlaybackIcon = styled.img`
 `;
 
 const PlaylistTemplate = ({ playback, playlist, playTrack }) => {
-  const { pausePlayback, playing } = playback;
+  const { pauseTrack, playing } = playback;
   const {
     tracks,
     lockedTrack,
@@ -28,7 +28,7 @@ const PlaylistTemplate = ({ playback, playlist, playTrack }) => {
   } = playlist;
 
   const handlePlayback = () => {
-    return playing ? pausePlayback() : playTrack()
+    return playing ? pauseTrack() : playTrack()
   };
 
   return (

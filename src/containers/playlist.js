@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
   fetchPlaylist,
   updateTrackNumOfVotes,
-  pausePlayback,
+  pauseTrack,
   removeTrack,
   playTrack,
   updateCurrentTrack,
@@ -39,7 +39,7 @@ class Playlist extends React.Component {
     const {
       playlist,
       playing,
-      pausePlayback,
+      pauseTrack,
       playbackError,
       updateTrackNumOfVotes,
       removeTrack,
@@ -60,7 +60,7 @@ class Playlist extends React.Component {
 
     const playback = {
       playing,
-      pausePlayback,
+      pauseTrack,
     };
 
     const playlistProp = {
@@ -101,7 +101,7 @@ export default connect(mapStateToProps, {
   fetchPlaylist,
   removeTrack,
   updateTrackNumOfVotes,
-  pausePlayback,
+  pauseTrack,
   playTrack,
   updateCurrentTrack,
   upVoteLimitExceeded,

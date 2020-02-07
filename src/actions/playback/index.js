@@ -36,7 +36,7 @@ const pauseSpotifyAndPoll = token => {
     .then(res => PollAPI.stop());
 };
 
-export const pausePlayback = () => ({
+export const pauseTrack = () => ({
   types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
   callAPI: token => pauseSpotifyAndPoll(token),
   requiresAuth: true
