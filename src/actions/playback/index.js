@@ -16,6 +16,7 @@ import spotifyApi from '../utils/api';
 import { playlistId } from '../../utils/constants';
 import { updateTrackDb } from '../utils/apiDb';
 import { startSession } from '../session';
+import PollAPI from '../utils/pollAPI';
 
 export const resumePlaybackSpotify = (
   playbackPosition,
@@ -45,11 +46,22 @@ export const resumePlayback = () => (dispatch, getState) => {
   });
 };
 
+const pauseSpotifyAndPoll = token => {
+  return spotifyApi(token)
+    .put('me/player/pause')
+    .then(res => PollAPI.stop());
+};
+
 export const pausePlayback = () => ({
   types: [PAUSE_PLAYBACK, PAUSE_PLAYBACK_SUCCESS, PAUSE_PLAYBACK_FAILURE],
-  callAPI: token => spotifyApi(token).put('me/player/pause'),
+  // callAPI: token => spotifyApi(token).put('me/player/pause'),
+  callAPI:  token => pauseSpotifyAndPoll(token),
   requiresAuth: true
 });
+// // PollAPI.stop();
+// export const pausePlayback = () => (dispatch, getState) => {
+//   return dispatch(pausePlaybackSpotify()).then(res => console.log(res))
+// };
 
 export const getCurrentlyPlayingSpotify = token => {
   return spotifyApi(token).get('me/player/currently-playing');

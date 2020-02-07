@@ -6,6 +6,8 @@ import {
 } from '../types';
 import { resumePlaybackSpotify, getCurrentlyPlayingSpotify } from '../playback';
 
+import PollAPI from '../utils/pollAPI';
+
 // TODO: - save session in db
 
 // TODO: after fixing, change this to go via call api middleware
@@ -19,6 +21,15 @@ export const startSession = () => (dispatch, getState) => {
 
   // if nothing in locked already!
 
+  PollAPI.setFn(
+    () => getCurrentlyPlayingSpotify(token).then(res => {
+      dispatch({
+        type: 'GET_CURRENTLY_PLAYING_SUCCESS',
+        payload: { response: res }
+      });
+    })
+  );
+
   if (lockedTrack.length === 0) {
     return resumePlaybackSpotify(
       progress_ms,
@@ -31,18 +42,7 @@ export const startSession = () => (dispatch, getState) => {
         });
       })
       .then(res => {
-        console.log('11111');
-
-        // NEED TO DISPATCH
-        setInterval(() => {
-          console.log('djnfksdnjkfn');
-          return getCurrentlyPlayingSpotify(token).then(res => {
-            dispatch({
-              type: 'GET_CURRENTLY_PLAYING_SUCCESS',
-              payload: {response: res}
-            });
-          });
-        }, 1000);
+        PollAPI.start();
         dispatch({ type: 'RESUME_PLAYBACK_SUCCESS' });
         dispatch({ type: 'START_SESSION_SUCCESS' });
       })
@@ -60,18 +60,18 @@ export const startSession = () => (dispatch, getState) => {
     .then(res => {
       console.log('2222', getCurrentlyPlayingSpotify);
 
-
       // TODO: Pause interval when player is paused
-      setInterval(() => {
-        console.log('djnfksdnjkfn');
-        return getCurrentlyPlayingSpotify(token).then(res => {
+      // setInterval(() => {
+      //   console.log('djnfksdnjkfn');
+      //   return getCurrentlyPlayingSpotify(token).then(res => {
+      //     dispatch({
+      //       type: 'GET_CURRENTLY_PLAYING_SUCCESS',
+      //       payload: { response: res }
+      //     });
+      //   });
+      // }, 1000);
+      PollAPI.start();
 
-          dispatch({
-            type: 'GET_CURRENTLY_PLAYING_SUCCESS',
-            payload: {response: res}
-          });
-        });
-      }, 1000);
 
       dispatch({ type: 'RESUME_PLAYBACK_SUCCESS' });
       dispatch({ type: 'START_SESSION_SUCCESS' });
