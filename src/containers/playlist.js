@@ -3,11 +3,9 @@ import { connect } from 'react-redux';
 import {
   fetchPlaylist,
   updateTrackNumOfVotes,
-  resumePlayback,
   pausePlayback,
-  getCurrentlyPlayingTrack,
   removeTrack,
-  startSession,
+  playTrack,
   updateCurrentTrack,
   upVoteLimitExceeded,
   downVoteLimitExceeded
@@ -41,20 +39,18 @@ class Playlist extends React.Component {
     const {
       playlist,
       playing,
-      resumePlayback,
       pausePlayback,
       playbackError,
-      session,
       updateTrackNumOfVotes,
       removeTrack,
       userId,
       upVoteLimitExceeded,
-      downVoteLimitExceeded
+      downVoteLimitExceeded,
+      playTrack
     } = this.props;
     const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
-    const { error: sessionError } = session;
 
-    let error = playlistError || playbackError || sessionError;
+    let error = playlistError || playbackError;
 
     if (error) return <ErrorIndicator message={error.displayMessage} />;
 
@@ -65,7 +61,6 @@ class Playlist extends React.Component {
     const playback = {
       playing,
       pausePlayback,
-      resumePlayback
     };
 
     const playlistProp = {
@@ -83,8 +78,7 @@ class Playlist extends React.Component {
       <PlaylistTemplate
         playlist={playlistProp}
         playback={playback}
-        startSession={this.props.startSession}
-        getCurrentlyPlayingTrack={this.props.getCurrentlyPlayingTrack}
+        playTrack={playTrack}
       />
     );
   }
@@ -96,7 +90,6 @@ const mapStateToProps = state => {
   return {
     playlist: state.playlist,
     playing: state.playback.playing,
-    session: state.session,
     currentTrack: state.playback.currentTrack,
     playbackError: state.playback.error,
     userId: state.appUser.userId
@@ -108,10 +101,8 @@ export default connect(mapStateToProps, {
   fetchPlaylist,
   removeTrack,
   updateTrackNumOfVotes,
-  resumePlayback,
   pausePlayback,
-  getCurrentlyPlayingTrack,
-  startSession,
+  playTrack,
   updateCurrentTrack,
   upVoteLimitExceeded,
   downVoteLimitExceeded

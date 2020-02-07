@@ -14,8 +14,8 @@ const PlaybackIcon = styled.img`
   padding: 16px;
 `;
 
-const PlaylistTemplate = ({ playback, playlist, startSession, getCurrentlyPlayingTrack }) => {
-  const { pausePlayback, resumePlayback, playing } = playback;
+const PlaylistTemplate = ({ playback, playlist, playTrack }) => {
+  const { pausePlayback, playing } = playback;
   const {
     tracks,
     lockedTrack,
@@ -27,27 +27,9 @@ const PlaylistTemplate = ({ playback, playlist, startSession, getCurrentlyPlayin
     downVoteLimitExceeded
   } = playlist;
 
-
-  // TODO: locked track not being persisted
-
-
   const handlePlayback = () => {
-    if (!playing) {
-      return startSession(); // rename to play
-      // if (!session.sessionStarted) {
-      //   console.log('start session');
-      //   // need to wait for success so can't do here
-      //   // todo - create playback class you can pause and play
-      //   // setInterval(() => getCurrentlyPlayingTrack(), 1000)
-      //   return startSession();
-      // }
-      // return resumePlayback();
-    }
-    // if paused stop get currently playing ??
-    return pausePlayback();
+    return playing ? pausePlayback() : playTrack()
   };
-
-  // console.log('render --------------', lockedTrack)
 
   return (
     <Container>

@@ -16,6 +16,7 @@ import spotifyApi from '../utils/api';
 import { playlistId } from '../../utils/constants';
 import { updateTrackDb } from '../utils/apiDb';
 import PollAPI from '../utils/pollAPI';
+import axios from 'axios';
 
 export const resumePlaybackSpotify = (
   playbackPosition,
@@ -67,7 +68,6 @@ const updateCurrentTrackInDb = (
   ]);
 
 export const updateCurrentTrack = () => (dispatch, getState) => {
-  // debugger
   const state = getState();
   const currentlyPlayingTrack = state.playback.currentTrack.uri;
   const previouslyPlayingTrack = state.playlist.lockedTrack[0].uri;
@@ -81,4 +81,124 @@ export const updateCurrentTrack = () => (dispatch, getState) => {
     callAPI: () =>
       updateCurrentTrackInDb(previouslyPlayingTrack, currentlyPlayingTrack)
   });
+};
+
+const playTrackAction = (
+  token,
+  shouldLockTopTrack,
+  progress_ms,
+  spotifyOffset,
+  tracks,
+  dispatch
+) => {
+  // TODO use call api middleare or dispatch success and failure..
+  PollAPI.setFn(() =>
+    getCurrentlyPlayingSpotify(token).then(res => {
+      dispatch({
+        type: 'GET_CURRENTLY_PLAYING_SUCCESS',
+        payload: { response: res }
+      });
+    })
+  );
+
+  if (shouldLockTopTrack) {
+    return resumePlaybackSpotify(
+      progress_ms,
+      parseInt(spotifyOffset, 10),
+      token
+    )
+      .then(res => {
+        // return axios.patch(`/api/v1/playlist/tracks/${tracks[0].uri}`, {
+        //   update: { $set: { locked: true } }
+        // });
+        return updateTrackDb(tracks[0].uri, { $set: { locked: true } });
+      })
+      .then(res => {
+        PollAPI.start();
+      });
+  }
+
+  return resumePlaybackSpotify(
+    progress_ms,
+    parseInt(spotifyOffset, 10),
+    token
+  ).then(res => {
+    PollAPI.start();
+  });
+};
+
+export const playTrack = () => (dispatch, getState) => {
+  const state = getState();
+  const { tracks, lockedTrack, removedPlaylist } = state.playlist;
+  const { progress_ms } = state.playback;
+  const spotifyOffset = removedPlaylist.length;
+  const shouldLockTopTrack = lockedTrack.length === 0;
+
+  dispatch({
+    types: [RESUME_PLAYBACK, RESUME_PLAYBACK_SUCCESS, RESUME_PLAYBACK_FAILURE],
+    callAPI: token =>
+      playTrackAction(
+        token,
+        shouldLockTopTrack,
+        progress_ms,
+        spotifyOffset,
+        tracks,
+        dispatch
+      ),
+    requiresAuth: true
+  });
+};
+
+export const playTrackOld = () => (dispatch, getState) => {
+  const state = getState();
+  const { tracks, lockedTrack, removedPlaylist } = state.playlist;
+  const { progress_ms } = state.playback;
+  const spotifyOffset = removedPlaylist.length;
+  const token = getState().auth.token;
+
+  // const callAPI = token => playTrackAction(token);
+  PollAPI.setFn(() =>
+    getCurrentlyPlayingSpotify(token).then(res => {
+      dispatch({
+        type: 'GET_CURRENTLY_PLAYING_SUCCESS',
+        payload: { response: res }
+      });
+    })
+  );
+
+  if (lockedTrack.length === 0) {
+    return resumePlaybackSpotify(
+      progress_ms,
+      parseInt(spotifyOffset, 10),
+      token
+    )
+      .then(res => {
+        return axios.patch(`/api/v1/playlist/tracks/${tracks[0].uri}`, {
+          update: { $set: { locked: true } }
+        });
+      })
+      .then(res => {
+        PollAPI.start();
+        dispatch({ type: 'RESUME_PLAYBACK_SUCCESS' });
+      })
+      .catch(error => {
+        return dispatch({
+          payload: { error },
+          type: 'RESUME_PLAYBACK_FAILURE'
+        });
+      });
+  }
+
+  return resumePlaybackSpotify(progress_ms, parseInt(spotifyOffset, 10), token)
+    .then(res => {
+      PollAPI.start();
+
+      dispatch({ type: 'RESUME_PLAYBACK_SUCCESS' });
+    })
+    .catch(error => {
+      return dispatch({
+        payload: { error },
+        type: 'RESUME_PLAYBACK_FAILURE'
+      });
+    });
 };
