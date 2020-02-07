@@ -20,53 +20,19 @@ class Playlist extends React.Component {
     const { playlist, fetchPlaylist } = this.props;
     const { tracks } = playlist;
 
-    // console.log('comp did mount')
-
     if (tracks.length === 0) {
-      // debugger;
-      // console.log('fetch-----------')
-      // always fetch on did mount ?
       fetchPlaylist();
     }
-
-    // const { session, getCurrentlyPlayingTrack } = this.props;
-    // const { sessionStarted } = session;
-    // console.log(session)
-
-    // if (sessionStarted) {
-    //   // getCurrentlyPlayingTrack();
-    //   setInterval(() => getCurrentlyPlayingTrack(), 1000)
-    // }
-
-    // this.timer = setInterval(() => this.getCurrentlyPlaying(), 1000);
   }
 
-  // getCurrentlyPlaying() {
-  //   const { session, getCurrentlyPlayingTrack } = this.props;
-  //   const { sessionStarted } = session;
-
-  //   if (sessionStarted) {
-  //     // c
-  //     // TOOO: stop this if paused
-  //     console.log('get cur plauing ++++++++')
-  //     getCurrentlyPlayingTrack();
-  //   }
-  // }
-
   componentWillReceiveProps(nextProps) {
-    
-    const { currentTrack, updateCurrentTrack, session } = this.props;
-    const { sessionStarted } = session;
-    console.log(sessionStarted)
+    const { currentTrack, updateCurrentTrack, playing } = this.props;
 
     if (
-      sessionStarted &&
+      playing &&
       currentTrack.uri &&
       nextProps.currentTrack.uri !== currentTrack.uri
     ) {
-      // console.log('will receive props')
-      console.log('update track!!!!!!!!!!!!!!!!!!!!!!!!!')
-
       updateCurrentTrack();
     }
   }
@@ -86,7 +52,6 @@ class Playlist extends React.Component {
       downVoteLimitExceeded
     } = this.props;
     const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
-    // console.log('lcoked trackkkkk', lockedTrack)
     const { error: sessionError } = session;
 
     let error = playlistError || playbackError || sessionError;
@@ -114,10 +79,14 @@ class Playlist extends React.Component {
       downVoteLimitExceeded
     };
 
-    
-    // console.log('render======')
-
-    return <PlaylistTemplate playlist={playlistProp} playback={playback} session={session} startSession={this.props.startSession} getCurrentlyPlayingTrack={this.props.getCurrentlyPlayingTrack} />;
+    return (
+      <PlaylistTemplate
+        playlist={playlistProp}
+        playback={playback}
+        startSession={this.props.startSession}
+        getCurrentlyPlayingTrack={this.props.getCurrentlyPlayingTrack}
+      />
+    );
   }
 }
 
@@ -135,18 +104,15 @@ const mapStateToProps = state => {
 };
 
 // export default requireAuth(
-export default connect(
-  mapStateToProps,
-  {
-    fetchPlaylist,
-    removeTrack,
-    updateTrackNumOfVotes,
-    resumePlayback,
-    pausePlayback,
-    getCurrentlyPlayingTrack,
-    startSession,
-    updateCurrentTrack,
-    upVoteLimitExceeded,
-    downVoteLimitExceeded
-  }
-)(Playlist);
+export default connect(mapStateToProps, {
+  fetchPlaylist,
+  removeTrack,
+  updateTrackNumOfVotes,
+  resumePlayback,
+  pausePlayback,
+  getCurrentlyPlayingTrack,
+  startSession,
+  updateCurrentTrack,
+  upVoteLimitExceeded,
+  downVoteLimitExceeded
+})(Playlist);

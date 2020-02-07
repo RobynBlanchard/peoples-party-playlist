@@ -14,7 +14,7 @@ const PlaybackIcon = styled.img`
   padding: 16px;
 `;
 
-const PlaylistTemplate = ({ playback, playlist, session, startSession, getCurrentlyPlayingTrack }) => {
+const PlaylistTemplate = ({ playback, playlist, startSession, getCurrentlyPlayingTrack }) => {
   const { pausePlayback, resumePlayback, playing } = playback;
   const {
     tracks,
@@ -33,14 +33,15 @@ const PlaylistTemplate = ({ playback, playlist, session, startSession, getCurren
 
   const handlePlayback = () => {
     if (!playing) {
-      if (!session.sessionStarted) {
-        console.log('start session');
-        // need to wait for success so can't do here
-        // todo - create playback class you can pause and play
-        // setInterval(() => getCurrentlyPlayingTrack(), 1000)
-        return startSession();
-      }
-      return resumePlayback();
+      return startSession(); // rename to play
+      // if (!session.sessionStarted) {
+      //   console.log('start session');
+      //   // need to wait for success so can't do here
+      //   // todo - create playback class you can pause and play
+      //   // setInterval(() => getCurrentlyPlayingTrack(), 1000)
+      //   return startSession();
+      // }
+      // return resumePlayback();
     }
     // if paused stop get currently playing ??
     return pausePlayback();

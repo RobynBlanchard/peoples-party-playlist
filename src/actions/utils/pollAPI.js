@@ -10,10 +10,13 @@ class PollAPI {
   }
 
   start() {
+    console.log('startttt')
     this.timer = setInterval(this.pollingFn, this.interval);
   }
 
   stop() {
+    console.log('stopppp')
+
     clearInterval(this.timer);
   }
 }
