@@ -18,19 +18,48 @@ const VoteDetails = ({
   upVoteLimitExceeded,
   downVoteLimitExceeded
 }) => {
-  const [input, setInput] = useState(votes);
-  const debouncedInput = useDebounce(input, 500);
+  const [input, setInput] = useState(0);
+  const [Vinput, VsetInput] = useState(0);
+  const debouncedInput = useDebounce(Vinput, 500);
 
   useEffect(() => {
-    if (debouncedInput !== votes) {
-      input > votes
-        ? handleUpVote(position, input)
-        : handleDownVote(position, input);
-    }
-  }, [debouncedInput]);
+    debouncedInput && handleUpVote(position, Vinput)
+  }, [debouncedInput])
+
+  useEffect(() => {
+    VsetInput(votes)
+  }, [votes])
+
+  // useEffect(() => {
+  //   debugger
+  //   setInput(0)
+  // }, [votes])
+
+  // useEffect(() => {
+  //   // console.log('use effect votes', votes);
+  //   // console.log('use effect input', input);
+  //   // console.log('use effect debound', debouncedInput);
+  //   // console.log('vals', votes + input);
+  //   // console.log('debouncedInput', debouncedInput);
+  //   console.log('setting input 0')
+  //   // debugger
+  //   setInput(0)
+  //   // setVotess(votes + input)
+  // }, [votes]);
+  
+  // useEffect(() => {
+  //   // debugger
+  //   console.log('herrrrrreee')
+  //   if (debouncedInput + votes !== votes) {
+  //     input + votes > votes
+  //       ? handleUpVote(position, input + votes)
+  //       : handleDownVote(position, input + votes);
+  //   }
+  // }, [debouncedInput]);
+
 
   const onUpVoteHandler = () => {
-    const newVotes = input + 1;
+    const newVotes = input + votes + 1;
 
     if (
       (upVoters && upVoters[userId] >= upVoteLimit) ||
@@ -40,12 +69,17 @@ const VoteDetails = ({
     }
 
     if ((upVoters && upVoters[userId]) + newVotes - votes === upVoteLimit) {
-      setInput(newVotes);
+      // setInput(newVotes);
+      console.log('set input');
 
-      return handleUpVote(position, input + 1);
+      VsetInput(prevInput => prevInput + 1);
+
+      return handleUpVote(position, newVotes);
     }
 
-    setInput(newVotes);
+    // setInput(newVotes);
+    console.log('set input');
+    VsetInput(prevInput => prevInput + 1);
   };
 
   const onDownVoteHandler = () => {
@@ -76,12 +110,22 @@ const VoteDetails = ({
     setInput(newVotes);
   };
 
+  
+  // const val = debouncedInput ? votes : votes + input
+  
+  console.log('votes', votes);
+  console.log('input', input);
+  console.log('input', Vinput);
+
+  // console.log('debouncedInput', debouncedInput);
+  // console.log('vals', votes + input);
+
   return (
     <Wrapper>
       <DefaultButton onClick={onDownVoteHandler}>
         <Icon src="images/white-minus.svg" />
       </DefaultButton>
-      <VotesText shouldFocus={shouldFocus}>{input}</VotesText>
+      <VotesText shouldFocus={shouldFocus}>{Vinput}</VotesText>
       <DefaultButton onClick={onUpVoteHandler}>
         <Icon src="images/white-plus.svg" />
       </DefaultButton>
