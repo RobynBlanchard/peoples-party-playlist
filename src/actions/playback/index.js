@@ -13,22 +13,9 @@ import {
   PAUSE_PLAYBACK_FAILURE
 } from '../types';
 import spotifyApi from '../utils/api';
-import { playlistId } from '../../utils/constants';
 import { updateTrackDb } from '../utils/apiDb';
 import PollAPI from '../utils/pollAPI';
-import axios from 'axios';
-
-export const resumePlaybackSpotify = (
-  playbackPosition,
-  playlistIndex,
-  token
-) => {
-  return spotifyApi(token).put('me/player/play', {
-    context_uri: `spotify:playlist:${playlistId}`,
-    offset: { position: playlistIndex },
-    position_ms: playbackPosition
-  });
-};
+import { resumePlaybackSpotify } from '../utils/apiSpotify';
 
 const pauseSpotifyAndPoll = token => {
   return spotifyApi(token)
@@ -103,14 +90,11 @@ const playTrackAction = (
 
   if (shouldLockTopTrack) {
     return resumePlaybackSpotify(
-      progress_ms,
+      token,
       parseInt(spotifyOffset, 10),
-      token
+      progress_ms
     )
       .then(res => {
-        // return axios.patch(`/api/v1/playlist/tracks/${tracks[0].uri}`, {
-        //   update: { $set: { locked: true } }
-        // });
         return updateTrackDb(tracks[0].uri, { $set: { locked: true } });
       })
       .then(res => {
@@ -119,9 +103,9 @@ const playTrackAction = (
   }
 
   return resumePlaybackSpotify(
-    progress_ms,
+    token,
     parseInt(spotifyOffset, 10),
-    token
+    progress_ms
   ).then(res => {
     PollAPI.start();
   });

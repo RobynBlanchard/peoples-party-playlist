@@ -35,3 +35,21 @@ export const removeTrackFromSpotifyPlaylist = (uri, token) =>
   spotifyApi(token).delete(`playlists/${playlistId}/tracks`, {
     data: { tracks: [{ uri }] }
   });
+
+export const resumePlaybackSpotify = (
+  token,
+  positionInPlaylist,
+  playbackPosition
+) => {
+  return spotifyApi(token).put('me/player/play', {
+    context_uri: `spotify:playlist:${playlistId}`,
+    offset: { position: positionInPlaylist },
+    position_ms: playbackPosition
+  });
+};
+
+// class Spotify {
+//   constructor(playlistId) {
+//     this.playlistId = playlistId;
+//   }
+// }
