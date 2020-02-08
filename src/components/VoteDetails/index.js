@@ -18,26 +18,24 @@ const VoteDetails = ({
   upVoteLimitExceeded,
   downVoteLimitExceeded
 }) => {
-  const [Vinput, VsetInput] = useState(votes);
+  const [Vinput, VsetInput] = useState(0);
   const debouncedInput = useDebounce(Vinput, 500);
 
   useEffect(() => {
-    // debugger;
-    if (debouncedInput !== votes) {
-      // console.log('here')
-      debouncedInput >= votes
-        ? handleUpVote(position, Vinput)
-        : handleDownVote(position, Vinput);
+    if (debouncedInput + votes !== votes) {
+      debouncedInput + votes >= votes
+        ? handleUpVote(position, Vinput + votes)
+        : handleDownVote(position, Vinput + votes);
     }
   }, [debouncedInput]);
 
   useEffect(() => {
-    VsetInput(votes);
+    VsetInput(0);
   }, [votes]);
 
   const onUpVoteHandler = () => {
     // console.log('input', input);
-    const newVotes = Vinput + 1;
+    const newVotes = Vinput + 1 + votes;
 
     if (
       (upVoters && upVoters[userId] >= upVoteLimit) ||
@@ -48,12 +46,12 @@ const VoteDetails = ({
 
     if ((upVoters && upVoters[userId]) + newVotes - votes === upVoteLimit) {
       // VsetInput(prevInput => prevInput + 1);
-      VsetInput(newVotes);
+      VsetInput(Vinput + 1);
 
       return handleUpVote(position, newVotes);
     }
 
-    VsetInput(newVotes);
+    VsetInput(Vinput + 1);
     // VsetInput(prevInput => prevInput + 1);
   };
 
@@ -62,7 +60,7 @@ const VoteDetails = ({
 
     // const newVotes = input + votes - 1;
 
-    const newVotes = Vinput - 1;
+    const newVotes = Vinput + votes - 1;
     if (
       (downVoters && downVoters[userId] >= downVoteLimit) ||
       votes - newVotes > downVoteLimit
@@ -75,21 +73,21 @@ const VoteDetails = ({
       (downVoters && downVoters[userId]) + votes - newVotes === 2
     ) {
       // VsetInput(newVotes);
-      VsetInput(newVotes);
+      VsetInput(Vinput - 1);
 
       return handleDownVote(position, newVotes);
     }
 
     if (newVotes >= -5) {
       // VsetInput(newVotes);
-      VsetInput(newVotes);
+      VsetInput(Vinput - 1);
 
       if (newVotes === -5) {
         return removeTrack(uri, position);
       }
     }
     // VsetInput(newVotes);
-    VsetInput(newVotes);
+    VsetInput(Vinput - 1);
   };
 
   // console.log('shouldFocus', shouldFocus);
@@ -99,7 +97,7 @@ const VoteDetails = ({
       <DefaultButton onClick={onDownVoteHandler}>
         <Icon src="images/white-minus.svg" />
       </DefaultButton>
-      <VotesText shouldFocus={shouldFocus}>{Vinput}</VotesText>
+      <VotesText shouldFocus={shouldFocus}>{Vinput + votes}</VotesText>
       <DefaultButton onClick={onUpVoteHandler}>
         <Icon src="images/white-plus.svg" />
       </DefaultButton>
