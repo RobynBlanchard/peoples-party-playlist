@@ -22,7 +22,7 @@ describe('VoteDetails', () => {
   //   })
   // })
 
-  describe('submitting votes', () => {});
+  // describe('submitting votes', () => {});
 
   describe('when the user tries upvote more than the limit', () => {
     let mockupVoteLimitExceeded;
@@ -112,6 +112,100 @@ describe('VoteDetails', () => {
 
         it('displays the right number of votes', () => {
           expect(wrapper.find(VotesText).text()).toEqual('3');
+        });
+      });
+    });
+  });
+
+  describe('when the user tries to downvote more than the limit', () => {
+    let mockupDownVoteLimitExceeded;
+    let wrapper;
+    let mockProps = {
+      position: 0,
+      uri: '123',
+      votes: 0,
+      handleUpVote: jest.fn(),
+      handleDownVote: jest.fn(),
+      removeTrack: jest.fn(),
+      upVoters: {},
+      downVoters: {},
+      userId: 'a1',
+      shouldFocus: false,
+      upVoteLimitExceeded: jest.fn(),
+      downVoteLimitExceeded: jest.fn()
+    };
+
+    describe('when the user has never downvoted before', () => {
+      beforeEach(() => {
+        mockupDownVoteLimitExceeded = jest.fn();
+        mockProps = {
+          ...mockProps,
+          downVoteLimitExceeded: mockupDownVoteLimitExceeded
+        };
+
+        wrapper = mount(<VoteDetails {...mockProps} />);
+        const downVoteButton = wrapper.find(DefaultButton).at(0);
+        Array.from(Array(downVoteLimit + 1)).forEach(_ =>
+          downVoteButton.simulate('click')
+        );
+      });
+
+      it('displays the right number of votes', () => {
+        expect(wrapper.find(VotesText).text()).toEqual('-2');
+      });
+
+      it('downVoteLimitExceeded is called with the position of the track', () => {
+        expect(mockupDownVoteLimitExceeded).toHaveBeenCalled();
+        expect(mockupDownVoteLimitExceeded).toHaveBeenCalledWith(0);
+      });
+    });
+
+    describe('when the user has downvoted before', () => {
+      describe('when the user has not already reached the downvote limit', () => {
+        beforeEach(() => {
+          mockupDownVoteLimitExceeded = jest.fn();
+          mockProps = {
+            ...mockProps,
+            votes: -1,
+            downVoters: { a1: downVoteLimit - 1 },
+            downVoteLimitExceeded: mockupDownVoteLimitExceeded
+          };
+          wrapper = mount(<VoteDetails {...mockProps} />);
+          const downVoteButton = wrapper.find(DefaultButton).at(0);
+
+          Array.from(Array(2)).forEach(_ => downVoteButton.simulate('click'));
+        });
+
+        it('downVoteLimitExceeded is called with the position of the track', () => {
+          expect(mockupDownVoteLimitExceeded).toHaveBeenCalled();
+          expect(mockupDownVoteLimitExceeded).toHaveBeenCalledWith(0);
+        });
+
+        it('displays the right number of votes', () => {
+          expect(wrapper.find(VotesText).text()).toEqual('-2');
+        });
+      });
+      describe('when the user has already reached the downvote limit', () => {
+        beforeEach(() => {
+          mockupDownVoteLimitExceeded = jest.fn();
+          mockProps = {
+            ...mockProps,
+            votes: -1,
+            downVoters: { a1: downVoteLimit },
+            downVoteLimitExceeded: mockupDownVoteLimitExceeded
+          };
+          wrapper = mount(<VoteDetails {...mockProps} />);
+          const downVoteButton = wrapper.find(DefaultButton).at(0);
+          downVoteButton.simulate('click');
+        });
+
+        it('downVoteLimitExceeded is called with the position of the track', () => {
+          expect(mockupDownVoteLimitExceeded).toHaveBeenCalled();
+          expect(mockupDownVoteLimitExceeded).toHaveBeenCalledWith(0);
+        });
+
+        it('displays the right number of votes', () => {
+          expect(wrapper.find(VotesText).text()).toEqual('-1');
         });
       });
     });
