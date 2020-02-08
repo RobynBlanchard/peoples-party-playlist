@@ -1,3 +1,9 @@
+### People's Party Playlist
+
+Add songs to the playlist and re order by voting
+
+![Add to playlist and voting demo](voting_example.gif)
+
 <!-- TODO; -->
 <!-- when adding a song to playlist from search that is already there, inform the user -->
 <!-- mobile nav -->
