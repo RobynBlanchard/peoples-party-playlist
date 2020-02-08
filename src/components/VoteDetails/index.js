@@ -23,7 +23,13 @@ const VoteDetails = ({
   const debouncedInput = useDebounce(Vinput, 500);
 
   useEffect(() => {
-    debouncedInput > 0 ? handleUpVote(position, Vinput) : handleDownVote(position, Vinput)
+    // debugger;
+    if (debouncedInput !== votes) {
+      // console.log('here')
+      debouncedInput >= votes
+        ? handleUpVote(position, Vinput)
+        : handleDownVote(position, Vinput);
+    }
   }, [debouncedInput]);
 
   useEffect(() => {
@@ -31,6 +37,7 @@ const VoteDetails = ({
   }, [votes]);
 
   const onUpVoteHandler = () => {
+    // console.log('input', input);
     const newVotes = input + votes + 1;
 
     if (
@@ -41,21 +48,19 @@ const VoteDetails = ({
     }
 
     if ((upVoters && upVoters[userId]) + newVotes - votes === upVoteLimit) {
-      // setInput(newVotes);
-      console.log('set input');
-
-      VsetInput(prevInput => prevInput + 1);
+      // VsetInput(prevInput => prevInput + 1);
+      VsetInput(Vinput + 1);
 
       return handleUpVote(position, newVotes);
     }
-
-    // setInput(newVotes);
-    console.log('set input');
-
-    VsetInput(prevInput => prevInput + 1);
+    // debugger
+    VsetInput(Vinput + 1);
+    // VsetInput(prevInput => prevInput + 1);
   };
 
   const onDownVoteHandler = () => {
+    // console.log('input', input);
+
     const newVotes = input + votes - 1;
 
     // const newVotes = input - 1;
@@ -70,36 +75,25 @@ const VoteDetails = ({
       votes - newVotes === 2 ||
       (downVoters && downVoters[userId]) + votes - newVotes === 2
     ) {
-      // setInput(newVotes);
-      // VsetInput(prevInput => prevInput - 1);
-      VsetInput(newVotes);
+      // VsetInput(newVotes);
+      VsetInput(Vinput - 1);
 
       return handleDownVote(position, newVotes);
     }
 
     if (newVotes >= -5) {
-      // setInput(newVotes); 
-      // VsetInput(prevInput => prevInput - 1);
-      VsetInput(newVotes);
+      // VsetInput(newVotes);
+      VsetInput(Vinput - 1);
 
       if (newVotes === -5) {
         return removeTrack(uri, position);
       }
     }
-    console.log('set input');
-    // debugger
-    // setInput(newVotes);
-    VsetInput(newVotes);
+    // VsetInput(newVotes);
+    VsetInput(Vinput - 1);
   };
 
-  // const val = debouncedInput ? votes : votes + input
-
-  console.log('votes', votes);
-  console.log('input', input);
-  console.log('input', Vinput);
-
-  // console.log('debouncedInput', debouncedInput);
-  // console.log('vals', votes + input);
+  // console.log('shouldFocus', shouldFocus);
 
   return (
     <Wrapper>
