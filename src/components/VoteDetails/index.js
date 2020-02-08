@@ -2,7 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Wrapper, VotesText, Icon } from './styles';
 import { DefaultButton } from '../../globalStyles';
 import useDebounce from '../useDebounce';
-import { upVoteLimit, downVoteLimit } from '../../utils/constants';
+import {
+  upVoteLimit,
+  downVoteLimit,
+  minimumVotes
+} from '../../utils/constants';
 
 const VoteDetails = ({
   position,
@@ -18,88 +22,52 @@ const VoteDetails = ({
   upVoteLimitExceeded,
   downVoteLimitExceeded
 }) => {
-  const [Vinput, VsetInput] = useState(votes);
-  const debouncedInput = useDebounce(Vinput, 500);
+  const [updatedVotes, setUpdatedVotes] = useState(votes);
+  const debouncedInput = useDebounce(updatedVotes, 500);
 
   useEffect(() => {
-    // debugger;
     if (debouncedInput !== votes) {
-      // console.log('here')
       debouncedInput >= votes
-        ? handleUpVote(position, Vinput)
-        : handleDownVote(position, Vinput);
+        ? handleUpVote(position, updatedVotes)
+        : handleDownVote(position, updatedVotes);
     }
   }, [debouncedInput]);
 
   useEffect(() => {
-    VsetInput(votes);
+    setUpdatedVotes(votes);
   }, [votes]);
 
   const onUpVoteHandler = () => {
-    // console.log('input', input);
-    const newVotes = Vinput + 1;
+    const voteLimitReached =
+      (upVoters[userId] || 0) + updatedVotes - votes + 1 > upVoteLimit;
 
-    if (
-      (upVoters && upVoters[userId] >= upVoteLimit) ||
-      newVotes - votes > upVoteLimit
-    ) {
+    if (voteLimitReached) {
       return upVoteLimitExceeded(position);
     }
 
-    if ((upVoters && upVoters[userId]) + newVotes - votes === upVoteLimit) {
-      // VsetInput(prevInput => prevInput + 1);
-      VsetInput(newVotes);
-
-      return handleUpVote(position, newVotes);
-    }
-
-    VsetInput(newVotes);
-    // VsetInput(prevInput => prevInput + 1);
+    setUpdatedVotes(prevVotes => prevVotes + 1);
   };
 
   const onDownVoteHandler = () => {
-    // console.log('input', input);
-
-    // const newVotes = input + votes - 1;
-
-    const newVotes = Vinput - 1;
-    if (
-      (downVoters && downVoters[userId] >= downVoteLimit) ||
-      votes - newVotes > downVoteLimit
-    ) {
+    const voteLimitReached =
+      (downVoters[userId] || 0) + votes - updatedVotes + 1 > downVoteLimit;
+    if (voteLimitReached) {
       return downVoteLimitExceeded(position);
     }
 
-    if (
-      votes - newVotes === 2 ||
-      (downVoters && downVoters[userId]) + votes - newVotes === 2
-    ) {
-      // VsetInput(newVotes);
-      VsetInput(newVotes);
-
-      return handleDownVote(position, newVotes);
+    if (updatedVotes === minimumVotes) {
+      return removeTrack(uri, position);
     }
 
-    if (newVotes >= -5) {
-      // VsetInput(newVotes);
-      VsetInput(newVotes);
-
-      if (newVotes === -5) {
-        return removeTrack(uri, position);
-      }
-    }
-    // VsetInput(newVotes);
-    VsetInput(newVotes);
+    setUpdatedVotes(prevVotes => prevVotes - 1);
   };
-
-  // console.log('shouldFocus', shouldFocus);
 
   return (
     <Wrapper>
       <DefaultButton onClick={onDownVoteHandler}>
         <Icon src="images/white-minus.svg" />
       </DefaultButton>
-      <VotesText shouldFocus={shouldFocus}>{Vinput}</VotesText>
+      <VotesText shouldFocus={shouldFocus}>{updatedVotes}</VotesText>
       <DefaultButton onClick={onUpVoteHandler}>
         <Icon src="images/white-plus.svg" />
       </DefaultButton>
