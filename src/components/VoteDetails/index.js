@@ -19,44 +19,16 @@ const VoteDetails = ({
   downVoteLimitExceeded
 }) => {
   const [input, setInput] = useState(0);
-  const [Vinput, VsetInput] = useState(0);
+  const [Vinput, VsetInput] = useState(votes);
   const debouncedInput = useDebounce(Vinput, 500);
 
   useEffect(() => {
-    debouncedInput && handleUpVote(position, Vinput)
-  }, [debouncedInput])
+    debouncedInput > 0 ? handleUpVote(position, Vinput) : handleDownVote(position, Vinput)
+  }, [debouncedInput]);
 
   useEffect(() => {
-    VsetInput(votes)
-  }, [votes])
-
-  // useEffect(() => {
-  //   debugger
-  //   setInput(0)
-  // }, [votes])
-
-  // useEffect(() => {
-  //   // console.log('use effect votes', votes);
-  //   // console.log('use effect input', input);
-  //   // console.log('use effect debound', debouncedInput);
-  //   // console.log('vals', votes + input);
-  //   // console.log('debouncedInput', debouncedInput);
-  //   console.log('setting input 0')
-  //   // debugger
-  //   setInput(0)
-  //   // setVotess(votes + input)
-  // }, [votes]);
-  
-  // useEffect(() => {
-  //   // debugger
-  //   console.log('herrrrrreee')
-  //   if (debouncedInput + votes !== votes) {
-  //     input + votes > votes
-  //       ? handleUpVote(position, input + votes)
-  //       : handleDownVote(position, input + votes);
-  //   }
-  // }, [debouncedInput]);
-
+    VsetInput(votes);
+  }, [votes]);
 
   const onUpVoteHandler = () => {
     const newVotes = input + votes + 1;
@@ -79,11 +51,14 @@ const VoteDetails = ({
 
     // setInput(newVotes);
     console.log('set input');
+
     VsetInput(prevInput => prevInput + 1);
   };
 
   const onDownVoteHandler = () => {
-    const newVotes = input - 1;
+    const newVotes = input + votes - 1;
+
+    // const newVotes = input - 1;
     if (
       (downVoters && downVoters[userId] >= downVoteLimit) ||
       votes - newVotes > downVoteLimit
@@ -95,24 +70,30 @@ const VoteDetails = ({
       votes - newVotes === 2 ||
       (downVoters && downVoters[userId]) + votes - newVotes === 2
     ) {
-      setInput(newVotes);
+      // setInput(newVotes);
+      // VsetInput(prevInput => prevInput - 1);
+      VsetInput(newVotes);
 
-      return handleDownVote(position, input - 1);
+      return handleDownVote(position, newVotes);
     }
 
     if (newVotes >= -5) {
-      setInput(newVotes);
+      // setInput(newVotes); 
+      // VsetInput(prevInput => prevInput - 1);
+      VsetInput(newVotes);
 
       if (newVotes === -5) {
         return removeTrack(uri, position);
       }
     }
-    setInput(newVotes);
+    console.log('set input');
+    // debugger
+    // setInput(newVotes);
+    VsetInput(newVotes);
   };
 
-  
   // const val = debouncedInput ? votes : votes + input
-  
+
   console.log('votes', votes);
   console.log('input', input);
   console.log('input', Vinput);
