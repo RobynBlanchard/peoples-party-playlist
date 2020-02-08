@@ -4,6 +4,14 @@ Add songs to the playlist and re order by voting
 
 ![Add to playlist and voting demo](voting_example.gif)
 
+Limits the number of upvotes and downvotes by each user
+
+![Vote limits demo](vote_limit.gif)
+
+Uses Websockets
+
+![Websockets demo](websockets.gif)
+
 <!-- TODO; -->
 <!-- when adding a song to playlist from search that is already there, inform the user -->
 <!-- mobile nav -->
