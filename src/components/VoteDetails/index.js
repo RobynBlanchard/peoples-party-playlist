@@ -18,7 +18,6 @@ const VoteDetails = ({
   upVoteLimitExceeded,
   downVoteLimitExceeded
 }) => {
-  const [input, setInput] = useState(0);
   const [Vinput, VsetInput] = useState(votes);
   const debouncedInput = useDebounce(Vinput, 500);
 
@@ -38,7 +37,7 @@ const VoteDetails = ({
 
   const onUpVoteHandler = () => {
     // console.log('input', input);
-    const newVotes = input + votes + 1;
+    const newVotes = Vinput + 1;
 
     if (
       (upVoters && upVoters[userId] >= upVoteLimit) ||
@@ -49,21 +48,21 @@ const VoteDetails = ({
 
     if ((upVoters && upVoters[userId]) + newVotes - votes === upVoteLimit) {
       // VsetInput(prevInput => prevInput + 1);
-      VsetInput(Vinput + 1);
+      VsetInput(newVotes);
 
       return handleUpVote(position, newVotes);
     }
-    // debugger
-    VsetInput(Vinput + 1);
+
+    VsetInput(newVotes);
     // VsetInput(prevInput => prevInput + 1);
   };
 
   const onDownVoteHandler = () => {
     // console.log('input', input);
 
-    const newVotes = input + votes - 1;
+    // const newVotes = input + votes - 1;
 
-    // const newVotes = input - 1;
+    const newVotes = Vinput - 1;
     if (
       (downVoters && downVoters[userId] >= downVoteLimit) ||
       votes - newVotes > downVoteLimit
@@ -76,21 +75,21 @@ const VoteDetails = ({
       (downVoters && downVoters[userId]) + votes - newVotes === 2
     ) {
       // VsetInput(newVotes);
-      VsetInput(Vinput - 1);
+      VsetInput(newVotes);
 
       return handleDownVote(position, newVotes);
     }
 
     if (newVotes >= -5) {
       // VsetInput(newVotes);
-      VsetInput(Vinput - 1);
+      VsetInput(newVotes);
 
       if (newVotes === -5) {
         return removeTrack(uri, position);
       }
     }
     // VsetInput(newVotes);
-    VsetInput(Vinput - 1);
+    VsetInput(newVotes);
   };
 
   // console.log('shouldFocus', shouldFocus);
