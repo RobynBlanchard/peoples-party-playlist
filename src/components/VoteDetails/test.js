@@ -16,37 +16,31 @@ jest.mock('../../utils/constants', () => ({
 }));
 
 describe('VoteDetails', () => {
-  // describe('rendering', () => {
-  //   it('renders a down vote button with a', () => {
-
-  //   })
-  // })
-
-  // describe('submitting votes', () => {});
+  let wrapper;
+  let mockProps = {
+    position: 0,
+    uri: '123',
+    votes: 0,
+    handleUpVote: jest.fn(),
+    handleDownVote: jest.fn(),
+    removeTrack: jest.fn(),
+    upVoters: {},
+    downVoters: {},
+    userId: 'a1',
+    shouldFocus: false,
+    upVoteLimitExceeded: jest.fn(),
+    downVoteLimitExceeded: jest.fn()
+  };
 
   describe('when the user tries upvote more than the limit', () => {
     let mockupVoteLimitExceeded;
-    let wrapper;
-    let mockProps = {
-      position: 0,
-      uri: '123',
-      votes: 0,
-      handleUpVote: jest.fn(),
-      handleDownVote: jest.fn(),
-      removeTrack: jest.fn(),
-      upVoters: {},
-      downVoters: {},
-      userId: 'a1',
-      shouldFocus: false,
-      upVoteLimitExceeded: jest.fn(),
-      downVoteLimitExceeded: jest.fn()
-    };
 
     describe('when the user has never upvoted before', () => {
       beforeEach(() => {
         mockupVoteLimitExceeded = jest.fn();
         mockProps = {
           ...mockProps,
+          votes: 0,
           upVoteLimitExceeded: mockupVoteLimitExceeded
         };
 
@@ -119,31 +113,34 @@ describe('VoteDetails', () => {
 
   describe('when the user tries to downvote more than the limit', () => {
     let mockupDownVoteLimitExceeded;
-    let wrapper;
-    let mockProps = {
-      position: 0,
-      uri: '123',
-      votes: 0,
-      handleUpVote: jest.fn(),
-      handleDownVote: jest.fn(),
-      removeTrack: jest.fn(),
-      upVoters: {},
-      downVoters: {},
-      userId: 'a1',
-      shouldFocus: false,
-      upVoteLimitExceeded: jest.fn(),
-      downVoteLimitExceeded: jest.fn()
-    };
+    // let mockProps = {
+    //   position: 0,
+    //   uri: '123',
+    //   votes: 0,
+    //   handleUpVote: jest.fn(),
+    //   handleDownVote: jest.fn(),
+    //   removeTrack: jest.fn(),
+    //   upVoters: {},
+    //   downVoters: {},
+    //   userId: 'a1',
+    //   shouldFocus: false,
+    //   upVoteLimitExceeded: jest.fn(),
+    //   downVoteLimitExceeded: jest.fn()
+    // };
 
     describe('when the user has never downvoted before', () => {
       beforeEach(() => {
         mockupDownVoteLimitExceeded = jest.fn();
         mockProps = {
           ...mockProps,
+          votes: 0,
+          upVoters: {},
+          downVoters: {},
           downVoteLimitExceeded: mockupDownVoteLimitExceeded
         };
 
         wrapper = mount(<VoteDetails {...mockProps} />);
+
         const downVoteButton = wrapper.find(DefaultButton).at(0);
         Array.from(Array(downVoteLimit + 1)).forEach(_ =>
           downVoteButton.simulate('click')
@@ -168,6 +165,8 @@ describe('VoteDetails', () => {
             ...mockProps,
             votes: -1,
             downVoters: { a1: downVoteLimit - 1 },
+            upVoters: {},
+
             downVoteLimitExceeded: mockupDownVoteLimitExceeded
           };
           wrapper = mount(<VoteDetails {...mockProps} />);
@@ -208,6 +207,28 @@ describe('VoteDetails', () => {
           expect(wrapper.find(VotesText).text()).toEqual('-1');
         });
       });
+    });
+  });
+
+  describe('when downvoting sets the track votes below the minimum required to stay on the playlist', () => {
+    let mockRemoveTrack;
+    beforeEach(() => {
+      mockRemoveTrack = jest.fn();
+      mockProps = {
+        ...mockProps,
+        votes: minimumVotes,
+        removeTrack: mockRemoveTrack,
+        upVoters: {},
+        downVoters: {}
+      };
+      wrapper = mount(<VoteDetails {...mockProps} />);
+      const downVoteButton = wrapper.find(DefaultButton).at(0);
+      downVoteButton.simulate('click');
+    });
+
+    it('removeTrack is called with the position and uri of the track', () => {
+      expect(mockRemoveTrack).toHaveBeenCalled();
+      expect(mockRemoveTrack).toHaveBeenCalledWith('123', 0);
     });
   });
 });

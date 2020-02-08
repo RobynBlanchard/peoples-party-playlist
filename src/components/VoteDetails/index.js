@@ -51,6 +51,7 @@ const VoteDetails = ({
   const onDownVoteHandler = () => {
     const voteLimitReached =
       (downVoters[userId] || 0) + votes - updatedVotes + 1 > downVoteLimit;
+
     if (voteLimitReached) {
       return downVoteLimitExceeded(position);
     }
