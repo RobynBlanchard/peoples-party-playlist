@@ -15,7 +15,7 @@ const VoteDetailsWrapper = styled.div`
 
 const Tracks = ({
   playlist,
-  trackError,
+  lastClickedTrack,
   updateTrackNumOfVotes,
   removeTrack,
   userId,
@@ -33,11 +33,30 @@ const Tracks = ({
     <Table>
       <tbody>
         {playlist.map((track, index) => {
-          const { artist, name, votes, uri, updatedAt, upVoters, downVoters } = track;
+          const {
+            artist,
+            name,
+            votes,
+            uri,
+            updatedAt,
+            upVoters,
+            downVoters
+          } = track;
 
-          if (trackError && trackError.position === index) {
-            console.log('==track error==', trackError.error.displayMessage);
+          const hasTrackError =
+            lastClickedTrack &&
+            lastClickedTrack.position === index &&
+            lastClickedTrack.error &&
+            lastClickedTrack.error.displayMessage;
+
+          if (hasTrackError) {
+            console.log(
+              '==track error==',
+              lastClickedTrack.error.displayMessage
+            );
           }
+
+          lastClickedTrack.loading && console.log('==track update loading==');
 
           return (
             <React.Fragment key={`${uri}-${index}`}>
@@ -64,8 +83,8 @@ const Tracks = ({
                   />
                 </VoteDetailsWrapper>
               </Track>
-              {trackError && trackError.position === index && (
-                <TrackError text={trackError.error.displayMessage} />
+              {hasTrackError && (
+                <TrackError text={lastClickedTrack.error.displayMessage} />
               )}
             </React.Fragment>
           );

@@ -19,7 +19,7 @@ const PlaylistTemplate = ({ playback, playlist, playTrack }) => {
   const {
     tracks,
     lockedTrack,
-    trackError,
+    lastClickedTrack,
     updateTrackVotes,
     removeTrack,
     userId,
@@ -46,7 +46,7 @@ const PlaylistTemplate = ({ playback, playlist, playTrack }) => {
       )}
       <Tracks
         playlist={tracks}
-        trackError={trackError}
+        lastClickedTrack={lastClickedTrack}
         updateTrackNumOfVotes={updateTrackVotes}
         removeTrack={removeTrack}
         userId={userId}

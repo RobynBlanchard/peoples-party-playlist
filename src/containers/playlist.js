@@ -24,14 +24,27 @@ class Playlist extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { currentTrack, updateCurrentTrack, playing } = this.props;
+    const {
+      currentTrack,
+      updateCurrentTrack,
+      playing,
+      playlist: { lockedTrack, tracks },
+      pauseTrack
+    } = this.props;
 
     if (
       playing &&
       currentTrack.uri &&
-      nextProps.currentTrack.uri !== currentTrack.uri
+      nextProps.currentTrack.uri !== currentTrack.uri &&
+      playlist.lockedTrack.length > 0
     ) {
-      updateCurrentTrack();
+      return updateCurrentTrack();
+    }
+
+    const endOfPlaylistReached =
+      playing && lockedTrack.length === 0 && tracks.length === 0;
+    if (endOfPlaylistReached) {
+      return pauseTrack();
     }
   }
 
@@ -49,7 +62,12 @@ class Playlist extends React.Component {
       playTrack
     } = this.props;
 
-    const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
+    const {
+      tracks,
+      lockedTrack,
+      error: playlistError,
+      lastClickedTrack
+    } = playlist;
 
     let error = playlistError || playbackError;
 
@@ -67,7 +85,7 @@ class Playlist extends React.Component {
     const playlistProp = {
       tracks: tracks,
       lockedTrack,
-      trackError,
+      lastClickedTrack,
       updateTrackVotes: updateTrackNumOfVotes,
       removeTrack,
       userId: appUser.userId,
@@ -93,7 +111,7 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     currentTrack: state.playback.currentTrack,
     playbackError: state.playback.error,
-    appUser: state.appUser,
+    appUser: state.appUser
   };
 };
 

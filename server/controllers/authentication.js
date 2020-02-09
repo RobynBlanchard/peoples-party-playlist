@@ -10,7 +10,7 @@ import {
 const ClientID = process.env.clientID;
 const ClientSecret = process.env.client_secret;
 const stateKey = 'spotify_auth_state';
-const redirectURI = process.env.REDIRECT_URI || 'http://localhost:8080/callback';
+const redirectURI = process.env.REDIRECT_URI || 'http://localhost:5000/callback';
 
 // const redirectURI = 'http://localhost:8080/callback';
 

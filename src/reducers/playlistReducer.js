@@ -8,9 +8,12 @@ import {
   DELETE_TRACK_FAILURE,
   UPDATE_TRACK,
   UPDATE_TRACK_SUCCESS,
-  UPDATE_TRACK_FAILURE
+  UPDATE_TRACK_FAILURE,
+  UPVOTE_LIMIT_EXCEEDED,
+  DOWNVOTE_LIMIT_EXCEEDED,
+  UPDATE_CURRENT_TRACK_SUCCESS,
+  RESUME_PLAYBACK_SUCCESS
 } from '../actions/types';
-import { cloneDeep } from 'lodash';
 import { upVoteLimit, downVoteLimit } from '../utils/constants';
 
 const defaultState = {
@@ -19,13 +22,65 @@ const defaultState = {
   lockedTrack: [],
   error: null,
   loading: false,
-  trackError: null
+  trackError: null,
+  lastClickedTrack: {
+    error: null,
+    loading: false,
+    position: null
+  }
+};
+
+const sortTrackStatuses = fetchedTracks =>
+  fetchedTracks.reduce(
+    (acc, track) => {
+      if (track.removed) {
+        return { ...acc, removedPlaylist: [...acc.removedPlaylist, track] };
+      }
+      if (track.locked && !track.removed) {
+        return { ...acc, lockedTrack: [...acc.lockedTrack, track] };
+      }
+      return { ...acc, tracks: [...acc.tracks, track] };
+    },
+    { tracks: [], lockedTrack: [], removedPlaylist: [] }
+  );
+
+const updateAtIndex = (arr, itemIndex, updatedItem) => {
+  return arr.map((item, index) => {
+    if (index === itemIndex) {
+      return updatedItem;
+    }
+    return item;
+  });
+};
+
+const insertAtIndex = (arr, index, item) => [
+  ...arr.slice(0, index),
+  item,
+  ...arr.slice(index)
+];
+
+const removeAtIndex = (arr, index) => [
+  ...arr.slice(0, index),
+  ...arr.slice(index + 1)
+];
+
+const updateAndMoveIndex = (arr, oldPos, newPos, updatedItem) => {
+  const arrWithItemRemoved = removeAtIndex(arr, oldPos);
+
+  return insertAtIndex(arrWithItemRemoved, newPos, updatedItem);
 };
 
 const playlistReducer = (state = defaultState, action) => {
-  let tracks = cloneDeep(state.tracks);
-  let lockedTrack = cloneDeep(state.lockedTrack);
-  let removedPlaylist = cloneDeep(state.removedPlaylist);
+  const oldTracks = state.tracks;
+  const oldLockedTrack = state.lockedTrack;
+  const oldRemovedPlaylist = state.removedPlaylist;
+
+  let newLockedTrack;
+  let newRemovedTracks;
+  let newTracks;
+  let status;
+  let message;
+
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
       return {
@@ -34,19 +89,9 @@ const playlistReducer = (state = defaultState, action) => {
       };
     case FETCH_PLAYLIST_FROM_DB_SUCCESS:
       const fetchedTracks = action.payload.response.data.tracks;
-      tracks = [];
-      lockedTrack = [];
-      removedPlaylist = [];
-
-      fetchedTracks.forEach(track => {
-        if (track.removed) {
-          removedPlaylist.push(track);
-        } else if (track.locked && !track.removed) {
-          lockedTrack.push(track);
-        } else {
-          tracks.push(track);
-        }
-      });
+      const { tracks, lockedTrack, removedPlaylist } = sortTrackStatuses(
+        fetchedTracks
+      );
 
       return {
         ...state,
@@ -62,76 +107,105 @@ const playlistReducer = (state = defaultState, action) => {
         error: action.payload.error
       };
     case DELETE_TRACK:
-      tracks[action.payload.position].loading = true;
-
       return {
         ...state,
-        tracks
+        lastClickedTrack: {
+          error: null,
+          loading: true,
+          position: action.payload.position
+        }
       };
 
     case DELETE_TRACK_SUCCESS:
-      tracks[action.payload.position].loading = false;
-      tracks[action.payload.position].error = null;
-      tracks.splice(action.payload.position, 1);
+      newTracks = removeAtIndex(oldTracks, action.payload.position);
 
       return {
         ...state,
-        tracks
+        tracks: newTracks,
+        lastClickedTrack: {
+          error: null,
+          loading: false,
+          position: null
+        }
       };
     case DELETE_TRACK_FAILURE:
-      tracks[action.payload.position].loading = false;
-      tracks[action.payload.position].error = {
-        status: action.payload.error.response.data.error.status,
-        message: action.payload.error.response.data.error.message,
-        displayMessage: 'could not update track at this time'
-      };
+      ({ status, message } = action.payload.error.response.data.error);
+
       return {
         ...state,
-        tracks
+        lastClickedTrack: {
+          error: {
+            status,
+            message,
+            displayMessage: 'could not delete track at this time'
+          },
+          loading: false,
+          position: action.payload.position
+        }
       };
     case ADD_TO_PLAYLIST_SUCCESS:
-      tracks.splice(action.payload.position, 0, action.payload.track);
+      newTracks = insertAtIndex(
+        oldTracks,
+        action.payload.position,
+        action.payload.track
+      );
+
       return {
         ...state,
-        tracks: tracks,
-        trackError: null
+        tracks: newTracks
       };
     case UPDATE_TRACK:
       return {
         ...state,
-        tracks: tracks,
-        trackError: null
+        lastClickedTrack: {
+          error: null,
+          loading: true,
+          position: action.payload.position
+        }
       };
 
     case UPDATE_TRACK_SUCCESS:
-      tracks[action.payload.position].loading = false;
-      tracks.splice(action.payload.position, 1);
-      tracks.splice(action.payload.newPosition, 0, action.payload.track);
+      if (action.payload.position !== action.payload.newPosition) {
+        newTracks = updateAndMoveIndex(
+          oldTracks,
+          action.payload.position,
+          action.payload.newPosition,
+          action.payload.track
+        );
+      } else {
+        newTracks = updateAtIndex(
+          oldTracks,
+          action.payload.position,
+          action.payload.track
+        );
+      }
 
       return {
         ...state,
-        tracks,
-        trackError: null
+        tracks: newTracks,
+        lastClickedTrack: {
+          error: null,
+          loading: false,
+          position: action.payload.newPosition
+        }
       };
     case UPDATE_TRACK_FAILURE:
-      tracks[action.payload.position].loading = false;
-
+      ({ status, message } = action.payload.error.response.data.error);
       return {
         ...state,
-        tracks,
-        trackError: {
+        lastClickedTrack: {
           position: action.payload.position,
           error: {
-            status: action.payload.error.response.data.error.status,
-            message: action.payload.error.response.data.error.message,
+            status,
+            message,
             displayMessage: 'could not update track at this time'
           }
         }
       };
-    case 'UPVOTE_LIMIT_EXCEEDED':
+    case UPVOTE_LIMIT_EXCEEDED:
       return {
         ...state,
-        trackError: {
+        lastClickedTrack: {
           position: action.payload,
           error: {
             status: '',
@@ -140,50 +214,61 @@ const playlistReducer = (state = defaultState, action) => {
           }
         }
       };
-    case 'DOWNVOTE_LIMIT_EXCEEDED':
-      const err = {
-        position: action.payload,
-        error: {
-          status: '',
-          message: '',
-          displayMessage: `cannot downvote more than ${downVoteLimit} times on a track!`
+    case DOWNVOTE_LIMIT_EXCEEDED:
+      return {
+        ...state,
+        lastClickedTrack: {
+          position: action.payload,
+          error: {
+            status: '',
+            message: '',
+            displayMessage: `cannot downvote more than ${downVoteLimit} times on a track!`
+          }
         }
       };
+
+    case UPDATE_CURRENT_TRACK_SUCCESS:
+      if (oldLockedTrack.length > 0) {
+        // move locked track to removed
+        newRemovedTracks = oldRemovedPlaylist.concat({
+          ...oldLockedTrack[0],
+          removed: true
+        });
+        // remove old lockedTrack from lockedTracks
+        newLockedTrack = removeAtIndex(oldLockedTrack, 0);
+      }
+
+      if (oldTracks.length > 0) {
+        // move top track to locked
+        newLockedTrack = [{ ...oldTracks[0], locked: true }];
+
+        // remove top track from tracks
+        newTracks = removeAtIndex(oldTracks, 0);
+      }
+
       return {
         ...state,
-        trackError: err
+        lockedTrack: newLockedTrack || [...oldLockedTrack],
+        tracks: newTracks || [...oldTracks],
+        removedPlaylist: newRemovedTracks || [...oldRemovedPlaylist]
       };
-    case 'UPDATE_CURRENT_TRACK_SUCCESS':
-      if (lockedTrack.length > 0) {
-        lockedTrack[0].removed = true;
-        removedPlaylist.push(lockedTrack[0]);
-        lockedTrack.pop();
-      }
-      if (tracks.length > 0) {
-        lockedTrack = [tracks[0]];
-        tracks.shift();
-      }
-      if (lockedTrack.length > 0) {
-        lockedTrack[0].locked = true;
-      }
-      return {
-        ...state,
-        lockedTrack,
-        tracks,
-        removedPlaylist,
-        trackError: null
-      };
-    case 'RESUME_PLAYBACK_SUCCESS':
-      if (lockedTrack.length === 0) {
-        lockedTrack = [tracks[0]];
-        lockedTrack[0].locked = true;
-        tracks.shift();
+    case RESUME_PLAYBACK_SUCCESS:
+      // playlist has never been played
+      // -> lock top track
+      if (oldLockedTrack.length === 0) {
+        // move top track to locked
+        newLockedTrack = [{ ...oldTracks[0], locked: true }];
+
+        // remove top track from tracks
+        newTracks = removeAtIndex(oldTracks, 0);
+        return {
+          ...state,
+          lockedTrack: newLockedTrack,
+          tracks: newTracks
+        };
       }
       return {
-        ...state,
-        lockedTrack,
-        tracks,
-        removedPlaylist
+        ...state
       };
     default:
       return state;
