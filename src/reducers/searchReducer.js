@@ -14,9 +14,8 @@ const defaultState = {
   results: [],
   loading: false,
   // fetch error
-  // TODO: rename to fetch error
   error: null,
-  // error on a specific track - easier to clear error this way
+  // error on a specific track
   trackError: null
 };
 

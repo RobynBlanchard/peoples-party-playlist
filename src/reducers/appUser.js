@@ -15,6 +15,3 @@ const user = (state = defaultState, action) => {
 };
 
 export default user;
-
-// can't upvote more than 3 times
-// or downvote more than 2 times

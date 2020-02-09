@@ -12,7 +12,6 @@ const app = express();
 const server = http.createServer(app);
 const store = createStore();
 
-
 if (process.env.NODE_ENV !== 'production') {
   setUpDevServer(app);
 }
@@ -23,11 +22,9 @@ setUpApi(app, store);
 renderReact(app, store);
 
 const PORT = process.env.PORT || 5000;
-// const HOST = 'localhost';
 server.listen(PORT, err => {
   if (!err) {
-    const url = `http://:${PORT}`;
-    console.log(`Server listening at: ${url}`);
+    console.log(`Server listening on port ${PORT}`);
 
     // openBrowser(url);
   } else {

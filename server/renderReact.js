@@ -13,7 +13,6 @@ export default (app, store) => {
   app.get('/*', (req, res) => {
     const context = {};
 
-    // fix - happens on every request eg all requests for images
     const token = req.cookies.spotifyAccessToken;
     if (token) {
       store.dispatch(logInSucess(token));

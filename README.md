@@ -146,3 +146,14 @@ TODO: fix - xpect(dispatchArgs.callAPI(apiToken)).toEqual(
             expectedTrack
           )
         ); -->
+
+
+TODO:
+- Move logic for calculating range_start and insert_before from playlist actions to reOrderTrackSpotify
+- Change logic for downvoting so that when a track is downvoted and has the same number of votes as other tracks, then the tracks that were most recently updated are above those that were updated earlier
+- Set playlist ID via UI
+- Complete Storybook stories for all components
+- On first render of the playlist page, check if currently playing and display correct play/pause button
+- Handle pause playback failure
+- Refactor playlist reducer
+- Tests

@@ -2,9 +2,7 @@ import {
   FETCH_PLAYLIST_FROM_DB,
   FETCH_PLAYLIST_FROM_DB_SUCCESS,
   FETCH_PLAYLIST_FROM_DB_FAILURE,
-  ADD_TO_PLAYLIST,
   ADD_TO_PLAYLIST_SUCCESS,
-  ADD_TO_PLAYLIST_FAILURE,
   DELETE_TRACK,
   DELETE_TRACK_SUCCESS,
   DELETE_TRACK_FAILURE,
@@ -28,11 +26,8 @@ const playlistReducer = (state = defaultState, action) => {
   let tracks = cloneDeep(state.tracks);
   let lockedTrack = cloneDeep(state.lockedTrack);
   let removedPlaylist = cloneDeep(state.removedPlaylist);
-  console.log('action: ', action.type);
   switch (action.type) {
     case FETCH_PLAYLIST_FROM_DB:
-      // console.log('fetch playlist from db')
-
       return {
         ...state,
         loading: true
@@ -52,7 +47,6 @@ const playlistReducer = (state = defaultState, action) => {
           tracks.push(track);
         }
       });
-      // debugger
 
       return {
         ...state,
@@ -62,7 +56,6 @@ const playlistReducer = (state = defaultState, action) => {
         removedPlaylist
       };
     case FETCH_PLAYLIST_FROM_DB_FAILURE:
-      // console.log(action)
       return {
         ...state,
         loading: false,
@@ -104,8 +97,6 @@ const playlistReducer = (state = defaultState, action) => {
         trackError: null
       };
     case UPDATE_TRACK:
-      // tracks[action.payload.position].loading = true;
-      // console.log('update track')
       return {
         ...state,
         tracks: tracks,
@@ -116,11 +107,6 @@ const playlistReducer = (state = defaultState, action) => {
       tracks[action.payload.position].loading = false;
       tracks.splice(action.payload.position, 1);
       tracks.splice(action.payload.newPosition, 0, action.payload.track);
-
-      console.log('update track new tracks:', tracks);
-      // debugger
-
-      // tracks[action.payload.newPosition].loading = false;
 
       return {
         ...state,

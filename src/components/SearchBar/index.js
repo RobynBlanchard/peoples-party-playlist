@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { colours, media } from '../../globalStyles';
 import useDebounce from '../useDebounce';
@@ -29,7 +29,7 @@ const SearchInput = styled.input`
 `;
 
 const SearchBar = ({ onSubmit }) => {
-  const [searchTerm, setSearchTerm] = useState(''); // store in redux ?
+  const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 200);
 
   const handleSubmit = e => {

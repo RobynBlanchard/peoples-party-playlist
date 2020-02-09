@@ -1,7 +1,6 @@
 import {
   spotifyOffSet,
   updatedTrackNewPosition,
-  updateTrackApi,
   findPositionForNewTrack
 } from './playlistUtils';
 
@@ -11,19 +10,7 @@ describe('spotifyOffSet', () => {
   });
 });
 
-// update track position
 describe('updatedTrackNewPosition', () => {
-  // describe('when the track was not on the playlist', () => {
-  //   it('returns 0 when playlist is empty', () => {
-  //     const playlist = [];
-  //     const track = { uri: '1', votes: 0 };
-  //     const change = 1;
-
-  //     expect(updatedTrackNewPosition(playlist, track, change)).toEqual(0);
-  //   });
-
-  // })
-
   describe('when the track was upvoted', () => {
     const change = 1;
 

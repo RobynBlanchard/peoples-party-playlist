@@ -11,7 +11,6 @@ export const spotifyOffSet = (removedPlaylist, lockedTrack) => {
 
 export const updatedTrackNewPosition = (playlist, updatedTrack, change) => {
   let newPosition = playlist.findIndex(el => {
-    // el.updatedAt > track.updatedAt will always be true ?
     return (
       el.votes < updatedTrack.votes || el.updatedAt > updatedTrack.updatedAt
     );
@@ -28,7 +27,6 @@ export const updatedTrackNewPosition = (playlist, updatedTrack, change) => {
   return newPosition;
 };
 
-// todo change updatedAt logic when downvote
 export const findPositionForNewTrack = (playlist, newTrack) => {
   if (playlist.length === 0) return 0;
 
@@ -41,7 +39,6 @@ export const findPositionForNewTrack = (playlist, newTrack) => {
   const newPosition = playlist.findIndex(
     el => el.votes < newTrackDefaultNumberOfVotes
   );
-
 
   if (newPosition === -1) {
     return playlist.length;
@@ -72,9 +69,6 @@ export const updateTrackApi = (
 ) => {
   const { updatedAt, upVoters, downVoters, uri, votes } = updatedTrack;
 
-  console.log('old pos', oldPosition);
-  console.log('newPositions', newPosition);
-
   const updateTrack = () =>
     updateTrackDb(uri, {
       $set: {
@@ -85,16 +79,13 @@ export const updateTrackApi = (
       }
     });
 
-    // TODO: move this to reOrderTrackSpotify
+  // TODO: move this to reOrderTrackSpotify
   if (oldPosition !== newPosition) {
     const rangeStart = offset + oldPosition;
     const insertBefore =
       newPosition > oldPosition
         ? offset + newPosition + 1
         : offset + newPosition;
-
-    console.log('rangeStart', oldPosition);
-    console.log('insertBefore', newPosition);
 
     return reOrderTrackSpotify(rangeStart, insertBefore, token).then(() =>
       updateTrack()
@@ -112,8 +103,6 @@ export const updatedTrackVotes = (
 ) => {
   const upVotesByUser = selectedTrack.upVoters[userId] || 0;
   const downVotesByUser = selectedTrack.downVoters[userId] || 0;
-
-  // if add don't add votes
 
   return {
     ...selectedTrack,

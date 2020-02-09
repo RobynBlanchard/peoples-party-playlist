@@ -43,7 +43,6 @@ const playTrackAction = (
   tracks,
   dispatch
 ) => {
-  // TODO use call api middleare or dispatch success and failure..
   PollAPI.setFn(() =>
     getCurrentlyPlayingSpotify(token).then(res => {
       dispatch({

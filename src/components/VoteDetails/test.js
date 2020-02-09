@@ -113,20 +113,6 @@ describe('VoteDetails', () => {
 
   describe('when the user tries to downvote more than the limit', () => {
     let mockupDownVoteLimitExceeded;
-    // let mockProps = {
-    //   position: 0,
-    //   uri: '123',
-    //   votes: 0,
-    //   handleUpVote: jest.fn(),
-    //   handleDownVote: jest.fn(),
-    //   removeTrack: jest.fn(),
-    //   upVoters: {},
-    //   downVoters: {},
-    //   userId: 'a1',
-    //   shouldFocus: false,
-    //   upVoteLimitExceeded: jest.fn(),
-    //   downVoteLimitExceeded: jest.fn()
-    // };
 
     describe('when the user has never downvoted before', () => {
       beforeEach(() => {

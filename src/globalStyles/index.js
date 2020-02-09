@@ -60,6 +60,3 @@ export const DefaultButton = styled.button`
   outline: inherit;
   touch-action: manipulation;
 `;
-
-// TODO: component did mount - check if playing already then decide which button to display
-// add socket action - when moves to next track

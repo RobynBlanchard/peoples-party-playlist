@@ -17,7 +17,6 @@ export const dispatchFetchSearchResults = query => ({
 });
 
 export const fetchSearchResults = searchTerm => (dispatch, getState) => {
-  // console.log('fetch!')
   if (searchTerm) {
     const termWithSpacesEncoded = searchTerm.replace(' ', '%20');
     const termWithWildCard = termWithSpacesEncoded + '*';
