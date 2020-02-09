@@ -36,7 +36,7 @@ class Playlist extends React.Component {
       playing &&
       currentTrack.uri &&
       nextProps.currentTrack.uri !== currentTrack.uri &&
-      playlist.lockedTrack.length > 0
+      lockedTrack.length > 0
     ) {
       return updateCurrentTrack();
     }
