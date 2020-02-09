@@ -9,7 +9,7 @@ const Title = styled.div`
   flex-direction: column;
   text-align: justify;
   -webkit-font-smoothing: antialiased;
-  height: 70%;
+  /* height: 70%; */
   display: flex;
   justify-content: center;
   ${media.phone`text-align: center;`} /* position: relative; */
@@ -31,6 +31,8 @@ const SubHeading = styled.p`
   letter-spacing: 10px;
   text-shadow: 1px 1px 1px #000000;
   padding-left: 7px;
+  margin: 20px 0;
+  padding: 0;
 
   ${media.desktop`font-size: 16px;`}
   ${media.phone`font-size: 18px;`}
@@ -40,19 +42,25 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
+  /* height: 100%; */
   justify-content: space-around;
+  padding: 40px;
 `;
 
 const SectionOne = () => {
   return (
     <Container>
       <Title>
+        <MainHeading>People's</MainHeading>
         <MainHeading>
-          People's P<JukeboxAnimation />
-          rty Playlist
+          {' '}
+          P<JukeboxAnimation />
+          rty{' '}
         </MainHeading>
+        <MainHeading> Playlist</MainHeading>
+        {/* <div> */}
         <SubHeading>The Ultimate online jukebox experience</SubHeading>
+          {/* </div> */}
       </Title>
       <Mouse />
     </Container>

@@ -9,7 +9,8 @@ const Container = styled.div`
   align-items: center;
   flex-direction: row;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
+  padding: 20px 0;
   background-color: rgba(${colours.primaryLightRGBA}, 0.29);
 `;
 

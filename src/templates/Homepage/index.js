@@ -14,7 +14,7 @@ const Wrap = styled.div`
 
 const Parallax = styled.div`
   background-image: linear-gradient(to right bottom, #212121, #000000);
-  height: 85vh;
+  /* height: 85vh; */
 
   background-attachment: fixed;
   background-position: center;
@@ -27,7 +27,7 @@ const Parallax = styled.div`
 `;
 
 const Static = styled.div`
-  height: 80vh;
+  /* height: 80vh; */
   font-size: 36px;
   width: 100%;
 `;

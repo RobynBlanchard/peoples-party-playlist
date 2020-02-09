@@ -63,13 +63,14 @@ const Front = styled(Card)`
 `;
 
 const ContentBlockWrapper = styled.div`
+margin: 20px;
   perspective: 500px;
   -moz-perspective: 500px;
   position: relative;
   height: 200px;
   width: 200px;
   font-size: 20px;
-  opacity: 10%;
+  /* opacity: 10%; */
   font-family: ${fonts.font1};
 
   &:hover ${Front} {
