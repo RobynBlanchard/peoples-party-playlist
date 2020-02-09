@@ -47,20 +47,21 @@ const Container = styled.div`
   padding: 40px;
 `;
 
+const MobileLineBreaks = styled.br`
+  display: none;
+  ${media.phone`display: block;`}
+`;
+
 const SectionOne = () => {
   return (
     <Container>
       <Title>
-        <MainHeading>People's</MainHeading>
         <MainHeading>
-          {' '}
-          P<JukeboxAnimation />
-          rty{' '}
+          People's&nbsp;<MobileLineBreaks/> P<JukeboxAnimation />rty&nbsp;<MobileLineBreaks/>Playlist
         </MainHeading>
-        <MainHeading> Playlist</MainHeading>
-        {/* <div> */}
+
         <SubHeading>The Ultimate online jukebox experience</SubHeading>
-          {/* </div> */}
+        {/* </div> */}
       </Title>
       <Mouse />
     </Container>
