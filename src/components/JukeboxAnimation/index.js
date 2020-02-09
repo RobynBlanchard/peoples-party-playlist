@@ -1,6 +1,5 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { media } from '../../globalStyles';
 
 const flickerAnimation = keyframes`
   0% {
@@ -26,9 +25,7 @@ const MusicNote = styled.div`
 `;
 
 const Icon = styled.img`
-  height: 64px;
-  ${media.desktop`height: 55px;`}
-  ${media.phone`height: 40px;`}
+  height: 55px;
   transform: translateY(8px);
 `;
 

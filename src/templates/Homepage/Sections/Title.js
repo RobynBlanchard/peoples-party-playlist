@@ -9,19 +9,18 @@ const Title = styled.div`
   flex-direction: column;
   text-align: justify;
   -webkit-font-smoothing: antialiased;
-  height: 70%;
+  height: 400px;
   display: flex;
+  text-align: center;
   justify-content: center;
-  ${media.phone`text-align: center;`} /* position: relative; */
+  ${media.phone`text-align: center;`}
 `;
 
 const MainHeading = styled.h2`
   text-transform: uppercase;
   margin: 0px;
   text-shadow: 1px 1px 1px #000000;
-
-  ${media.desktop`font-size: 54px;`}
-  ${media.phone`font-size: 41px;`}
+  font-size: 56px;
 `;
 
 const SubHeading = styled.p`
@@ -31,17 +30,25 @@ const SubHeading = styled.p`
   letter-spacing: 10px;
   text-shadow: 1px 1px 1px #000000;
   padding-left: 7px;
+  margin-bottom: 20px;
+  padding: 0;
+  text-align: center;
+  font-size: 18px;
+  padding-left: 6px;
 
-  ${media.desktop`font-size: 16px;`}
-  ${media.phone`font-size: 18px;`}
+  ${media.phone`margin-top: 20px;`}
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
   justify-content: space-around;
+`;
+
+const MobileLineBreak = styled.br`
+  display: none;
+  ${media.phone`display: block;`}
 `;
 
 const SectionOne = () => {
@@ -49,9 +56,12 @@ const SectionOne = () => {
     <Container>
       <Title>
         <MainHeading>
-          People's P<JukeboxAnimation />
-          rty Playlist
+          People's
+          <MobileLineBreak /> P<JukeboxAnimation />
+          rty
+          <MobileLineBreak /> Playlist
         </MainHeading>
+
         <SubHeading>The Ultimate online jukebox experience</SubHeading>
       </Title>
       <Mouse />

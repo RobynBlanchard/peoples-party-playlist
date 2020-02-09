@@ -17,22 +17,29 @@ const Icon = styled.img`
 `;
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  height: 500px;
   width: 100%;
   font-size: 24px;
+`;
+
+const TextWrapper = styled.div`
+  text-align: center;
+`;
+
+const IconWrapper = styled.div`
+  text-align: center;
 `;
 
 const SectionThree = () => {
   return (
     <Wrapper>
-      <p>Log in with Spotify to get started</p>
-      <a href="/login">
-        <Icon src="/images/log-in.svg" />
-      </a>
+      <TextWrapper>
+        <p>Log in with Spotify to get started</p>
+      </TextWrapper>
+      <IconWrapper>
+        <a href="/login">
+          <Icon src="/images/log-in.svg" />
+        </a>
+      </IconWrapper>
     </Wrapper>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
-import { colours } from '../../globalStyles';
+import { colours, media } from '../../globalStyles';
 
 const scrollAnimation = keyframes`
   0% { opacity: 0; }
@@ -26,6 +26,8 @@ const Wrapper = styled.div`
   border: 2px solid #fff;
   border-radius: 25px;
   opacity: 0.75;
+  margin: 20px;
+  ${media.phone`visibility: hidden;`}
 `;
 
 const Mouse = () => {
