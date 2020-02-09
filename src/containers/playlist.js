@@ -43,11 +43,12 @@ class Playlist extends React.Component {
       playbackError,
       updateTrackNumOfVotes,
       removeTrack,
-      userId,
+      appUser,
       upVoteLimitExceeded,
       downVoteLimitExceeded,
       playTrack
     } = this.props;
+
     const { tracks, lockedTrack, error: playlistError, trackError } = playlist;
 
     let error = playlistError || playbackError;
@@ -69,7 +70,7 @@ class Playlist extends React.Component {
       trackError,
       updateTrackVotes: updateTrackNumOfVotes,
       removeTrack,
-      userId,
+      userId: appUser.userId,
       upVoteLimitExceeded,
       downVoteLimitExceeded
     };
@@ -92,7 +93,7 @@ const mapStateToProps = state => {
     playing: state.playback.playing,
     currentTrack: state.playback.currentTrack,
     playbackError: state.playback.error,
-    userId: state.appUser.userId
+    appUser: state.appUser,
   };
 };
 

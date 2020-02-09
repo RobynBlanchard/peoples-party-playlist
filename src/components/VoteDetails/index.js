@@ -40,7 +40,6 @@ const VoteDetails = ({
   const onUpVoteHandler = () => {
     const voteLimitReached =
       (upVoters[userId] || 0) + updatedVotes - votes + 1 > upVoteLimit;
-
     if (voteLimitReached) {
       return upVoteLimitExceeded(position);
     }
