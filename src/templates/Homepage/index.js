@@ -14,7 +14,6 @@ const Wrap = styled.div`
 
 const Parallax = styled.div`
   background-image: linear-gradient(to right bottom, #212121, #000000);
-  /* height: 85vh; */
   min-height: 450px;
   background-attachment: fixed;
   background-position: center;

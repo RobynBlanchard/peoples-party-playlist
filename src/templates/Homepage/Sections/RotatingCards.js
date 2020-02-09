@@ -21,6 +21,7 @@ const BlocksWrapper = styled.div`
   align-items: center;
   width: 90%;
   height: 100%;
+  margin: 20px 0 20px 0;
 `;
 
 class SectionTwo extends React.Component {

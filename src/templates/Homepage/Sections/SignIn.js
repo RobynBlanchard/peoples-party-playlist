@@ -17,14 +17,8 @@ const Icon = styled.img`
 `;
 
 const Wrapper = styled.div`
-  /* display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  height: 500px; */
   width: 100%;
   font-size: 24px;
-  margin: 60px 20px;
 `;
 
 const TextWrapper = styled.div`

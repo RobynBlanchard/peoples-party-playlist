@@ -9,22 +9,18 @@ const Title = styled.div`
   flex-direction: column;
   text-align: justify;
   -webkit-font-smoothing: antialiased;
-  height: 400px; 
+  height: 400px;
   display: flex;
   text-align: center;
   justify-content: center;
-  ${media.phone`text-align: center;`} /* position: relative; */
+  ${media.phone`text-align: center;`}
 `;
 
 const MainHeading = styled.h2`
   text-transform: uppercase;
   margin: 0px;
   text-shadow: 1px 1px 1px #000000;
-  font-size: 55px;
-  /* ${media.desktop`font-size: 41px;`}
-  ${media.phone`font-size: 41px;`} */
-
-  /* ${media.phone`font-size: 12px;`} */
+  font-size: 56px;
 `;
 
 const SubHeading = styled.p`
@@ -38,23 +34,19 @@ const SubHeading = styled.p`
   padding: 0;
   text-align: center;
   font-size: 18px;
+  padding-left: 6px;
 
- /* ${media.desktop`font-size: 16px;`} */
-   ${media.phone`margin-top: 20px;`} 
+  ${media.phone`margin-top: 20px;`}
 `;
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* height: 100%; */
   justify-content: space-around;
-  /* padding: 40px; */
-  /* ${media.desktop`padding: 0;`} */
-
 `;
 
-const MobileLineBreaks = styled.br`
+const MobileLineBreak = styled.br`
   display: none;
   ${media.phone`display: block;`}
 `;
@@ -64,11 +56,13 @@ const SectionOne = () => {
     <Container>
       <Title>
         <MainHeading>
-          People's<MobileLineBreaks/> P<JukeboxAnimation />rty<MobileLineBreaks/> Playlist
+          People's
+          <MobileLineBreak /> P<JukeboxAnimation />
+          rty
+          <MobileLineBreak /> Playlist
         </MainHeading>
 
         <SubHeading>The Ultimate online jukebox experience</SubHeading>
-        {/* </div> */}
       </Title>
       <Mouse />
     </Container>
