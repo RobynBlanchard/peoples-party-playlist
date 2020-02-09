@@ -60,7 +60,7 @@ class Playlist extends React.Component {
 
     const playback = {
       playing,
-      pauseTrack,
+      pauseTrack
     };
 
     const playlistProp = {
@@ -96,7 +96,6 @@ const mapStateToProps = state => {
   };
 };
 
-// export default requireAuth(
 export default connect(mapStateToProps, {
   fetchPlaylist,
   removeTrack,
@@ -106,4 +105,4 @@ export default connect(mapStateToProps, {
   updateCurrentTrack,
   upVoteLimitExceeded,
   downVoteLimitExceeded
-})(Playlist);
+})(requireAuth(Playlist));
