@@ -26,9 +26,9 @@ const MusicNote = styled.div`
 `;
 
 const Icon = styled.img`
-  height: 64px;
-  ${media.desktop`height: 55px;`}
-  ${media.phone`height: 40px;`}
+  height: 55px;
+  /* ${media.desktop`height: 55px;`}
+  ${media.phone`height: 40px;`} */
   transform: translateY(8px);
 `;
 
